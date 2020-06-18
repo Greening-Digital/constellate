@@ -170,13 +170,7 @@ export default {
   },
   firebase: function() {
     return {
-      fbpeeps: {
-        source: fbase.database().ref('userlist'),
-        readyCallback: function() {
-          debug('data retrieved from fbase')
-          this.setUserProfile()
-        }
-      }
+      items: fbase.database().ref('userlist')
     }
   },
   data() {
@@ -215,11 +209,6 @@ export default {
           }
         })
       }
-      if (this.unsyncedTags.length > 0) {
-        this.unsyncedTags.forEach(function(t) {
-          tagList.push(t)
-        })
-      }
       return tagList
     }
   },
@@ -233,7 +222,7 @@ export default {
         id: 'tempval' + tempVal
       }
       this.profile.fields.tags.push(tag)
-      this.unsyncedTags.push(tag)
+
     },
     onSubmit: function(item) {
       debug('updating profile', this.profile)
@@ -290,7 +279,17 @@ export default {
     }
   },
   created() {
-    this.$bindAsArray('items', this.$firebaseRefs.fbpeeps)
+    let that = this;
+    this.$rtdbBind('items', fbase.database().ref('userlist')).then(
+      function() {
+          debug('data retrieved from fbase')
+          console.log(that)
+          that.setUserProfile()
+      }).catch(
+        function(err) {
+          console.log(err);
+      })
+
     debug('checking for a user:')
     debug(this.$store.getters.profile)
     debug(fbase.auth().currentUser)
