@@ -10,7 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@google-cloud/storage": "^2.3.1",
+    "@google-cloud/storage": "^2.5.0",
     "child-process-promise": "*",
     "cors": "^2.8.5",
     "csv-parse": "^4.10.1",
