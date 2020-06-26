@@ -1,0 +1,49 @@
+{
+  "userlist": [
+    {
+      "fields": {
+        "blurb": "You're late.",
+        "email": "frodo@baggins.com",
+        "name": "Frodo Baggins",
+        "pitchable": true,
+        "tags": [{ "id": "recfmxbxbOC1EeAlf", "name": "writing" }],
+        "visible": true
+      },
+      "id": "q6EnFQLl44UBLlBwEjgxuB5eejS2"
+    },
+    {
+      "fields": {
+        "admin": true,
+        "blurb": "A wizard is never late",
+        "email": "gandalf@greybeard.com",
+        "name": "Gandolf Greybeard",
+        "tags": [
+          { "id": "rec37wqDIyUsIXU4k", "name": "climate change" },
+          { "code": "an1468924", "id": "tempvalan1468924", "name": "another" },
+          {
+            "code": "wo7165477",
+            "id": "tempvalwo7165477",
+            "name": "world saving"
+          }
+        ],
+        "visible": true
+      },
+      "id": "recZGvTIKxXxJoRHK"
+    },
+    {
+      "fields": {
+        "blurb": "What about second breakfast?",
+        "email": "pippin@took.com",
+        "facebook": "",
+        "linkedin": "",
+        "name": "Pippin Took",
+        "phone": "",
+        "pitchable": false,
+        "twitter": "",
+        "visible": false,
+        "website": ""
+      },
+      "id": "TZvyuFU2t7fDbXfqRBQMJHHlHXE3"
+    }
+  ]
+}
