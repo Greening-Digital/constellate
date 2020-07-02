@@ -45,7 +45,6 @@
                 :class=" {'bg-washed-red b--red': errors ? errors.has('email') : null}"
                 placeholder="your email address"
                 aria-label="your email address"
-                v-validate="'required|email'"
                 autocomplete="email"
               >
 

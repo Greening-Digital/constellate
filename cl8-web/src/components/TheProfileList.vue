@@ -1,39 +1,28 @@
 <template>
   <div>
-
     <div v-if="loading">
       <div class="spinner">
-        <img
-          src="../assets/loading.svg"
-          alt="loading">
-
+        <img src="../assets/loading.svg" alt="loading" />
       </div>
     </div>
 
     <div v-else>
-      <div class="tag-list pa2 bb b--light-gray"
-        v-if="activeTags.length>0">
+      <div class="tag-list pa2 bb b--light-gray" v-if="activeTags.length>0">
         <p>
           <button
             v-for="tag in activeTags"
             :key="tag"
             class="remove-tag list pt2 pb2 mr1 mb1 ph3 pr5 br2 bn f7 white bg-dark-blue relative bg-animate hover-bg-red"
-            @click.stop.prevent="toggleTag">
-            {{ tag }}
-          </button>
+            @click.stop.prevent="toggleTag"
+          >{{ tag }}</button>
         </p>
       </div>
 
       <ul class="list ma0 ml0 pl0 pa0">
-        <profile-search-item
-          v-for="item in searchResults"
-          :item="item"
-          :key="item.id" />
+        <profile-search-item v-for="item in searchResults" :item="item" :key="item.id" />
       </ul>
     </div>
-
   </div>
-
 </template>
 
 <script>
@@ -131,12 +120,12 @@ export default {
         return typeof peep.fields !== 'undefined'
       })
       let peepsWithTags = peepsWithFields.filter(function(peep) {
-        return typeof peep.fields.tags !== 'undefined'
+        return typeof peep.tags !== 'undefined'
       })
       // now reduce the list till we only have people matching all tags
       terms.forEach(function(term) {
         peepsWithTags = peepsWithTags.filter(function(peep) {
-          let peepTerms = peep.fields.tags.map(function(tag) {
+          let peepTerms = peep.tags.map(function(tag) {
             return tag.name.toLowerCase()
           })
 
@@ -144,7 +133,7 @@ export default {
         })
       })
       let visiblePeeps = peepsWithTags.filter(function(peep) {
-        return peep.fields.visible
+        return peep.visible
       })
       return visiblePeeps
     }
