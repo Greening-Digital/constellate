@@ -6,14 +6,13 @@ import axios from 'axios'
 const debug = require('debug')('cl8.store')
 
 const instance = axios.create({
-  baseURL: 'http://localhost:3000',
-  timeout: 1000,
-  headers: { 'X-Custom-Header': 'foobar' }
+  baseURL: 'http://127.0.0.1:8000/',
+  timeout: 1000
 })
 
 const state = {
   user: null,
-  loading: true,
+  loading: false,
   searchTerm: '',
   searchTags: [],
   profile: null,
@@ -25,7 +24,8 @@ const state = {
   signInData: {
     message: null,
     email: null
-  }
+  },
+  token: null
 }
 
 const getters = {
@@ -42,7 +42,7 @@ const getters = {
     // Legacy profiles from Airtable have 'yes' in the admin field
     const truthy = ['yes', true]
     return state.visibleProfileList
-      .filter(profile => truthy.includes(profile.fields.admin))
+      .filter(profile => truthy.includes(profile.admin))
       .map(profile => profile.id)
       .includes(state.user.uid)
   },
@@ -76,27 +76,24 @@ const getters = {
   },
   signInData: function(state) {
     return state.signInData
+  },
+  token: function(state) {
+    return localStorage.token
   }
 }
 
 const mutations = {
+  CLEAR_USER: function(state) {
+    state.profile = null
+    state.user = null
+    state.token = null
+    localStorage.token = null
+  },
   stopLoading: function(state) {
     state.loading = false
   },
   startLoading: function(state) {
     state.loading = true
-  },
-  setFBUser: function(state) {
-    debug('setFBUser', state.user)
-    const user = fbase.auth().currentUser
-    if (user) {
-      state.user = user.toJSON()
-      debug('setFBUser - state user', state.user.displayName, state.user)
-    }
-  },
-  clearFBUser: function(state) {
-    debug('clearFBUser', state.user)
-    state.user = null
   },
   setTerm: function(state, payload) {
     debug('setTerm', payload)
@@ -107,14 +104,19 @@ const mutations = {
     debug('setTags', payload)
     state.searchTags = payload
   },
-  setProfile: function(state, payload) {
-    debug('setProfile', payload)
+  SET_AUTH_TOKEN: function(state, payload) {
+    debug('SET_AUTH_TOKEN', payload)
+    state.token = payload
+    localStorage.token = payload
+  },
+  SET_PROFILE: function(state, payload) {
+    debug('SET_PROFILE', payload)
     state.profileShowing = true
     state.profile = payload
   },
   setProfilePhoto: function(state, payload) {
     debug('setProfilePhoto', payload)
-    state.profile.fields.photo = [payload]
+    state.profile.photo = [payload]
   },
   setProfileList: function(state, payload) {
     debug('setProfileList', payload)
@@ -131,48 +133,48 @@ const mutations = {
   setRequestUrl: function(state, payload) {
     debug('setrequestUrl', payload)
     state.requestUrl = payload
+  },
+  SET_USER: function(state, payload) {
+    debug('SET_USER', payload)
+    state.user = payload
   }
 }
 
 const actions = {
   // otherwise log user in here
-  login: function(context, payload) {
-    debug(payload)
-    fbase
-      .auth()
-      .signInWithEmailAndPassword(payload.email, payload.password)
-      .then(
-        user => {
-          debug('we can log in now')
-          debug(user)
-          context.commit('setFBUser', user)
-          // if there's no previous url, send them to home
-          if (context.getters.requestUrl) {
-            debug('pushing to original req url: ', context.getters.requestUrl)
-            router.push(context.getters.requestUrl)
-          } else {
-            debug('pushing to home')
-            router.push({ name: 'home' })
-          }
-        },
-        error => {
-          alert(error.message)
-        }
-      )
+  login: async function(context, payload) {
+    try {
+      const response = await instance.post('auth-token/', {
+        username: payload.email,
+        password: payload.password
+      })
+      const token = response.data.token
+
+      context.commit('SET_AUTH_TOKEN', token)
+
+      // fetch the user
+      const profileResponse = await instance.get('api/profiles/me', {
+        headers: { Authorization: `Token ${token}` }
+      })
+      debug(profileResponse)
+      context.commit('SET_PROFILE', profileResponse.data)
+      context.commit('SET_USER', profileResponse.data)
+
+      // if (context.getters.requestUrl) {
+      //         debug('pushing to original req url: ', context.getters.requestUrl)
+      //         router.push(context.getters.requestUrl)
+      //       } else {
+      //         debug('pushing to home')
+      //         router.push({ name: 'home' })
+      //       }
+      router.push({ name: 'home' })
+    } catch (error) {
+      debug('Error logging in', error)
+    }
   },
   logout: function(context) {
-    fbase
-      .auth()
-      .signOut()
-      .then(function() {
-        // Sign-out successful.
-        context.commit('clearFBUser')
-        router.push('signin')
-      })
-      .catch(function(error) {
-        // An error happened
-        debug('Logout Failed!', error)
-      })
+    context.commit('CLEAR_USER')
+    router.push('signin')
   },
   resetPassword: function(context, payload) {
     debug('send password reset for ', payload)
@@ -229,7 +231,10 @@ const actions = {
   },
   fetchProfileList: async function(context) {
     try {
-      const response = await instance.get('/userlist')
+      const response = await instance.get('/api/profiles', {
+        headers: { Authorization: `Token ${localStorage.token}` }
+      })
+
       const profileArray = response.data
       context.commit('setProfileList', profileArray)
     } catch (error) {
@@ -239,8 +244,10 @@ const actions = {
   fetchVisibleProfileList: async function(context) {
     debug('fetching visible profiles')
     try {
-      const response = await instance.get('/userlist')
-      const profileArray = response.data.filter(profile => profile.fields.visible)
+      const response = await instance.get('/api/profiles', {
+        headers: { Authorization: `Token ${localStorage.token}` }
+      })
+      const profileArray = response.data.filter(profile => profile.visible)
       context.commit('setVisibleProfileList', profileArray)
     } catch (error) {
       debug('Error fetching visibleProfileList', error)
@@ -413,13 +420,13 @@ const actions = {
               }
               // if there is no previous photo added from airtable, we need to create the
               // property
-              if (typeof payload.profile.fields.photo === 'undefined') {
-                payload.profile.fields.photo = []
+              if (typeof payload.profile.photo === 'undefined') {
+                payload.profile.photo = []
               }
-              payload.profile.fields.photo[0] = returnedPhoto
+              payload.profile.photo[0] = returnedPhoto
               debug(
-                'updateProfilePhoto: payload.profile.fields.photo[0]',
-                payload.profile.fields.photo[0]
+                'updateProfilePhoto: payload.profile.photo[0]',
+                payload.profile.photo[0]
               )
               context
                 .dispatch('updateProfile', payload.profile)
