@@ -5,26 +5,16 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from .serializers import UserSerializer, ProfileSerializer
+from .serializers import ProfileSerializer
 from ..models import Profile
 
 User = get_user_model()
 
-
-class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
-    lookup_field = "username"
-
-    def get_queryset(self, *args, **kwargs):
-        return self.queryset.filter(id=self.request.user.id)
-
-    @action(detail=False, methods=["GET"])
-    def me(self, request):
-        serializer = UserSerializer(request.user, context={"request": request})
-        return Response(status=status.HTTP_200_OK, data=serializer.data)
-
-
 class ProfileViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
+
+    @action(detail=False, methods=["GET"])
+    def me(self, request):
+        serializer = ProfileSerializer(request.user.profile, context={"request": request})
+        return Response(status=status.HTTP_200_OK, data=serializer.data)

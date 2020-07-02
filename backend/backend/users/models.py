@@ -20,13 +20,14 @@ class User(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    twitter = models.CharField(_("phone"), max_length=254, blank=True, null=True)
+    phone = models.CharField(_("phone"), max_length=254, blank=True, null=True)
     website = models.URLField(_("website"), max_length=200, blank=True, null=True)
     twitter = models.CharField(_("twitter"), max_length=254, blank=True, null=True)
     facebook = models.CharField(_("facebook"), max_length=254, blank=True, null=True)
     linkedin = models.CharField(_("linkedin"), max_length=254, blank=True, null=True)
     bio = models.TextField(_("bio"), blank=True, null=True)
-    models.BooleanField(_("visible"), default=False)
+    visible = models.BooleanField(_("visible"), default=False)
+    photo = models.ImageField(_("photo"), blank=True, null=True)
 
     tags = TaggableManager()
 
