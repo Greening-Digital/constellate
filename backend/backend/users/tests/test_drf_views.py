@@ -1,34 +1,38 @@
 import pytest
 from django.test import RequestFactory
 
-from backend.users.api.views import UserViewSet
-from backend.users.models import User
+from backend.users.api.views import ProfileViewSet
+from backend.users.models import User, Profile
 
 pytestmark = pytest.mark.django_db
 
-
-class TestUserViewSet:
-    def test_get_queryset(self, user: User, rf: RequestFactory):
-        view = UserViewSet()
+class TestProfileViewSet:
+    def test_get_queryset(self, profile: Profile, rf: RequestFactory):
+        view = ProfileViewSet()
         request = rf.get("/fake-url/")
-        request.user = user
+        request.user = profile.user
 
         view.request = request
 
-        assert user in view.get_queryset()
+        assert profile in view.get_queryset()
 
-    def test_me(self, user: User, rf: RequestFactory):
-        view = UserViewSet()
+    @pytest.mark.only
+    def test_me(self, profile: Profile, rf: RequestFactory):
+        view = ProfileViewSet()
         request = rf.get("/fake-url/")
-        request.user = user
+        request.user = profile.user
 
         view.request = request
-
         response = view.me(request)
 
-        assert response.data == {
-            "username": user.username,
-            "email": user.email,
-            "name": user.name,
-            "url": f"http://testserver/api/users/{user.username}/",
-        }
+        for prop in [
+            "name",
+            "email",
+            "website",
+            "twitter",
+            "facebook",
+            "linkedin",
+            "visible",
+            "tags",
+        ]:
+            assert response.data[prop] == getattr(profile, prop)

@@ -5,20 +5,6 @@ from taggit_serializer.serializers import TagListSerializerField, TaggitSerializ
 User = get_user_model()
 from ..models import Profile
 
-
-class UserSerializer(serializers.ModelSerializer):
-
-    profile = serializers.StringRelatedField()
-
-    class Meta:
-        model = User
-        fields = ["username", "email", "name", "url", "profile"]
-
-        extra_kwargs = {
-            "url": {"view_name": "api:user-detail", "lookup_field": "username"}
-        }
-
-
 class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     tags = TagListSerializerField()
@@ -26,6 +12,7 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = [
+            "id",
             "name",
             "email",
             "tags",
@@ -34,5 +21,7 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
             "facebook",
             "linkedin",
             "bio",
+            "visible",
+            "photo",
         ]
 
