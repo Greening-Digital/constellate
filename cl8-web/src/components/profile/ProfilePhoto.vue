@@ -1,21 +1,21 @@
 <template>
   <div class="pa4 center w-80 cf tc">
     <form @submit.prevent="confirmPhoto" v-if="profile">
-      <img v-if="localPhoto" :src="this.localPhoto" class="supplied-photo dib b--light-silver ba">
+      <img v-if="localPhoto" :src="this.localPhoto" class="supplied-photo dib b--light-silver ba" />
 
       <img
         v-if="hasPhoto() && !localPhoto"
         :src="showPhoto('large')"
         class="supplied-photo dib b--light-silver ba"
-      >
+      />
 
       <v-gravatar
         v-else-if="!localPhoto"
-        :email="profile.fields.email"
+        :email="profile.email"
         :size="200"
         class="gravatar dib b--light-silver ba"
       />
-      <input type="file" @change="updatePhoto($event)" class="ma2 br2" accept="image/*" id="file">
+      <input type="file" @change="updatePhoto($event)" class="ma2 br2" accept="image/*" id="file" />
       <div class="nav tc">
         <button class="f6 link dim br2 ph3 pv2 mb2 mr2 dib bn white bg-green">Confirm</button>
         <router-link
@@ -68,10 +68,10 @@ export default {
       if (typeof this.profile.fields === 'undefined') {
         return false
       }
-      if (typeof this.profile.fields.photo === 'undefined') {
+      if (typeof this.profile.photo === 'undefined') {
         return false
       }
-      if (this.profile.fields.photo.length > 0) {
+      if (this.profile.photo.length > 0) {
         return true
       }
       // otherwise just return false
@@ -79,10 +79,10 @@ export default {
     },
     showPhoto(size) {
       try {
-        return this.profile.fields.photo[0].thumbnails[size].url
+        return this.profile.photo[0].thumbnails[size].url
       } catch (e) {
         debug(`error`, e)
-        return this.profile.fields.photo[0].url
+        return this.profile.photo[0].url
       }
     },
     updatePhoto(ev) {

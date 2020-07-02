@@ -1,7 +1,7 @@
 <template>
   <div v-if="loading" class>
     <div class="spinner">
-      <img src="../../assets/loading.svg" alt="loading">
+      <img src="../../assets/loading.svg" alt="loading" />
     </div>
   </div>
   <div v-else class="cf bg-white">
@@ -42,7 +42,7 @@
                       class="dib w-20 mv2 ml2"
                       id="visible-checkbox"
                       v-model="profile.visible"
-                    >
+                    />
                     <label for="visible-checkbox" class="dib w-70">Visible</label>
                   </div>
 
@@ -55,7 +55,7 @@
                       class="dib w-20 mv2 ml2"
                       id="checkbox"
                       v-model="profile.pitchable"
-                    >
+                    />
                     <label for="checkbox" class="dib w-70">Pitchable</label>
                   </div>
 
@@ -74,7 +74,7 @@
                     <title>info icon</title>
                     <path
                       d="M16 0 A16 16 0 0 1 16 32 A16 16 0 0 1 16 0 M19 15 L13 15 L13 26 L19 26 z M16 6 A3 3 0 0 0 16 12 A3 3 0 0 0 16 6"
-                    ></path>
+                    />
                   </svg>
                   <span class="lh-title ml2">{{ warning }}</span>
                 </div>
@@ -85,7 +85,7 @@
                     <title>info icon</title>
                     <path
                       d="M16 0 A16 16 0 0 1 16 32 A16 16 0 0 1 16 0 M19 15 L13 15 L13 26 L19 26 z M16 6 A3 3 0 0 0 16 12 A3 3 0 0 0 16 6"
-                    ></path>
+                    />
                   </svg>
                   <span class="lh-title ml2">{{ error }}</span>
                 </div>
@@ -93,23 +93,23 @@
                 <ul class="list mt0 pt0 f4 pa0 border-box">
                   <li class="list name">
                     <label class="f5" for>name (required)</label>
-                    <input class="w-100 mt1 pa1" v-model="profile.name">
+                    <input class="w-100 mt1 pa1" v-model="profile.name" />
                   </li>
 
                   <li class="list email mt2">
                     <label class="f5" for>email (required)</label>
-                    <input class="w-100 mt1 pa1" v-model="profile.email">
+                    <input class="w-100 mt1 pa1" v-model="profile.email" />
                   </li>
                   <li class="list phone mt2">
                     <label class="f5 mb2" for>phone</label>
-                    <input class="w-100 mt1 pa1" v-model="profile.phone">
+                    <input class="w-100 mt1 pa1" v-model="profile.phone" />
                   </li>
                   <li class="list website mt2">
                     <label class="f5" for>
                       website
                       <small>(http:// is added automatically)</small>
                     </label>
-                    <input class="w-100 mt1 pa1" v-model="profile.website">
+                    <input class="w-100 mt1 pa1" v-model="profile.website" />
                   </li>
                 </ul>
 
@@ -119,21 +119,21 @@
                       twitter
                       <small>(just add your @username)</small>
                     </label>
-                    <input class="w-100 mt1" v-model="profile.twitter">
+                    <input class="w-100 mt1" v-model="profile.twitter" />
                   </li>
                   <li class="list facebook mt2">
                     <label class="f5" for>
                       facebook
                       <small>(ditto for facebook)</small>
                     </label>
-                    <input class="w-100 mt1" v-model="profile.facebook">
+                    <input class="w-100 mt1" v-model="profile.facebook" />
                   </li>
                   <li class="list linkedin mt2">
                     <label class="f5" for>
                       linkedin
                       <small>(just the bit after http://www.linked.com/in/)</small>
                     </label>
-                    <input class="w-100 mt1" v-model="profile.linkedin">
+                    <input class="w-100 mt1" v-model="profile.linkedin" />
                   </li>
 
                   <li class="list mt2">
@@ -229,8 +229,8 @@ export default {
       if (this.items.length > 0) {
         this.items.forEach(function(peep) {
           if (typeof peep.fields !== 'undefined') {
-            if (typeof peep.fields.tags !== 'undefined') {
-              peep.fields.tags.forEach(function(t) {
+            if (typeof peep.tags !== 'undefined') {
+              peep.tags.forEach(function(t) {
                 let tagListNames = tagList.map(function(tt) {
                   return tt.name
                 })

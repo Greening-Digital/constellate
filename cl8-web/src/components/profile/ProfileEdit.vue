@@ -1,6 +1,6 @@
 <template>
   <div class="cf bg-white">
-    <nav-header-edit/>
+    <nav-header-edit />
     <div class="fl pa2">
       <div class="pa3 center w-80-l cf">
         <div>
@@ -12,11 +12,11 @@
                     v-if="hasPhoto()"
                     :src="showPhoto('large')"
                     class="supplied-photo b--light-silver ba w-100 v-top fn-ns"
-                  >
+                  />
 
                   <v-gravatar
                     v-else
-                    :email="profile.fields.email"
+                    :email="profile.email"
                     :size="200"
                     class="gravatar b--light-silver ba"
                   />
@@ -25,27 +25,27 @@
                 <div class="w-40 w-100-ns fn-ns dib v-btm mt2">
                   <div
                     class="f6 dim br2 dib w-80 white mb2"
-                    v-bind:class="{ 'bg-green': profile.fields.visible, 'bg-red': !profile.fields.visible }"
+                    v-bind:class="{ 'bg-green': profile.visible, 'bg-red': !profile.visible }"
                   >
                     <input
                       type="checkbox"
                       class="dib w-20 mv2 ml2"
                       id="visible-checkbox"
-                      v-model="profile.fields.visible"
-                    >
+                      v-model="profile.visible"
+                    />
                     <label for="visible-checkbox" class="dib w-70">Visible</label>
                   </div>
 
                   <div
                     class="f6 dim br2 dib w-80 white"
-                    v-bind:class="{ 'bg-green': profile.fields.pitchable, 'bg-red': !profile.fields.pitchable }"
+                    v-bind:class="{ 'bg-green': profile.pitchable, 'bg-red': !profile.pitchable }"
                   >
                     <input
                       type="checkbox"
                       class="dib w-20 mv2 ml2"
                       id="checkbox"
-                      v-model="profile.fields.pitchable"
-                    >
+                      v-model="profile.pitchable"
+                    />
                     <label for="checkbox" class="dib w-70">Pitchable</label>
                   </div>
 
@@ -61,27 +61,27 @@
                 <ul class="list mt0 pt0 f4 pa0 border-box">
                   <li class="list name">
                     <label class="f5" for>name</label>
-                    <input class="w-100 mt1 pa1" v-model="profile.fields.name">
+                    <input class="w-100 mt1 pa1" v-model="profile.name" />
                   </li>
 
                   <li class="list email mt2">
                     <label class="f5" for>email</label>
                     <input
                       class="w-100 mt1 pa1 bg-light-gray light-silver"
-                      :value="profile.fields.email"
+                      :value="profile.email"
                       readonly
-                    >
+                    />
                   </li>
                   <li class="list phone mt2">
                     <label class="f5 mb2" for>phone</label>
-                    <input class="w-100 mt1 pa1" v-model="profile.fields.phone">
+                    <input class="w-100 mt1 pa1" v-model="profile.phone" />
                   </li>
                   <li class="list website mt2">
                     <label class="f5" for>
                       website
                       <small>(http:// is added automatically)</small>
                     </label>
-                    <input class="w-100 mt1 pa1" v-model="profile.fields.website">
+                    <input class="w-100 mt1 pa1" v-model="profile.website" />
                   </li>
                 </ul>
 
@@ -91,21 +91,21 @@
                       twitter
                       <small>(just add your @username)</small>
                     </label>
-                    <input class="w-100 mt1" v-model="profile.fields.twitter">
+                    <input class="w-100 mt1" v-model="profile.twitter" />
                   </li>
                   <li class="list facebook mt2">
                     <label class="f5" for>
                       facebook
                       <small>(ditto for facebook)</small>
                     </label>
-                    <input class="w-100 mt1" v-model="profile.fields.facebook">
+                    <input class="w-100 mt1" v-model="profile.facebook" />
                   </li>
                   <li class="list linkedin mt2">
                     <label class="f5" for>
                       linkedin
                       <small>(just the bit after http://www.linked.com/in/)</small>
                     </label>
-                    <input class="w-100 mt1" v-model="profile.fields.linkedin">
+                    <input class="w-100 mt1" v-model="profile.linkedin" />
                   </li>
 
                   <li class="list mt2">
@@ -118,7 +118,7 @@
                     </label>
                     <textarea
                       class="w-100 mt1 pa1 ba b--light-gray"
-                      v-model="profile.fields.blurb"
+                      v-model="profile.blurb"
                       placeholder="Add a short summary here - 2 paragraphs is plenty"
                       name
                       id
@@ -135,7 +135,7 @@
                   <em>(type below to add new tags)</em>
                 </p>
                 <profile-tags-component
-                  :data.sync="profile.fields.tags"
+                  :data.sync="profile.tags"
                   :options="profileTags"
                   @newtag="addTag"
                 ></profile-tags-component>
@@ -196,8 +196,8 @@ export default {
       if (this.items.length > 0) {
         this.items.forEach(function(peep) {
           if (typeof peep.fields !== 'undefined') {
-            if (typeof peep.fields.tags !== 'undefined') {
-              peep.fields.tags.forEach(function(t) {
+            if (typeof peep.tags !== 'undefined') {
+              peep.tags.forEach(function(t) {
                 let tagListNames = tagList.map(function(tt) {
                   return tt.name
                 })
@@ -221,7 +221,7 @@ export default {
         code: tempVal,
         id: 'tempval' + tempVal
       }
-      this.profile.fields.tags.push(tag)
+      this.profile.tags.push(tag)
     },
     onSubmit: function(item) {
       debug('updating profile', this.profile)
@@ -245,10 +245,10 @@ export default {
       if (typeof this.profile.fields === 'undefined') {
         return false
       }
-      if (typeof this.profile.fields.photo === 'undefined') {
+      if (typeof this.profile.photo === 'undefined') {
         return false
       }
-      if (this.profile.fields.photo.length > 0) {
+      if (this.profile.photo.length > 0) {
         return true
       }
       // otherwise jjust return false
@@ -257,10 +257,10 @@ export default {
     showPhoto(size) {
       debug(size)
       try {
-        return this.profile.fields.photo[0].thumbnails[size].url
+        return this.profile.photo[0].thumbnails[size].url
       } catch (e) {
         debug(`error`, this.profile.fields, e)
-        return this.profile.fields.photo[0].url
+        return this.profile.photo[0].url
       }
     },
     setUserProfile() {
@@ -280,16 +280,16 @@ export default {
   created() {
     // we need a reference to our 'this' from insie the scope of the
     // success and fail callbacks in the Promise
-    const that = this;
+    const that = this
 
-    this.$rtdbBind('items', fbase.database().ref('userlist')).then(
-      function() {
-          debug('data retrieved from fbase')
-          console.log(that)
-          that.setUserProfile()
-      }).catch(
-        function(err) {
-          console.log(err);
+    this.$rtdbBind('items', fbase.database().ref('userlist'))
+      .then(function() {
+        debug('data retrieved from fbase')
+        console.log(that)
+        that.setUserProfile()
+      })
+      .catch(function(err) {
+        console.log(err)
       })
 
     debug('checking for a user:')
