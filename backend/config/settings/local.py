@@ -58,3 +58,8 @@ INSTALLED_APPS += ["django_extensions"]  # noqa F405
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:8081",
+    "http://127.0.0.1:8081"
+]
+CORS_ALLOW_CREDENTIALS = True
