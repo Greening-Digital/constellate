@@ -73,8 +73,6 @@ class ProfileFactory(DjangoModelFactory):
     linkedin = Faker("user_name")
     bio = Faker("paragraph")
 
-    tags = []
-
     user = factory.SubFactory("backend.users.tests.factories.UserFactory", profile=None)
 
     class Meta:
