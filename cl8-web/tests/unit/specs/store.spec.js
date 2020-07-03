@@ -2,7 +2,7 @@ import { createLocalVue } from '@vue/test-utils'
 import Store from '../../../src/store'
 import Vuex from 'vuex'
 
-describe('Store/Actions/fetchUserList', () => {
+describe.skip('Store/Actions/fetchUserList', () => {
   describe('authed', () => {
     it('fetches a list of users from our API server ', async () => {
       //  instantivate Vue
@@ -19,7 +19,7 @@ describe('Store/Actions/fetchUserList', () => {
   describe.skip('not authed', () => {})
 })
 
-describe('Store/Actions/fetchVisibleUserList', () => {
+describe.skip('Store/Actions/fetchVisibleUserList', () => {
   describe('authed', () => {
     it('fetches a list of visible users from our API server ', async () => {
       //  instantivate Vue
