@@ -55,16 +55,20 @@ export default {
       this.$store.commit('setProfile', this.item)
     },
     hasPhoto() {
-      if (this.item.photo.length > 0) {
+
+      if (this.item.photo) {
         return true
       }
       return false
     },
     showPhoto(size) {
-      // TODO, we should use thumbails here, instead of full size
-      // all the time
       return this.item.photo
-
+      // try {
+      //   return this.item.photo[0].thumbnails[size].url
+      // } catch (e) {
+      //   debug(`No thumbnails`, this.item.fields, e)
+      //   return this.item.photo[0].url
+      // }
     }
   }
 }
