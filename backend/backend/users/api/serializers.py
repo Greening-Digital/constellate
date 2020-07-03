@@ -49,5 +49,6 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
             "bio",
             "visible",
             "photo",
+            "admin",
         ]
 
