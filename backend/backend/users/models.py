@@ -43,6 +43,10 @@ class Profile(models.Model):
     def email(self):
         return self.user.email
 
+    @property
+    def admin(self):
+        return self.user.staff
+
     def __str__(self):
         return self.user.name
 
