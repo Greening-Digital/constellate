@@ -29,7 +29,7 @@ class Profile(models.Model):
     visible = models.BooleanField(_("visible"), default=False)
     photo = models.ImageField(_("photo"), blank=True, null=True)
 
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     class Meta:
         verbose_name = _("Profile")
