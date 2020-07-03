@@ -1,6 +1,5 @@
 <template>
   <li
-    v-if="hasfields()"
     :data-atid="item.id"
     class="list peep cf pa3 bb b--light-gray mid-gray hover-bg-white"
     @click="profileChosen"
@@ -8,16 +7,15 @@
     <div class="dib w-20 mw4">
       <img
         v-if="hasPhoto()"
-        :src="showPhoto('large')"
+        :src="showPhoto('thumbnail')"
         class="supplied-photo w-100"
-        v-bind:class="{ 'b--green ba bw1': item.pitchable }"
       />
 
       <v-gravatar v-else :email="item.email" :size="64" class="gravatar fl b--light-silver ba" />
     </div>
     <div class="dib w-70 ph2 flex-auto v-top h3 h-auto-m overflow-hidden">
       <ul class="list pt1 mt0 ml0 pl0 pb1 f4-m">
-        <li class="name mid-gray">{{ item.email }}</li>
+        <li class="name mid-gray">{{ item.name }}</li>
       </ul>
       <div class="dib mt1-m">
         <div class="dib mr2 black-30 f7 f6-m" v-for="tag in item.tags" :key="tag.id">{{tag.name}}</div>
@@ -55,38 +53,18 @@ export default {
     profileChosen() {
       debug(this.item)
       this.$store.commit('setProfile', this.item)
-
-      // if (this.$store.state.profile && this.$store.state.profile.id === this.item.id){
-      // this.$store.commit('setProfile', null)
-      // } else {
-      // this.$store.commit('setProfile', this.item)
-    },
-    hasfields() {
-      if (typeof this.item.fields === 'undefined') {
-        return false
-      }
-      return true
     },
     hasPhoto() {
-      if (typeof this.item.fields === 'undefined') {
-        return false
-      }
-      if (typeof this.item.photo === 'undefined') {
-        return false
-      }
       if (this.item.photo.length > 0) {
         return true
       }
-      // otherwise just return false
       return false
     },
     showPhoto(size) {
-      try {
-        return this.item.photo[0].thumbnails[size].url
-      } catch (e) {
-        debug(`No thumbnails`, this.item.fields, e)
-        return this.item.photo[0].url
-      }
+      // TODO, we should use thumbails here, instead of full size
+      // all the time
+      return this.item.photo
+
     }
   }
 }
