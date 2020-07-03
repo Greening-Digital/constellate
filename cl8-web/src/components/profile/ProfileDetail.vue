@@ -199,19 +199,19 @@ export default {
   },
   created() {
     debug('created!', this.profile)
-    if (!this.profile || this.profile.id == this.user.uid) {
+    if (!this.profile || this.profile.id == this.user.id) {
       this.loading = true
       debug(
         'no profile seen, or the current needs a refresh. Loading profile for user'
       )
       this.$store
-        .dispatch('fetchProfile', this.user.uid)
+        .dispatch('fetchProfile', this.user.id)
         .then(() => {
           debug('loaded the user profile')
           this.loading = false
         })
         .catch(err => {
-          debug("couldn't load profile", error)
+          debug("couldn't load profile", err)
         })
     } else {
       this.loading = false
