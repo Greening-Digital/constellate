@@ -52,7 +52,7 @@ export default {
   methods: {
     profileChosen() {
       debug(this.item)
-      this.$store.commit('setProfile', this.item)
+      this.$store.dispatch('fetchProfile', this.item)
     },
     hasPhoto() {
 
