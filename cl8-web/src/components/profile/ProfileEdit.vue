@@ -271,7 +271,7 @@ export default {
       })
       if (matchingProfiles.length > 0) {
         debug('We have a match!', matchingProfiles[0])
-        this.$store.commit('setProfile', matchingProfiles[0])
+        this.$store.commit('SET_PROFILE', matchingProfiles[0])
       } else {
         debug('No matches', matchingProfiles)
       }
