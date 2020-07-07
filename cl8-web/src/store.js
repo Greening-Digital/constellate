@@ -343,33 +343,42 @@ const actions = {
     })
     context.commit('SET_PROFILE', profile.data)
   },
-  updateProfile: function(context, payload) {
-    debug('sending update to Firebase', payload)
+  updateProfile: async function(context, payload) {
+    debug('sending update to API', payload)
 
     // doing this round trip returns a JSON object we
     // can save back to the realtime database more easily,
     // and strips out properties we wouldn't want to save into it
-    let newProfile = JSON.parse(JSON.stringify(payload))
-    const pushKey = payload['.key']
+    payload.tags = payload.tags.map(function(obj) {
+      return obj.name
+    })
+    const token = context.getters.token
+    const profileId = payload.id
 
-    if (!pushKey) {
-      throw new Error(
-        'this profile has no push key. this is needed for writing data'
-      )
-    }
+    await instance.put(`/api/profiles/${profileId}/`, payload, {
+      headers: { Authorization: `Token ${token}` }
+    })
 
-    return fbase
-      .database()
-      .ref('userlist')
-      .child(pushKey)
-      .set(newProfile)
-      .then(() => {
-        debug('Succesfully saved')
-        router.push({ name: 'home' })
-      })
-      .catch(error => {
-        debug('Error saving profile: ', payload, 'failed', error)
-      })
+    router.push({ name: 'home' })
+
+    // if (!pushKey) {
+    //   throw new Error(
+    //     'this profile has no push key. this is needed for writing data'
+    //   )
+    // }
+
+    // return fbase
+    //   .database()
+    //   .ref('userlist')
+    //   .child(pushKey)
+    //   .set(newProfile)
+    //   .then(() => {
+    //     debug('Succesfully saved')
+    //     router.push({ name: 'home' })
+    //   })
+    //   .catch(error => {
+    //     debug('Error saving profile: ', payload, 'failed', error)
+    //   })
   },
   updateProfilePhoto: function(context, payload) {
     debug('updateProfilePhoto: sending photo update to Firebase', payload)
