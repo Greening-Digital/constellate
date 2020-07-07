@@ -151,23 +151,15 @@ const actions = {
       const token = response.data.token
 
       context.commit('SET_AUTH_TOKEN', token)
+      await context.dispatch('createUserSession')
 
-      // fetch the user
-      const profileResponse = await instance.get('api/profiles/me', {
-        headers: { Authorization: `Token ${token}` }
-      })
-      debug(profileResponse)
-      context.commit('SET_PROFILE', profileResponse.data)
-      context.commit('SET_USER', profileResponse.data)
-
-      // if (context.getters.requestUrl) {
-      //         debug('pushing to original req url: ', context.getters.requestUrl)
-      //         router.push(context.getters.requestUrl)
-      //       } else {
-      //         debug('pushing to home')
-      //         router.push({ name: 'home' })
-      //       }
-      router.push({ name: 'home' })
+      if (context.getters.requestUrl) {
+        debug('pushing to original req url: ', context.getters.requestUrl)
+        router.push(context.getters.requestUrl)
+      } else {
+        debug('pushing to home')
+        router.push({ name: 'home' })
+      }
     } catch (error) {
       debug('Error logging in', error)
     }
@@ -175,6 +167,14 @@ const actions = {
   logout: function(context) {
     context.commit('CLEAR_USER')
     router.push('signin')
+  },
+  createUserSession: async function(context, payload) {
+    const token = context.getters.token
+
+    const profileResponse = await instance.get('api/profiles/me', {
+      headers: { Authorization: `Token ${token}` }
+    })
+    context.commit('SET_USER', profileResponse.data)
   },
   resetPassword: function(context, payload) {
     debug('send password reset for ', payload)
@@ -326,42 +326,12 @@ const actions = {
       router.push({ name: 'home' })
     }
   },
-  fetchProfile: function(context, payload) {
+  fetchProfile: async function(context, payload) {
     debug('fetching profile for:', payload)
-    return new Promise((resolve, reject) => {
-      fbase
-        .database()
-        .ref('userlist')
-        .orderByChild('id')
-        .equalTo(payload)
-        .limitToFirst(1)
-        .once('value')
-        .then(snap => {
-          let firebaseKey = _.keys(snap.val())[0]
-          debug('firebaseKey', firebaseKey)
-          return fbase
-            .database()
-            .ref('userlist')
-            .child(firebaseKey)
-            .once('value')
-            .then(userProfile => {
-              debug(
-                'successfully fetched profile:',
-                payload,
-                firebaseKey,
-                userProfile
-              )
-              const fetchedProfile = userProfile.val()
-              fetchedProfile['.key'] = firebaseKey
-              context.commit('setProfile', fetchedProfile)
-              resolve()
-            })
-        })
-        .catch(err => {
-          debug('setting user failed for ', payload, err)
-          reject()
-        })
+    const profile = await instance.get(`/api/profiles/${payload.id}`, {
+      headers: { Authorization: `Token ${localStorage.token}` }
     })
+    context.commit('SET_PROFILE', profile.data)
   },
   updateProfile: function(context, payload) {
     debug('sending update to Firebase', payload)
