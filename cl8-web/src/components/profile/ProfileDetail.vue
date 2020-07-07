@@ -110,7 +110,6 @@ export default {
   components: {
     Gravatar
   },
-  props: ['auth', 'currentUser', 'fbtagList'],
   data() {
     return {
       loading: true
@@ -159,8 +158,8 @@ export default {
   },
   methods: {
     canEdit: function() {
-      debug('can edit?', this.profile.id, this.user.uid)
-      return this.profile.id == this.user.uid
+      debug('can edit?', this.profile.id, this.user.id)
+      return this.profile.id == this.user.id
     },
     toggleTag: function(ev) {
       let tag = ev.target.textContent.trim()
@@ -198,12 +197,14 @@ export default {
     }
   },
   created() {
-    debug('created!', this.profile)
+    debug('created! user:', this.user)
+    debug('created! profile', this.profile)
     if (!this.profile || this.profile.id == this.user.id) {
       this.loading = true
       debug(
         'no profile seen, or the current needs a refresh. Loading profile for user'
       )
+      debug('user id', this.user.id)
       this.$store
         .dispatch('fetchProfile', this.user.id)
         .then(() => {
