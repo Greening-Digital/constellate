@@ -158,7 +158,6 @@ import NavHeaderEdit from '../shared/NavHeaderEdit.vue'
 import ProfileTagsComponent from '@/components/profile/ProfileTagsComponent.vue'
 import { includes } from 'lodash'
 import debugLib from 'debug'
-import fbase from '@/fbase'
 
 const debug = debugLib('cl8.ProfileEdit')
 
@@ -168,14 +167,9 @@ export default {
     NavHeaderEdit,
     ProfileTagsComponent
   },
-  firebase: function() {
-    return {
-      items: fbase.database().ref('userlist')
-    }
-  },
+
   data() {
     return {
-      items: [], // this needs to be the list from firebase
       tagList: [],
       unsyncedTags: [],
       localPhoto: null
@@ -191,25 +185,7 @@ export default {
       return this.$store.getters.profile
     },
     profileTags: function() {
-      let tagList = []
-
-      if (this.items.length > 0) {
-        this.items.forEach(function(peep) {
-          if (typeof peep.fields !== 'undefined') {
-            if (typeof peep.tags !== 'undefined') {
-              peep.tags.forEach(function(t) {
-                let tagListNames = tagList.map(function(tt) {
-                  return tt.name
-                })
-                if (!includes(tagListNames, t.name)) {
-                  tagList.push(t)
-                }
-              })
-            }
-          }
-        })
-      }
-      return tagList
+      return this.profile.tags
     }
   },
   methods: {
@@ -276,27 +252,6 @@ export default {
         debug('No matches', matchingProfiles)
       }
     }
-  },
-  created() {
-    // we need a reference to our 'this' from insie the scope of the
-    // success and fail callbacks in the Promise
-    const that = this
-
-    this.$rtdbBind('items', fbase.database().ref('userlist'))
-      .then(function() {
-        debug('data retrieved from fbase')
-        console.log(that)
-        that.setUserProfile()
-      })
-      .catch(function(err) {
-        console.log(err)
-      })
-
-    debug('checking for a user:')
-    debug(this.$store.getters.profile)
-    debug(fbase.auth().currentUser)
-    // this.$store.commit('setFBUser', fbase.auth().currentUser)
-    // debug('profile', this.$store.getters.profile)
   }
 }
 </script>
