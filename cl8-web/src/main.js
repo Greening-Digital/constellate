@@ -45,10 +45,19 @@ const app = new Vue({
 
 app.$validator.localize('en', dict)
 
-router.beforeEach((to, from, next) => {
+// check for our user on load of the app
+;(async () => {
+  const currentUser = VueStore.getters.currentUser
+
+  if (!currentUser) {
+    await VueStore.dispatch('createUserSession')
+  }
+})()
+
+router.beforeEach(async (to, from, next) => {
   debug(to.name, to.from, next)
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  const currentUser = VueStore.getters.profile
+  const currentUser = VueStore.getters.currentUser
 
   if (currentUser && to.name === 'signin') {
     next('home')
@@ -56,23 +65,8 @@ router.beforeEach((to, from, next) => {
 
   if (requiresAuth && !currentUser) {
     // you need to be logged in, so log the user in
-    debug(`signing in, as we have no fbase user`)
     next('signin')
   } else {
     next()
   }
 })
-
-// // wrapping the vue app here forces us to wait til we have the firebase object loaded
-// // before we load Vue object
-// // fbase.auth().onAuthStateChanged(firebaseUser => {
-// /* eslint-disable no-new */
-// // if (firebaseUser) {
-// //   debug('user:', firebaseUser.displayName)
-// // }
-// if (!app) {
-//   VueStore.commit('stopLoading')
-
-// }
-
-// // })
