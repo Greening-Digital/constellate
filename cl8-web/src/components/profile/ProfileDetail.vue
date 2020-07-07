@@ -10,6 +10,8 @@
       <div v-if="canEdit()" class="fn fr-l">
         <router-link
           :to="{ name: 'editProfile' }"
+          role="link"
+          tabindex="0"
           class="f6 link dim br2 ph3 pv2 mb3 dib white bg-gray"
         >Edit profile</router-link>
       </div>
