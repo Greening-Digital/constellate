@@ -184,6 +184,7 @@ const actions = {
       headers: { Authorization: `Token ${token}` }
     })
     context.commit('SET_USER', profileResponse.data)
+    context.commit('SET_PROFILE', profileResponse.data)
   },
   resetPassword: function(context, payload) {
     debug('send password reset for ', payload)
