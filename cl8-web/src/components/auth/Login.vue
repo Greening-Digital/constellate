@@ -2,7 +2,7 @@
   <div class="w-100">
     <div v-if="loading">
       <div class="spinner">
-        <img src="../../assets/loading.svg" alt="loading">
+        <img src="../../assets/loading.svg" alt="loading" />
       </div>
     </div>
 
@@ -30,12 +30,12 @@
               <title>info icon</title>
               <path
                 d="M16 0 A16 16 0 0 1 16 32 A16 16 0 0 1 16 0 M19 15 L13 15 L13 26 L19 26 z M16 6 A3 3 0 0 0 16 12 A3 3 0 0 0 16 6"
-              ></path>
+              />
             </svg>
             <span class="ml3">{{signInData.message}}</span>
           </div>
 
-          <form v-on:submit.prevent="signIn" class="w-100 pa3 dib border-box mw6 ph5">
+          <form v-on:submit.prevent class="w-100 pa3 dib border-box mw6 ph5">
             <div class="w-100 mb3">
               <input
                 type="text"
@@ -46,49 +46,59 @@
                 placeholder="your email address"
                 aria-label="your email address"
                 autocomplete="email"
-              >
+                @input="checkForValidFormSubmission"
+                :disabled="emailSubmitted"
+              />
 
               <div>
                 <small v-if="errors && errors.has('email')" class="red">{{ errors.first('email') }}</small>
               </div>
             </div>
 
-            <div class="w-100">
-              <input
-                type="password"
-                name="password"
-                v-model="password"
-                class="input-reset pa2 ba br2 b--light-gray w-100"
-                :class=" {'bg-washed-red b--red': errors && errors.has('password') }"
-                placeholder="your password"
-                v-validate="'required|min:6'"
-                aria-label="your password"
-                autocomplete="current-password"
-                @input="checkForValidFormSubmission"
-              >
+            <div v-if="emailSubmitted">
+              <div class="w-100">
+                <input
+                  type="password"
+                  name="token"
+                  v-model="token"
+                  class="input-reset pa2 ba br2 b--light-gray w-100"
+                  :class=" {'bg-washed-red b--red': errors && errors.has('token') }"
+                  placeholder="your token"
+                  aria-label="your token"
+                />
 
-              <div>
-                <small
-                  v-if="errors && errors.has('password')"
-                  class="red"
-                >{{ errors.first('password') }}</small>
+                <div>
+                  <small
+                    v-if="errors && errors.has('token')"
+                    class="red"
+                  >{{ errors.first('token') }}</small>
+                </div>
+              </div>
+              <div class="mt2 cf">
+                <button
+                  class="f6 link br3 bn pv2 mb2 mt2 bg-light-silver b white w-60 ml0 mr1 fl"
+                  :class="{'bg-green pointer grow hover-bg-dark-green': formValid}"
+                  :disabled="!formValid"
+                  name="button"
+                  @click="signIn"
+                >Sign in</button>
+                <button
+                  class="f6 link br3 bn pv2 mb2 mt2 bg-light-silver b white w-60 ml0 mr1 fl bg-red pointer grow hover-bg-dark-red"
+                  name="button"
+                  @click="resetForm"
+                >Reset</button>
               </div>
             </div>
-
-            <div class="mt2 cf">
-              <button
-                class="f6 link br3 bn pv2 mb2 mt2 bg-light-silver b white w-60 ml0 mr1 fl"
-                :class="{'bg-green pointer grow hover-bg-dark-green': formValid}"
-                :disabled="!formValid"
-                :id="formValid"
-                type="submit"
-                name="button"
-              >Sign in</button>
-
-              <router-link
-                :to="{ name: 'resetPassword' }"
-                class="f7 gray link w-30 dib fr pv3"
-              >Reset password</router-link>
+            <div v-else>
+              <div class="mt2 cf">
+                <button
+                  class="f6 link br3 bn pv2 mb2 mt2 bg-light-silver b white w-60 ml0 mr1 fl"
+                  :class="{'bg-green pointer grow hover-bg-dark-green': formValid}"
+                  :disabled="!formValid"
+                  name="button"
+                  @click="submitEmail"
+                >Get token</button>
+              </div>
             </div>
           </form>
         </div>
@@ -100,7 +110,6 @@
 <script>
 import debugLib from 'debug'
 const debug = debugLib('cl8.Login')
-debug('sign in page')
 
 export default {
   name: 'Login',
@@ -108,24 +117,16 @@ export default {
   data: function() {
     return {
       email: '',
-      password: null,
+      token: null,
       announcement: '',
-      formIsValid: false
+      formIsValid: false,
+      emailSubmitted: false
     }
   },
   methods: {
-    signIn: function() {
-      let user = {
-        email: this.email,
-        password: this.password
-      }
-      debug(user)
-      this.$store.dispatch('login', user)
-    },
     checkForValidFormSubmission: function() {
       let validation = {
-        email: this.email,
-        password: this.password
+        email: this.email
       }
       return this.$validator
         .validateAll(validation)
@@ -134,13 +135,33 @@ export default {
             this.formIsValid = result
             return false
           }
-          debug(result)
           this.formIsValid = result
           return result
         })
         .catch(err => {
           debug(err)
         })
+    },
+    resetForm: function() {
+      this.email = null
+      this.emailSubmitted = false
+    },
+    signIn: function() {
+      let user = {
+        email: this.email,
+        token: this.token
+      }
+      this.$store.dispatch('login', user)
+    },
+    submitEmail: async function() {
+      const emailSubmitted = await this.$store.dispatch(
+        'submitEmail',
+        this.email
+      )
+
+      if (emailSubmitted) {
+        this.emailSubmitted = true
+      }
     }
   },
   computed: {
