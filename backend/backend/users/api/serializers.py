@@ -37,14 +37,12 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     tags = ConstellateTagListSerializerField()
 
+    name = serializers.CharField(allow_blank=True, required=False)
+    email = serializers.EmailField(allow_blank=True, required=False)
+
     def create(self, validated_data, user=None):
 
-
-        # raise_errors_on_nested_writes('create', self, validated_data)
-
         ModelClass = self.Meta.model
-
-        # import ipdb ; ipdb.set_trace()
 
         # Remove many-to-many relationships from validated_data.
         # They are not valid arguments to the default `.create()` method,
@@ -79,23 +77,44 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
         return instance
 
+    def update(self, instance, validated_data):
+
+        for user_key in ['name', 'email']:
+            if user_key in validated_data.keys():
+                value = validated_data.pop(user_key)
+                setattr(instance.user, user_key, value)
+        instance.user.save()
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        return instance
 
 
     class Meta:
         model = Profile
         fields = [
             "id",
+
+            # user
             "name",
             "email",
-            "tags",
+
+            # profile
+            "phone",
             "website",
             "twitter",
             "facebook",
             "linkedin",
             "bio",
+
             "visible",
-            "photo",
             "admin",
+
+            # need their own handler
+            "tags",
+            "photo",
         ]
 
 

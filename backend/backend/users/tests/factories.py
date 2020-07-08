@@ -60,18 +60,26 @@ class FakePhotoProfileUserFactory(UserFactory):
         "backend.users.tests.factories.FakePhotoProfileFactory", factory_related_name="user"
     )
 
+def url_factory():
+    domain_generator = factory.Faker('domain_name')
+    return f"https://{domain_generator.generate()}"
+
 
 @factory.django.mute_signals(post_save)
 class ProfileFactory(DjangoModelFactory):
 
+
+
     # make a profile tied to a user
     user = SubFactory(UserFactory)
     phone = Faker("phone_number")
-    website = Faker("domain_name")
+    website = factory.LazyFunction(url_factory)
     twitter = Faker("user_name")
     facebook = Faker("user_name")
     linkedin = Faker("user_name")
     bio = Faker("paragraph")
+
+    #
 
     user = factory.SubFactory("backend.users.tests.factories.UserFactory", profile=None)
 
