@@ -12,9 +12,9 @@ class TestProfile:
     def test_user_profile(self, profile: Profile):
         assert profile.email == profile.user.email
 
-    def test_check_for_admin_status(self, profile: Profile, admin_group: Group):
+    def test_check_for_admin_status(self, profile: Profile):
 
-        profile.user.staff = True
+        profile.user.is_staff = True
         profile.save()
 
         assert profile.admin == True
