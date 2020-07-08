@@ -45,7 +45,7 @@ class Profile(models.Model):
 
     @property
     def admin(self):
-        return self.user.staff
+        return self.user.is_staff
 
     def __str__(self):
         return self.user.name
