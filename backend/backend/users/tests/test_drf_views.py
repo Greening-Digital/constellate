@@ -3,6 +3,8 @@ from django.test import RequestFactory
 
 from backend.users.api.views import ProfileViewSet
 from backend.users.models import User, Profile
+from backend.users.api.serializers import ProfileSerializer
+from backend.users.tests.factories import ProfileFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -60,3 +62,35 @@ class TestProfileViewSet:
             for k in ['id', 'name', 'slug']:
                 assert k in tag.keys()
 
+
+    @pytest.mark.skip(reason="not implemented")
+    def test_create_profile(self, profile: Profile, rf: RequestFactory):
+        view = ProfileViewSet()
+        request = rf.get("/fake-url/")
+        request.user = profile.user
+
+        assert 1 == 2
+
+        # profile_data = ProfileFactory()
+
+        # profile_dict = {
+        #     'id': 4598,
+        #     'user_id': 5768,
+        #     'phone': '9329275526',
+        #     'website': 'http://livingston.biz',
+        #     'twitter': 'paul58',
+        #     'facebook': 'fday',
+        #     'linkedin': 'wpalmer',
+        #     'email': 'email@somesite.com',
+        #     'tags': ["tech"],
+        #     'bio': 'Themselves TV western under. Tv can beautiful we throughout politics treat both. Fear speech left get answer over century.',
+        #     'visible': False,
+        # }
+
+        # ps = ProfileSerializer(data=profile_dict)
+        # import ipdb ; ipdb.set_trace()
+
+
+        # response = view.create(request)
+
+        # assert respones.status_code == 201

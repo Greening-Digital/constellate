@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -10,7 +10,7 @@ from ..models import Profile
 
 User = get_user_model()
 
-class ProfileViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
+class ProfileViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, CreateModelMixin, GenericViewSet):
     serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
 
@@ -18,3 +18,5 @@ class ProfileViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, Gener
     def me(self, request):
         serializer = ProfileSerializer(request.user.profile, context={"request": request})
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+
