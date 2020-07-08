@@ -63,34 +63,30 @@ class TestProfileViewSet:
                 assert k in tag.keys()
 
 
-    @pytest.mark.skip(reason="not implemented")
+    @pytest.mark.only
     def test_create_profile(self, profile: Profile, rf: RequestFactory):
         view = ProfileViewSet()
         request = rf.get("/fake-url/")
         request.user = profile.user
 
-        assert 1 == 2
+        profile_data = ProfileFactory()
+        profile_dict = {
+            'phone': '9329275526',
+            'website': 'http://livingston.biz',
+            'twitter': 'paul58',
+            'facebook': 'fday',
+            'linkedin': 'wpalmer',
 
-        # profile_data = ProfileFactory()
+            'name': 'Long Name with lots of letters',
+            'email': 'email@somesite.com',
+            'tags': ["tech"],
 
-        # profile_dict = {
-        #     'id': 4598,
-        #     'user_id': 5768,
-        #     'phone': '9329275526',
-        #     'website': 'http://livingston.biz',
-        #     'twitter': 'paul58',
-        #     'facebook': 'fday',
-        #     'linkedin': 'wpalmer',
-        #     'email': 'email@somesite.com',
-        #     'tags': ["tech"],
-        #     'bio': 'Themselves TV western under. Tv can beautiful we throughout politics treat both. Fear speech left get answer over century.',
-        #     'visible': False,
-        # }
+            'bio': 'Themselves TV western under. Tv can beautiful we throughout politics treat both. Fear speech left get answer over century.',
 
-        # ps = ProfileSerializer(data=profile_dict)
-        # import ipdb ; ipdb.set_trace()
+            'visible': False,
+        }
 
+        request.data = profile_dict
 
-        # response = view.create(request)
-
-        # assert respones.status_code == 201
+        response = view.create(request)
+        assert response.status_code == 201
