@@ -13,7 +13,6 @@ class TestProfileViewSet:
         view = ProfileViewSet()
         request = rf.get("/fake-url/")
         request.user = profile.user
-
         view.request = request
 
         assert profile in view.get_queryset()
@@ -30,6 +29,7 @@ class TestProfileViewSet:
         for prop in [
             "name",
             "email",
+
             "website",
             "twitter",
             "facebook",
@@ -90,3 +90,32 @@ class TestProfileViewSet:
 
         response = view.create(request)
         assert response.status_code == 201
+
+    @pytest.mark.only
+    def test_update_profile(self, profile: Profile, rf: RequestFactory):
+        view = ProfileViewSet()
+        request = rf.get(f"/api/profiles/{profile.id}/")
+        request.user = profile.user
+
+        profile_data = ProfileFactory()
+        profile_dict = {
+            'phone': '9329275526',
+            'website': 'http://livingston.biz',
+            'twitter': 'paul58',
+            'facebook': 'fday',
+            'linkedin': 'wpalmer',
+
+            'name': 'Long Name with lots of letters',
+            'email': 'email@somesite.com',
+            'tags': ["tech"],
+
+            'bio': 'Themselves TV western under. Tv can beautiful we throughout politics treat both. Fear speech left get answer over century.',
+
+            'visible': False,
+        }
+
+        request.data = profile_dict
+
+        response = view.update(request, profile)
+        assert response.status_code == 200
+
