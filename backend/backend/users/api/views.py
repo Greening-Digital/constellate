@@ -9,11 +9,22 @@ from .serializers import ProfileSerializer
 from ..models import Profile
 from django.utils.text import slugify
 
+from django.urls import resolve
+
+from django.http import HttpRequest
 User = get_user_model()
 
 class ProfileViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, CreateModelMixin, GenericViewSet):
     serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
+    lookup_field = 'id'
+
+
+    def get_object(self, request: HttpRequest = None):
+        profile_id = resolve(request.path).kwargs['id']
+
+        return Profile.objects.get(id=profile_id)
+
 
     @action(detail=False, methods=["GET"])
     def me(self, request):
@@ -36,6 +47,8 @@ class ProfileViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, Creat
         request.data['user_id'] = new_user.id
         serialized_profile = ProfileSerializer(data=request.data)
 
+        # import ipdb ; ipdb.set_trace()
+
         serialized_profile.is_valid(raise_exception=True)
 
         serialized_profile.create(serialized_profile.validated_data, user=new_user)
@@ -49,18 +62,20 @@ class ProfileViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, Creat
 
 
     def update(self, request, *args, **kwargs):
+
         partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+
+        instance = self.get_object(request)
+
+        # import ipdb ; ipdb.set_trace()
+
+        serialized_profile = self.serializer_class(instance, data=request.data, partial=partial)
+        serialized_profile.is_valid(raise_exception=True)
+        serialized_profile.update(instance, request.data)
 
         if getattr(instance, '_prefetched_objects_cache', None):
             # If 'prefetch_related' has been applied to a queryset, we need to
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
-
-        # import ipdb ; ipdb.set_trace()
-
-        return Response(serializer.data)
+        return Response(serialized_profile.data)
 
