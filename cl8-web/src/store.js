@@ -142,12 +142,21 @@ const mutations = {
 
 const actions = {
   // otherwise log user in here
+  submitEmail: async function(context, payload) {
+    const emailPayload = {
+      email: payload
+    }
+    const emailsubmitted = await instance.post('/auth/email/', emailPayload)
+
+    if (emailsubmitted) {
+      return true
+    } else {
+      return false
+    }
+  },
   login: async function(context, payload) {
     try {
-      const response = await instance.post('auth-token/', {
-        username: payload.email,
-        password: payload.password
-      })
+      const response = await instance.post('/auth/token/', payload)
       const token = response.data.token
 
       context.commit('SET_AUTH_TOKEN', token)
