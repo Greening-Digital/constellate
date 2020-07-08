@@ -35,6 +35,17 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     tags = ConstellateTagListSerializerField()
 
+    def create(self, validated_data):
+
+        # we override this method to create the corresponding object to return for saving
+        # https://github.com/encode/django-rest-framework/blob/master/rest_framework/serializers.py#L906
+
+        # res = super.create(validated_data)
+        # import ipdb ; ipdb.set_trace()
+
+
+
+
     class Meta:
         model = Profile
         fields = [
@@ -51,4 +62,6 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
             "photo",
             "admin",
         ]
+
+
 
