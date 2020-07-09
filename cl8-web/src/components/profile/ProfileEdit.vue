@@ -118,7 +118,7 @@
                     </label>
                     <textarea
                       class="w-100 mt1 pa1 ba b--light-gray"
-                      v-model="profile.blurb"
+                      v-model="profile.bio"
                       placeholder="Add a short summary here - 2 paragraphs is plenty"
                       name
                       id
