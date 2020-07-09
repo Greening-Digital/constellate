@@ -179,7 +179,6 @@
 import ProfileTagsComponent from '@/components/profile/ProfileTagsComponent.vue'
 import { includes } from 'lodash'
 import debugLib from 'debug'
-import fbase from '@/fbase'
 
 const debug = debugLib('cl8.AddUser')
 
@@ -187,11 +186,6 @@ export default {
   name: 'AddUser',
   components: {
     ProfileTagsComponent
-  },
-  firebase: function() {
-    return {
-      items: fbase.database().ref('userlist')
-    }
   },
   data() {
     return {
@@ -292,9 +286,6 @@ export default {
     hasPhoto() {
       return this.profile.photo != null && this.profile.photo.length > 0
     }
-  },
-  created() {
-    this.$rtdbBind('items', fbase.database().ref('userlist'))
   }
 }
 </script>
