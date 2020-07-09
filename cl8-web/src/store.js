@@ -282,58 +282,20 @@ const actions = {
    * - pitchable (boolean)
    */
   addUser: async function(context, payload) {
-    let endpoint
-    if (process.env.NODE_ENV == 'development') {
-      endpoint = `http://localhost:5000/${process.env.VUE_APP_FIREBASE_PROJECTID}/us-central1/addUsers`
-    } else {
-      endpoint = `https://us-central1-${process.env.VUE_APP_FIREBASE_PROJECTID}.cloudfunctions.net/addUsers`
-    }
-    const authToken = await fbase.auth().currentUser.getIdToken()
+    payload.tags = payload.tags.map(function(obj) {
+      return obj.name
+    })
+    const token = context.getters.token
 
-    const requestData = [
-      {
-        name: payload.name,
-        email: payload.email,
-        phone: payload.phone,
-        website: payload.website,
-        twitter: payload.twitter,
-        facebook: payload.facebook,
-        linkedin: payload.linkedin,
-        bio: payload.bio,
-        visible: payload.visible,
-        pitchable: payload.pitchable,
-        tags: payload.tags
-      }
-    ]
-
-    debug('Creating new user', payload)
-
-    let data
-    try {
-      const resp = await fetch(endpoint, {
-        method: 'POST',
-        headers: new Headers({
-          Authorization: `Bearer ${authToken}`,
-          'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify(requestData)
-      })
-      if (!resp.ok) throw Error(await resp.text())
-      data = await resp.json()
-    } catch (err) {
-      debug('Error requesting new user account: ', err.message)
-      throw err
-    }
-
-    if (data.imported.length == 0) {
-      debug('No user account created')
-      return 'There already is an account with this email.'
-    } else {
-      debug('Created new user accounts. Redirecting to first created user')
-      const profile = data.imported[0].user
-      context.commit('setProfile', profile)
-      context.commit('fetchVisibleProfileList')
+    const response = await instance.post('/api/profiles/', payload, {
+      headers: { Authorization: `Token ${token}` }
+    })
+    if (response.data) {
+      context.dispatch('fetchVisibleProfileList')
+      context.commit('SET_PROFILE', response.data)
       router.push({ name: 'home' })
+    } else {
+      return 'There was a problem creating the account'
     }
   },
   fetchProfile: async function(context, payload) {
