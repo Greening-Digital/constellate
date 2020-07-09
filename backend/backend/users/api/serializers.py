@@ -47,6 +47,10 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
         https://github.com/encode/django-rest-framework/blob/3.3.3/rest_framework/fields.py#L1378
 
         """
+        try:
+            url = instance.photo.url
+        except ValueError:
+            return None
 
         url = instance.photo.url
         
