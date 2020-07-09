@@ -86,8 +86,8 @@
           >{{ tag.name.toLowerCase().trim() }}</li>
         </ul>
 
-        <div v-if="this.profile.blurb" class="w-100 blurb lh-copy measure-wide">
-          <div v-html="blurbOutput"></div>
+        <div v-if="this.profile.bio" class="w-100 bio lh-copy measure-wide">
+          <div v-html="bioOutput"></div>
         </div>
       </div>
     </div>
@@ -145,10 +145,8 @@ export default {
         ? linkify(this.profile.linkedin, 'https://linkedin.com/in')
         : null
     },
-    blurbOutput() {
-      return this.profile.blurb
-        ? marked(sanitizeHTML(this.profile.blurb))
-        : null
+    bioOutput() {
+      return this.profile.bio ? marked(sanitizeHTML(this.profile.bio)) : null
     }
   },
   methods: {
