@@ -79,13 +79,27 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
 
-        for user_key in ['name', 'email']:
+        for user_key in ['name', 'email', 'admin']:
             if user_key in validated_data.keys():
                 value = validated_data.pop(user_key)
-                setattr(instance.user, user_key, value)
+
+                if user_key == 'admin':
+                    instance.is_staff = value
+                else:
+                    setattr(instance.user, user_key, value)
+
         instance.user.save()
 
         for attr, value in validated_data.items():
+
+            # some values we don't want to allow setting
+            # via the API
+            if attr in ['id', 'tags']:
+                continue
+
+            if not value:
+                continue
+
             setattr(instance, attr, value)
         instance.save()
 
