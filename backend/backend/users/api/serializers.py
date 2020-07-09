@@ -40,6 +40,32 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
     name = serializers.CharField(allow_blank=True, required=False)
     email = serializers.EmailField(allow_blank=True, required=False)
 
+    def add_photo_url(self, instance):
+        """
+        Add the photo url for the output representation of a profile object.
+        Largely replicates the logic visible at:
+        https://github.com/encode/django-rest-framework/blob/3.3.3/rest_framework/fields.py#L1378
+
+        """
+        try:
+            url = instance.photo.url
+        except ValueError:
+            return None
+
+        url = instance.photo.url
+        
+        request = self.context.get('request', None)
+        if request is not None:
+            return request.build_absolute_uri(url)
+
+        return url
+
+    def to_representation(self, instance):
+        res = super().to_representation(instance)
+        res['photo'] = self.add_photo_url(instance)
+        return res
+
+
     def create(self, validated_data, user=None):
 
         ModelClass = self.Meta.model
@@ -128,7 +154,6 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
             # need their own handler
             "tags",
-            "photo",
         ]
 
 
