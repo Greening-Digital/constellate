@@ -20,12 +20,6 @@ class ProfileViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, Creat
     lookup_field = 'id'
 
 
-    def get_object(self, request: HttpRequest = None):
-        profile_id = resolve(request.path).kwargs['id']
-
-        return Profile.objects.get(id=profile_id)
-
-
     @action(detail=False, methods=["GET"])
     def me(self, request):
         serializer = ProfileSerializer(request.user.profile, context={"request": request})
