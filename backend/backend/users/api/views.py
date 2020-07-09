@@ -94,10 +94,10 @@ class ProfileViewSet(
         instance = Profile.objects.get(id=profile_id)
 
         serialized_profile = self.serializer_class(
-            instance, data=request.data, partial=partial
+            instance, data=request_data, partial=partial
         )
         serialized_profile.is_valid(raise_exception=True)
-        serialized_profile.update(instance, request.data)
+        serialized_profile.update(instance, serialized_profile.validated_data)
 
         if getattr(instance, "_prefetched_objects_cache", None):
             # If 'prefetch_related' has been applied to a queryset, we need to
