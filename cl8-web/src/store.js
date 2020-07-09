@@ -44,7 +44,7 @@ const getters = {
     return state.visibleProfileList
       .filter(profile => truthy.includes(profile.admin))
       .map(profile => profile.id)
-      .includes(state.user.uid)
+      .includes(state.user.id)
   },
   currentTerm: function(state) {
     return state.searchTerm
