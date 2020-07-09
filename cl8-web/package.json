@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "firebase": "^7.15.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.16",
     "marked": "^1.1.0",
     "sanitize-html": "^1.26.0",
     "tachyons": "4.12.0",
