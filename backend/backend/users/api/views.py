@@ -16,7 +16,7 @@ from django.utils.text import slugify
 
 from django.urls import resolve
 
-from django.http import HttpRequest
+from django.http import HttpRequest, QueryDict
 
 User = get_user_model()
 
@@ -44,9 +44,14 @@ class ProfileViewSet(
 
         # make our request data a mutable dict, with the
         # values we need, and discard empty ones
+        if isinstance(request.data, QueryDict):
+            request_data = request.data.dict()
+        else:
+            request_data = request.data
+
         request_data_dict = {
             key:val for key, val
-            in request.data.dict().items()
+            in request_data.items()
             if val
         }
 
@@ -73,14 +78,26 @@ class ProfileViewSet(
 
         partial = kwargs.pop("partial", False)
 
+        if isinstance(request.data, QueryDict):
+            request_data = request.data.dict()
+        else:
+            request_data = request.data
+
+        request_data_dict = {
+            key:val for key, val
+            in request_data.items()
+            if val
+        }
+
+
         profile_id = resolve(request.path).kwargs['id']
         instance = Profile.objects.get(id=profile_id)
 
         serialized_profile = self.serializer_class(
-            instance, data=request.data, partial=partial
+            instance, data=request_data, partial=partial
         )
         serialized_profile.is_valid(raise_exception=True)
-        serialized_profile.update(instance, request.data)
+        serialized_profile.update(instance, serialized_profile.validated_data)
 
         if getattr(instance, "_prefetched_objects_cache", None):
             # If 'prefetch_related' has been applied to a queryset, we need to
