@@ -92,6 +92,29 @@ class TestProfileViewSet:
         assert response.status_code == 201
 
     @pytest.mark.only
+        expected_fields = [
+            'id',
+
+            'name',
+            'email',
+
+            'phone',
+            'website',
+            'twitter',
+            'facebook',
+            'linkedin',
+
+            'tags',
+            'bio',
+            'admin',
+            'visible',
+            'photo'
+        ]
+
+        for field in expected_fields:
+            assert field in response.data.keys()
+
+
     def test_update_profile(self, profile: Profile, rf: RequestFactory):
         view = ProfileViewSet()
         request = rf.get(f"/api/profiles/{profile.id}/")
