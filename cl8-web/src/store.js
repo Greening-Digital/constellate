@@ -277,7 +277,7 @@ const actions = {
    * - twitter
    * - facebook
    * - linkedin
-   * - blurb (summary)
+   * - bio (summary)
    * - visible (boolean)
    * - pitchable (boolean)
    */
@@ -299,7 +299,7 @@ const actions = {
         twitter: payload.twitter,
         facebook: payload.facebook,
         linkedin: payload.linkedin,
-        blurb: payload.blurb,
+        bio: payload.bio,
         visible: payload.visible,
         pitchable: payload.pitchable,
         tags: payload.tags
