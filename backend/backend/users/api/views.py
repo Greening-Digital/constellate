@@ -17,6 +17,7 @@ from django.utils.text import slugify
 from django.urls import resolve
 
 from django.http import HttpRequest, QueryDict
+from rest_framework.utils.serializer_helpers import ReturnDict
 
 User = get_user_model()
 
@@ -32,6 +33,20 @@ class ProfileViewSet(
     queryset = Profile.objects.all()
     lookup_field = "id"
 
+
+    def add_missing_profile_values(self, data: ReturnDict = None, user:User=None):
+        """
+        Add the missing values need for when we create users.
+        """
+        profile = user.profile
+
+        data['id'] = profile.id
+        data['name'] = profile.name
+        data['email'] = profile.email
+        data['admin'] = profile.admin
+        data['photo'] = profile.photo
+
+        return data
 
     @action(detail=False, methods=["GET"])
     def me(self, request):
@@ -63,9 +78,11 @@ class ProfileViewSet(
         serialized_profile.is_valid(raise_exception=True)
         serialized_profile.create(serialized_profile.validated_data, user=new_user)
 
-        headers = self.get_success_headers(serialized_profile.data)
+        updated_profile_data = self.add_missing_profile_values(data=serialized_profile.data, user=new_user)
+
+        headers = self.get_success_headers(updated_profile_data)
         return Response(
-            serialized_profile.data, status=status.HTTP_201_CREATED, headers=headers
+            updated_profile_data, status=status.HTTP_201_CREATED, headers=headers
         )
 
     def update(self, request, *args, **kwargs):
