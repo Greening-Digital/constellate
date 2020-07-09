@@ -43,6 +43,9 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
     def add_photo_url(self, instance):
         """
         Add the photo url for the output representation of a profile object.
+        Largely replicates the logic visible at:
+        https://github.com/encode/django-rest-framework/blob/3.3.3/rest_framework/fields.py#L1378
+
         """
 
         url = instance.photo.url
