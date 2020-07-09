@@ -49,23 +49,17 @@ class ProfileViewSet(
         else:
             request_data = request.data
 
-        request_data_dict = {
-            key:val for key, val
-            in request_data.items()
-            if val
-        }
-
-        email = request_data_dict.pop("email")
-        full_name = request_data_dict.pop("name")
+        email = request_data.pop("email")
+        full_name = request_data.pop("name")
         username = slugify(full_name)
 
         # validate User with User serializer
         new_user = User.objects.create_user(username, email, name=full_name)
 
         # create our profile
-        request_data_dict["user_id"] = new_user.id
+        request_data["user_id"] = new_user.id
 
-        serialized_profile = ProfileSerializer(data=request_data_dict)
+        serialized_profile = ProfileSerializer(data=request_data)
         serialized_profile.is_valid(raise_exception=True)
         serialized_profile.create(serialized_profile.validated_data, user=new_user)
 
@@ -82,13 +76,6 @@ class ProfileViewSet(
             request_data = request.data.dict()
         else:
             request_data = request.data
-
-        request_data_dict = {
-            key:val for key, val
-            in request_data.items()
-            if val
-        }
-
 
         profile_id = resolve(request.path).kwargs['id']
         instance = Profile.objects.get(id=profile_id)
