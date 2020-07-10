@@ -153,6 +153,9 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
 class ProfilePicSerializer(serializers.ModelSerializer):
 
+    id = serializers.IntegerField(required=False)
+    photo =  serializers.ImageField(required=False)
+
     class Meta:
         model = Profile
         fields = ('id', 'photo')

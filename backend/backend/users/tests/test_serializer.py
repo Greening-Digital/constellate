@@ -115,13 +115,20 @@ class TestProfilePicSerializer:
         assert pro.data['photo'] == profile.photo
 
 
-    def test_validate_profile_pic_submission(self, profile):
+    def test_validate_profile_pic_submission(self, profile, tmp_pic_path):
         """
         We expect to see an orderedDict returned with the
         id, and the file inside.
         """
 
-        ps = ProfilePicSerializer(data={'id': profile.id})
+        filename = "test_pic.png"
+        test_pic = open(tmp_pic_path, 'rb')
+
+        ps = ProfilePicSerializer(data={
+            'id': profile.id,
+            'photo': None
+        })
+
         assert ps.is_valid()
-        import ipdb ; ipdb.set_trace()
         assert 'id' in ps.validated_data
+        assert 'photo' in ps.validated_data
