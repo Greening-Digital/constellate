@@ -27,7 +27,7 @@ class Profile(models.Model):
     linkedin = models.CharField(_("linkedin"), max_length=254, blank=True, null=True)
     bio = models.TextField(_("bio"), blank=True, null=True)
     visible = models.BooleanField(_("visible"), default=False)
-    photo = models.ImageField(_("photo"), blank=True, null=True)
+    photo = models.ImageField(_("photo"), blank=True, null=True, max_length=200)
 
     tags = TaggableManager(blank=True)
 
