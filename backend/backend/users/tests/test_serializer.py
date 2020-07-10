@@ -14,7 +14,7 @@ class TestProfileSerializer:
     # def test_detail_with_photo(self, profile):
 
 
-    @pytest.mark.only
+    # @pytest.mark.only
     def test_create_profile_data(self):
 
         # profile_data = ProfileFactory(
@@ -53,29 +53,35 @@ class TestProfileSerializer:
         assert new_data['name'] == user.name
         assert new_data['email'] == user.email
 
-
+    @pytest.mark.only
     def test_update_profile_data(self, profile):
 
         # import ipdb ; ipdb.set_trace()
 
         profile_dict = {
+            'name': "A New Name",
             'phone': profile.phone,
             'website': profile.website,
             'twitter': profile.twitter,
             'facebook': profile.facebook,
             'linkedin': profile.linkedin,
-            'bio': profile.bio,
+            'bio': "something new",
 
             'visible': profile.visible,
-            'admin': profile.admin
+            'admin': True
         }
 
         ps = ProfileSerializer(data=profile_dict)
+        assert ps.is_valid()
 
         res = ps.update(profile, ps.data)
+        res_data = ProfileSerializer(res)
 
-        import ipdb ; ipdb.set_trace()
-        assert 'id' in new_data.keys()
-        assert 'photo' in new_data.keys()
-        assert new_data['name'] == user.name
-        assert new_data['email'] == user.email
+        updated_user = User.objects.get(email=profile.user.email)
+
+        # have we updated our user details?
+        assert updated_user.name == profile_dict['name']
+        assert updated_user.is_staff == profile_dict['admin']
+
+        # and has the profile been updated?
+        assert res.bio == profile_dict['bio']
