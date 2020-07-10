@@ -32,7 +32,7 @@ import ProfileSearchItem from '@/components/profile/ProfileSearchItem.vue'
 import debugLib from 'debug'
 const debug = debugLib('cl8.TheProfileList')
 
-const searchKeys = ['fields.name', 'fields.email', 'fields.tags.name']
+const searchKeys = ['name', 'email', 'tags.name']
 const searchOptions = {
   keys: searchKeys,
   defaultAll: true,
@@ -57,7 +57,7 @@ export default {
     activeTags() {
       return this.$store.getters.activeTags
     },
-    methodResults() {
+    visibleProfiles() {
       return this.$store.getters.visibleProfileList
     }
   },
@@ -78,7 +78,7 @@ export default {
       .dispatch('fetchVisibleProfileList')
       .then(() => {
         debug('loaded the profiles in the component')
-        this.searchResults = this.methodResults
+        this.searchResults = this.visibleProfiles
         this.$store.commit('stopLoading')
         this.loading = false
       })
@@ -105,37 +105,35 @@ export default {
       }
     },
     toggleTag: function(ev) {
-      let tag = ev.target.textContent.trim()
+      const tag = ev.target.textContent.trim()
       this.$store.dispatch('updateActiveTags', tag)
     },
     matchingTags() {
-      let terms = this.activeTags
+      const terms = this.activeTags
       debug('matchingTags', terms)
       if (typeof terms === 'undefined' || terms === '') {
-        return this.methodResults
+        return this.visibleProfiles
       }
-      let matchingPeeps = this.methodResults
-      // clear out peeps with NO tags
-      let peepsWithFields = matchingPeeps.filter(function(peep) {
-        return typeof peep.fields !== 'undefined'
-      })
-      let peepsWithTags = peepsWithFields.filter(function(peep) {
-        return typeof peep.tags !== 'undefined'
+      const availableProfiles = this.visibleProfiles
+      debug('availableProfiles', availableProfiles)
+      // clear out profiles with NO tags
+      let profilesWithTags = availableProfiles.filter(function(profile) {
+        return typeof profile.tags !== 'undefined'
       })
       // now reduce the list till we only have people matching all tags
       terms.forEach(function(term) {
-        peepsWithTags = peepsWithTags.filter(function(peep) {
-          let peepTerms = peep.tags.map(function(tag) {
+        profilesWithTags = profilesWithTags.filter(function(profile) {
+          const profileTerms = profile.tags.map(function(tag) {
             return tag.name.toLowerCase()
           })
 
-          return includes(peepTerms, term)
+          return includes(profileTerms, term)
         })
       })
-      let visiblePeeps = peepsWithTags.filter(function(peep) {
-        return peep.visible
+      const visibleProfiles = profilesWithTags.filter(function(profile) {
+        return profile.visible
       })
-      return visiblePeeps
+      return visibleProfiles
     }
   }
 }
