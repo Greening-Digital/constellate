@@ -189,7 +189,7 @@ export default {
   },
   data() {
     return {
-      items: [], // this needs to be the list from firebase
+      items: [],
       tagList: [],
       unsyncedTags: [],
       localPhoto: null,
