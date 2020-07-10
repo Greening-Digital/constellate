@@ -70,19 +70,26 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
         ModelClass = self.Meta.model
 
-        # Remove many-to-many relationships from validated_data.
-        # They are not valid arguments to the default `.create()` method,
-        # as they require that the instance has already been saved.
-        info = model_meta.get_field_info(ModelClass)
-        many_to_many = {}
-        for field_name, relation_info in info.relations.items():
-            if relation_info.to_many and (field_name in validated_data):
-                many_to_many[field_name] = validated_data.pop(field_name)
+        email = validated_data.pop("email")
+        full_name = validated_data.pop("name")
+        username = slugify(full_name)
 
-        validated_data['user_id'] = user.id
+        # create our related User from the details passed in
+        new_user = User(
+            username=username,
+            email=email,
+            name=full_name
+        )
+
+        # if you don't set password like this this, you get an
+        # unhashed string, as django makes no assumptions about
+        # the hashing algo to use
+        new_user.set_password(None)
+        new_user.save()
 
         try:
-            instance = ModelClass.objects.create(**validated_data)
+            instance = ModelClass.objects.create(**validated_data, user=new_user)
+            # instance = ModelClass.objects.create(**validated_data)
         except TypeError as exc:
             msg = (
                 'Got a `TypeError` when calling `%s.objects.create()`. '
@@ -99,7 +106,6 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
                 )
             )
             raise TypeError(msg)
-
 
         return instance
 

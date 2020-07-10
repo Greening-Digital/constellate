@@ -11,14 +11,20 @@ pytestmark = pytest.mark.django_db
 
 class TestProfileSerializer:
 
+    # def test_detail_with_photo(self, profile):
+
+
     @pytest.mark.only
-    def test_create_profile_data(self, user):
+    def test_create_profile_data(self):
 
         # profile_data = ProfileFactory(
-        user.save()
+        # user.save()
 
         profile_dict = {
             # these are the bits we need to create for end users, before putting them back in the returned
+            "name": "Joe Bloggs",
+            "email": "person@email.com",
+
             'phone': '9329275526',
             'website': 'http://livingston.biz',
             'twitter': 'paul58',
@@ -31,20 +37,23 @@ class TestProfileSerializer:
 
             'visible': False,
             'admin': True,
-
-
         }
 
         ps = ProfileSerializer(data=profile_dict)
         assert ps.is_valid()
 
-        res = ps.create(ps.data, user=user)
+        res = ps.create(ps.data)
+        user = User.objects.get(email=profile_dict['email'])
 
-        for key in ['name', 'email']:
-            assert getattr(res, key)
-            assert getattr(res, key) == getattr(user, key)
+        new_ps = ProfileSerializer(res)
+        new_data = new_ps.data
 
-    @pytest.mark.only
+        assert 'id' in new_data.keys()
+        assert 'photo' in new_data.keys()
+        assert new_data['name'] == user.name
+        assert new_data['email'] == user.email
+
+
     def test_update_profile_data(self, profile):
 
         # import ipdb ; ipdb.set_trace()
@@ -55,8 +64,6 @@ class TestProfileSerializer:
             'twitter': profile.twitter,
             'facebook': profile.facebook,
             'linkedin': profile.linkedin,
-
-            'tags': [],
             'bio': profile.bio,
 
             'visible': profile.visible,
@@ -64,10 +71,11 @@ class TestProfileSerializer:
         }
 
         ps = ProfileSerializer(data=profile_dict)
-        assert ps.is_valid()
 
         res = ps.update(profile, ps.data)
 
-        for key in ['name', 'email']:
-            assert getattr(res, key)
-            assert getattr(res, key) == getattr(profile.user, key)
+        import ipdb ; ipdb.set_trace()
+        assert 'id' in new_data.keys()
+        assert 'photo' in new_data.keys()
+        assert new_data['name'] == user.name
+        assert new_data['email'] == user.email
