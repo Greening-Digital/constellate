@@ -12,7 +12,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from .serializers import ProfileSerializer
 from ..models import Profile
-from django.utils.text import slugify
+
 
 from django.urls import resolve
 
@@ -33,56 +33,23 @@ class ProfileViewSet(
     queryset = Profile.objects.all()
     lookup_field = "id"
 
-
-    def add_missing_profile_values(self, data: ReturnDict = None, user:User=None):
-        """
-        Add the missing values need for when we create users.
-        """
-        profile = user.profile
-
-        data['id'] = profile.id
-        data['name'] = profile.name
-        data['email'] = profile.email
-        data['admin'] = profile.admin
-        data['photo'] = profile.photo
-
-        return data
-
     @action(detail=False, methods=["GET"])
     def me(self, request):
-        serializer = ProfileSerializer(
-            request.user.profile, context={"request": request}
-        )
-        return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+        serialized_profile = ProfileSerializer(request.user.profile)
+        return Response(status=status.HTTP_200_OK, data=serialized_profile.data)
 
     def create(self, request):
 
-        # make our request data a mutable dict, with the
-        # values we need, and discard empty ones
-        if isinstance(request.data, QueryDict):
-            request_data = request.data.dict()
-        else:
-            request_data = request.data
-
-        email = request_data.pop("email")
-        full_name = request_data.pop("name")
-        username = slugify(full_name)
-
-        # validate User with User serializer
-        new_user = User.objects.create_user(username, email, name=full_name)
-
-        # create our profile
-        request_data["user_id"] = new_user.id
-
-        serialized_profile = ProfileSerializer(data=request_data)
+        serialized_profile = ProfileSerializer(data=request.data)
         serialized_profile.is_valid(raise_exception=True)
-        serialized_profile.create(serialized_profile.validated_data, user=new_user)
+        new_profile = serialized_profile.create(serialized_profile.data)
 
-        updated_profile_data = self.add_missing_profile_values(data=serialized_profile.data, user=new_user)
+        full_serialized_profile = ProfileSerializer(new_profile)
 
-        headers = self.get_success_headers(updated_profile_data)
+        headers = self.get_success_headers(full_serialized_profile.data)
         return Response(
-            updated_profile_data, status=status.HTTP_201_CREATED, headers=headers
+            full_serialized_profile.data, status=status.HTTP_201_CREATED, headers=headers
         )
 
     def update(self, request, *args, **kwargs):

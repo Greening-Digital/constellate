@@ -11,14 +11,20 @@ pytestmark = pytest.mark.django_db
 
 class TestProfileSerializer:
 
-    @pytest.mark.only
-    def test_create_profile_data(self, user):
+    # def test_detail_with_photo(self, profile):
+
+
+    # @pytest.mark.only
+    def test_create_profile_data(self):
 
         # profile_data = ProfileFactory(
-        user.save()
+        # user.save()
 
         profile_dict = {
             # these are the bits we need to create for end users, before putting them back in the returned
+            "name": "Joe Bloggs",
+            "email": "person@email.com",
+
             'phone': '9329275526',
             'website': 'http://livingston.biz',
             'twitter': 'paul58',
@@ -31,18 +37,21 @@ class TestProfileSerializer:
 
             'visible': False,
             'admin': True,
-
-
         }
 
         ps = ProfileSerializer(data=profile_dict)
         assert ps.is_valid()
 
-        res = ps.create(ps.data, user=user)
+        res = ps.create(ps.data)
+        user = User.objects.get(email=profile_dict['email'])
 
-        for key in ['name', 'email']:
-            assert getattr(res, key)
-            assert getattr(res, key) == getattr(user, key)
+        new_ps = ProfileSerializer(res)
+        new_data = new_ps.data
+
+        assert 'id' in new_data.keys()
+        assert 'photo' in new_data.keys()
+        assert new_data['name'] == user.name
+        assert new_data['email'] == user.email
 
     @pytest.mark.only
     def test_update_profile_data(self, profile):
@@ -50,24 +59,29 @@ class TestProfileSerializer:
         # import ipdb ; ipdb.set_trace()
 
         profile_dict = {
+            'name': "A New Name",
             'phone': profile.phone,
             'website': profile.website,
             'twitter': profile.twitter,
             'facebook': profile.facebook,
             'linkedin': profile.linkedin,
-
-            'tags': [],
-            'bio': profile.bio,
+            'bio': "something new",
 
             'visible': profile.visible,
-            'admin': profile.admin
+            'admin': True
         }
 
         ps = ProfileSerializer(data=profile_dict)
         assert ps.is_valid()
 
         res = ps.update(profile, ps.data)
+        res_data = ProfileSerializer(res)
 
-        for key in ['name', 'email']:
-            assert getattr(res, key)
-            assert getattr(res, key) == getattr(profile.user, key)
+        updated_user = User.objects.get(email=profile.user.email)
+
+        # have we updated our user details?
+        assert updated_user.name == profile_dict['name']
+        assert updated_user.is_staff == profile_dict['admin']
+
+        # and has the profile been updated?
+        assert res.bio == profile_dict['bio']

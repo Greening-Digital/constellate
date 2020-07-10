@@ -10,7 +10,7 @@ from rest_framework.utils import model_meta
 
 User = get_user_model()
 from ..models import Profile
-
+from django.utils.text import slugify
 
 class ConstellateTagListSerializerField(TagListSerializerField):
     """
@@ -39,50 +39,34 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     name = serializers.CharField(allow_blank=True, required=False)
     email = serializers.EmailField(allow_blank=True, required=False)
-
-    def add_photo_url(self, instance):
-        """
-        Add the photo url for the output representation of a profile object.
-        Largely replicates the logic visible at:
-        https://github.com/encode/django-rest-framework/blob/3.3.3/rest_framework/fields.py#L1378
-
-        """
-        try:
-            url = instance.photo.url
-        except ValueError:
-            return None
-
-        url = instance.photo.url
-        
-        request = self.context.get('request', None)
-        if request is not None:
-            return request.build_absolute_uri(url)
-
-        return url
-
-    def to_representation(self, instance):
-        res = super().to_representation(instance)
-        res['photo'] = self.add_photo_url(instance)
-        return res
-
+    admin = serializers.BooleanField(required=False)
 
     def create(self, validated_data, user=None):
 
         ModelClass = self.Meta.model
 
-        # Remove many-to-many relationships from validated_data.
-        # They are not valid arguments to the default `.create()` method,
-        # as they require that the instance has already been saved.
-        info = model_meta.get_field_info(ModelClass)
-        many_to_many = {}
-        for field_name, relation_info in info.relations.items():
-            if relation_info.to_many and (field_name in validated_data):
-                many_to_many[field_name] = validated_data.pop(field_name)
+        email = validated_data.pop("email")
+        full_name = validated_data.pop("name")
+        admin = validated_data.pop("admin", False)
+        username = slugify(full_name)
 
-        validated_data['user_id'] = user.id
+        # create our related User from the details passed in
+        new_user = User(
+            username=username,
+            email=email,
+            name=full_name,
+            is_staff=admin,
+        )
+
+        # if you don't set password like this this, you get an
+        # unhashed string, as django makes no assumptions about
+        # the hashing algo to use
+        new_user.set_password(None)
+        new_user.save()
 
         try:
-            instance = ModelClass.objects.create(**validated_data)
+            instance = ModelClass.objects.create(**validated_data, user=new_user)
+            # instance = ModelClass.objects.create(**validated_data)
         except TypeError as exc:
             msg = (
                 'Got a `TypeError` when calling `%s.objects.create()`. '
@@ -100,32 +84,18 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
             )
             raise TypeError(msg)
 
-
         return instance
 
     def update(self, instance, validated_data):
 
-        for user_key in ['name', 'email', 'admin']:
-            if user_key in validated_data.keys():
-                value = validated_data.pop(user_key)
-
-                if user_key == 'admin':
-                    instance.is_staff = value
-                else:
-                    setattr(instance.user, user_key, value)
-
+        # update our corresponding user first
+        instance.user.name = validated_data.pop('name', instance.user.name)
+        instance.user.email = validated_data.pop('email', instance.user.email)
+        instance.user.is_staff = validated_data.pop('admin', False)
         instance.user.save()
 
+        # update the profile itself
         for attr, value in validated_data.items():
-
-            # some values we don't want to allow setting
-            # via the API
-            if attr in ['id', 'tags']:
-                continue
-
-            if not value:
-                continue
-
             setattr(instance, attr, value)
         instance.save()
 
@@ -154,7 +124,9 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
             # need their own handler
             "tags",
+            "photo",
         ]
+        read_only_fields = ["photo", "id"]
 
 
 
