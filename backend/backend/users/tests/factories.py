@@ -15,6 +15,8 @@ from factory.django import ImageField as ImageFieldFactory
 import requests
 from django.db.models.signals import post_save
 
+from taggit.models import Tag
+
 def generated_profile_photo():
     image_bytes = requests.get("https://www.thispersondoesnotexist.com/image").content
     return io.BytesIO(image_bytes)
@@ -65,6 +67,20 @@ def url_factory():
     return f"https://{domain_generator.generate()}"
 
 
+class TagFactory(DjangoModelFactory):
+
+    name = Faker('word')
+
+    class Meta:
+        model = Tag
+
+
+
+
+def list_of_tags():
+    website = factory.LazyFunction(url_factory)
+
+
 @factory.django.mute_signals(post_save)
 class ProfileFactory(DjangoModelFactory):
 
@@ -79,7 +95,7 @@ class ProfileFactory(DjangoModelFactory):
     linkedin = Faker("user_name")
     bio = Faker("paragraph")
 
-    #
+    # tags = SubFactory(TagFactory)
 
     user = factory.SubFactory("backend.users.tests.factories.UserFactory", profile=None)
 
@@ -90,8 +106,6 @@ class ProfileFactory(DjangoModelFactory):
 class FakePhotoProfileFactory(ProfileFactory):
 
     photo = ImageFieldFactory(from_func=generated_profile_photo)
-
-    tags = []
 
     class Meta:
         model = Profile

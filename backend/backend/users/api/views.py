@@ -56,16 +56,13 @@ class ProfileViewSet(
 
         partial = kwargs.pop("partial", False)
 
-        if isinstance(request.data, QueryDict):
-            request_data = request.data.dict()
-        else:
-            request_data = request.data
+        inbound_data = request.data.copy()
 
         profile_id = resolve(request.path).kwargs['id']
         instance = Profile.objects.get(id=profile_id)
 
         serialized_profile = self.serializer_class(
-            instance, data=request_data, partial=partial
+            instance, data=inbound_data, partial=partial
         )
         serialized_profile.is_valid(raise_exception=True)
         serialized_profile.update(instance, serialized_profile.validated_data)
