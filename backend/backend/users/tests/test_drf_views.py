@@ -17,11 +17,11 @@ class TestProfileViewSet:
 
         assert profile in view.get_queryset()
 
-    @pytest.mark.only
-    def test_me(self, profile: Profile, rf: RequestFactory):
+
+    def test_me(self, profile_with_tags: Profile, rf: RequestFactory):
         view = ProfileViewSet()
         request = rf.get("/fake-url/")
-        request.user = profile.user
+        request.user = profile_with_tags.user
 
         view.request = request
         response = view.me(request)
@@ -36,15 +36,14 @@ class TestProfileViewSet:
             "linkedin",
             "visible",
         ]:
-            assert response.data[prop] == getattr(profile, prop)
+            assert response.data[prop] == getattr(profile_with_tags, prop)
 
         # we need to check separately for tags, as they use
         # their own manager
-        response.data['tags'] = [tag for tag in profile.tags.all()]
+        response.data['tags'] = [tag for tag in profile_with_tags.tags.all()]
 
 
-    @pytest.mark.only
-    def test_data_structure(self, profile: Profile, rf: RequestFactory):
+    def test_tag_serialised_data_structure(self, profile: Profile, rf: RequestFactory):
         view = ProfileViewSet()
         request = rf.get("/fake-url/")
         request.user = profile.user
@@ -63,7 +62,6 @@ class TestProfileViewSet:
                 assert k in tag.keys()
 
 
-    @pytest.mark.only
     def test_create_profile(self, profile: Profile, rf: RequestFactory):
         view = ProfileViewSet()
         request = rf.get("/fake-url/")
@@ -79,7 +77,7 @@ class TestProfileViewSet:
 
             'name': 'Long Name with lots of letters',
             'email': 'email@somesite.com',
-            'tags': ["tech"],
+            'tags': ["tech, 'something else'', "],
 
             'bio': 'Themselves TV western under. Tv can beautiful we throughout politics treat both. Fear speech left get answer over century.',
 
@@ -90,29 +88,6 @@ class TestProfileViewSet:
 
         response = view.create(request)
         assert response.status_code == 201
-
-    @pytest.mark.only
-        expected_fields = [
-            'id',
-
-            'name',
-            'email',
-
-            'phone',
-            'website',
-            'twitter',
-            'facebook',
-            'linkedin',
-
-            'tags',
-            'bio',
-            'admin',
-            'visible',
-            'photo'
-        ]
-
-        for field in expected_fields:
-            assert field in response.data.keys()
 
 
     def test_update_profile(self, profile: Profile, rf: RequestFactory):
