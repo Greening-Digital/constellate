@@ -84,13 +84,14 @@ class ProfilePhotoUploadView(APIView):
     """
     parser_classes = (MultiPartParser, FormParser)
 
-    def put(self, request, filename, format=None):
+    def put(self, request, id, format=None):
 
-        profile = Profile.objects.get(pk=request.data['id'])
+        serializer = ProfilePicSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        profile_pic_serializer = ProfilePicSerializer(data=request.data)
+        profile = Profile.objects.get(pk=serializer.validated_data['id'])
+        profile_pic = serializer.validated_data.pop('photo', None)
 
-        profile_pic = request.data.pop('photo', None)
         if profile_pic:
             img = ImageFile(profile_pic)
             photo_path = f"{slugify(profile.name)}.png"
