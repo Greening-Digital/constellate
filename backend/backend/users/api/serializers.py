@@ -39,32 +39,7 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     name = serializers.CharField(allow_blank=True, required=False)
     email = serializers.EmailField(allow_blank=True, required=False)
-
-    def add_photo_url(self, instance):
-        """
-        Add the photo url for the output representation of a profile object.
-        Largely replicates the logic visible at:
-        https://github.com/encode/django-rest-framework/blob/3.3.3/rest_framework/fields.py#L1378
-
-        """
-        try:
-            url = instance.photo.url
-        except ValueError:
-            return None
-
-        url = instance.photo.url
-        
-        request = self.context.get('request', None)
-        if request is not None:
-            return request.build_absolute_uri(url)
-
-        return url
-
-    def to_representation(self, instance):
-        res = super().to_representation(instance)
-        res['photo'] = self.add_photo_url(instance)
-        return res
-
+    admin = serializers.BooleanField(required=False)
 
     def create(self, validated_data, user=None):
 
@@ -72,13 +47,15 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
         email = validated_data.pop("email")
         full_name = validated_data.pop("name")
+        admin = validated_data.pop("admin", False)
         username = slugify(full_name)
 
         # create our related User from the details passed in
         new_user = User(
             username=username,
             email=email,
-            name=full_name
+            name=full_name,
+            is_staff=admin,
         )
 
         # if you don't set password like this this, you get an
