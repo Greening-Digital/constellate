@@ -1,6 +1,5 @@
 /* eslint-disable */
 import router from './routes'
-import fbase from './fbase'
 import axios from 'axios'
 
 const debug = require('debug')('cl8.store')
@@ -186,46 +185,6 @@ const actions = {
     context.commit('SET_USER', profileResponse.data)
     context.commit('SET_PROFILE', profileResponse.data)
   },
-  resetPassword: function(context, payload) {
-    debug('send password reset for ', payload)
-    fbase
-      .auth()
-      .sendPasswordResetEmail(payload)
-      .then(function() {
-        // Email sent.
-        debug('password reset requested', payload)
-      })
-      .catch(function(error) {
-        // An error happened.
-        debug('Problem sending password: ', error)
-      })
-  },
-  newPassword: function(context, payload) {
-    console.log(payload)
-    context.state.loading = true
-    fbase
-      .auth()
-      .verifyPasswordResetCode(payload.code)
-      .then(email => {
-        fbase
-          .auth()
-          .confirmPasswordReset(payload.code, payload.password)
-          .then(function(resp) {
-            // TODO: Then do something with the response.
-            context.state.signInData.message =
-              'Password changed. Please sign in with new password'
-            context.state.signInData.email = email
-            router.push('signin')
-            context.state.loading = false
-          })
-      })
-      .catch(error => {
-        console.error(error.code)
-        console.error(error.message)
-        context.state.loading = false
-      })
-    debug(context, payload)
-  },
   updateActiveTags: function(context, payload) {
     debug('updateActiveTags', payload)
     let tag = payload
@@ -263,24 +222,6 @@ const actions = {
       debug('Error fetching visibleProfileList', error)
     }
   },
-  /**
-   * Create a new Firebase user account and constellate user profile
-   *
-   * @param {*} context
-   * @param {*} payload dictionary with new user data as follows
-   *
-   * Fields (as string if not noted otherwise):
-   * - name
-   * - email
-   * - phone
-   * - website (without protocol)
-   * - twitter
-   * - facebook
-   * - linkedin
-   * - bio (summary)
-   * - visible (boolean)
-   * - pitchable (boolean)
-   */
   addUser: async function(context, payload) {
     payload.tags = payload.tags.map(function(obj) {
       return obj.name
@@ -328,25 +269,6 @@ const actions = {
     } else {
       return 'There was a problem saving changes to the profile.'
     }
-
-    // if (!pushKey) {
-    //   throw new Error(
-    //     'this profile has no push key. this is needed for writing data'
-    //   )
-    // }
-
-    // return fbase
-    //   .database()
-    //   .ref('userlist')
-    //   .child(pushKey)
-    //   .set(newProfile)
-    //   .then(() => {
-    //     debug('Succesfully saved')
-    //     router.push({ name: 'home' })
-    //   })
-    //   .catch(error => {
-    //     debug('Error saving profile: ', payload, 'failed', error)
-    //   })
   },
   updateProfilePhoto: async function(context, payload) {
     const profileId = payload.profile.id
