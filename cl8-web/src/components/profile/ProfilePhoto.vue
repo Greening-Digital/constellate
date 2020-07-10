@@ -99,7 +99,7 @@ export default {
       // we really ought to have a better way to refer to it, probably by
       // setting an entry in the component data() method
       let payload = { profile: this.profile, photo: ev.target[0].files[0] }
-      debug('sending to firebase', payload)
+      debug('sending photo', payload)
       this.$store.dispatch('updateProfilePhoto', payload)
     }
   },
