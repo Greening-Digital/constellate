@@ -151,4 +151,8 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
         read_only_fields = ["photo", "id"]
 
 
+class ProfilePicSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Profile
+        fields = ('id', 'photo')

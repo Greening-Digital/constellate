@@ -1,7 +1,10 @@
 from django.conf import settings
+
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
-from backend.users.api.views import ProfileViewSet
+from backend.users.api.views import ProfileViewSet, ProfilePhotoUploadView
+from django.urls import path
+
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -10,7 +13,9 @@ else:
 
 router.register("profiles", ProfileViewSet)
 
-
-
 app_name = "api"
 urlpatterns = router.urls
+
+urlpatterns += [
+  	path('upload/<id>/', ProfilePhotoUploadView.as_view(), name='profile-pic-upload'),
+]

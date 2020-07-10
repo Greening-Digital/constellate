@@ -9,17 +9,20 @@ from rest_framework.mixins import (
 )
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 
-from .serializers import ProfileSerializer
+from .serializers import ProfileSerializer, ProfilePicSerializer
 from ..models import Profile
 
-
+from django.utils.text import slugify
 from django.urls import resolve
 
 from django.http import HttpRequest, QueryDict
 from rest_framework.utils.serializer_helpers import ReturnDict
-
+from django.core.files.images import ImageFile
 User = get_user_model()
+
 
 
 class ProfileViewSet(
@@ -72,4 +75,29 @@ class ProfileViewSet(
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
         return Response(serialized_profile.data)
+
+
+
+class ProfilePhotoUploadView(APIView):
+    """
+
+    """
+    parser_classes = (MultiPartParser, FormParser)
+
+    def put(self, request, filename, format=None):
+
+        profile = Profile.objects.get(pk=request.data['id'])
+
+        profile_pic_serializer = ProfilePicSerializer(data=request.data)
+
+        profile_pic = request.data.pop('photo', None)
+        if profile_pic:
+            img = ImageFile(profile_pic)
+            photo_path = f"{slugify(profile.name)}.png"
+            profile.photo.save(photo_path, img, save=True)
+
+        return Response(ProfileSerializer(profile).data)
+
+
+
 
