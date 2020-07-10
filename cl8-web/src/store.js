@@ -317,11 +317,17 @@ const actions = {
     const token = context.getters.token
     const profileId = payload.id
 
-    await instance.put(`/api/profiles/${profileId}/`, payload, {
+    const profile = await instance.put(`/api/profiles/${profileId}/`, payload, {
       headers: { Authorization: `Token ${token}` }
     })
 
-    router.push({ name: 'home' })
+    if (profile) {
+      context.commit('SET_PROFILE', profile.data)
+      context.dispatch('fetchVisibleProfileList')
+      router.push({ name: 'home' })
+    } else {
+      return 'There was a problem saving changes to the profile.'
+    }
 
     // if (!pushKey) {
     //   throw new Error(
