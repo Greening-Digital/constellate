@@ -121,7 +121,7 @@ class TestProfileViewSet:
         assert response.status_code == 200
 
 
-@pytest.mark.only
+# @pytest.mark.only
 class TestProfileUploadView:
 
     def test_file_upload_for_profile(self, profile, rf, tmp_path, tmp_pic_path):
@@ -140,7 +140,7 @@ class TestProfileUploadView:
             "id": profile.id,
         }
 
-        response = view.put(request, filename)
+        response = view.put(request, profile.id)
         updated_profile = Profile.objects.get(pk=profile.id)
 
         assert response.status_code == 200
