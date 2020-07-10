@@ -12,11 +12,13 @@ User = get_user_model()
 from ..models import Profile
 from django.utils.text import slugify
 
+
 class ConstellateTagListSerializerField(TagListSerializerField):
     """
     We need to override the tag serialise to create the datastructure
     that the client expects.
     """
+
     def to_representation(self, value):
         if not isinstance(value, TagList):
             if not isinstance(value, list):
@@ -32,10 +34,9 @@ class ConstellateTagListSerializerField(TagListSerializerField):
 
         return value
 
-
 class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
-    tags = ConstellateTagListSerializerField()
+    tags = ConstellateTagListSerializerField(required=False)
 
     name = serializers.CharField(allow_blank=True, required=False)
     email = serializers.EmailField(allow_blank=True, required=False)
@@ -65,8 +66,14 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
         new_user.save()
 
         try:
+
+            to_be_tagged, validated_data = self._pop_tags(validated_data)
+
             instance = ModelClass.objects.create(**validated_data, user=new_user)
-            # instance = ModelClass.objects.create(**validated_data)
+
+            # then save our updated tags too
+            self.update_tags(instance, to_be_tagged)
+
         except TypeError as exc:
             msg = (
                 'Got a `TypeError` when calling `%s.objects.create()`. '
@@ -94,12 +101,27 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
         instance.user.is_staff = validated_data.pop('admin', False)
         instance.user.save()
 
-        # update the profile itself
+        # we need to update the tags separately to the other properties
+        validated_data = self.update_tags(instance, validated_data)
+
+        # finally update the profile itself
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
         return instance
+
+    def update_tags(self, instance, validated_data):
+
+        to_be_tagged, validated_data = self._pop_tags(validated_data)
+        tag_object = super(TaggitSerializer, self).update(
+            instance, validated_data)
+
+        saved_tags = self._save_tags(tag_object, to_be_tagged)
+
+        return validated_data
+
+
 
 
     class Meta:

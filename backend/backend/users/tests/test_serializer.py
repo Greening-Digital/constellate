@@ -85,3 +85,22 @@ class TestProfileSerializer:
 
         # and has the profile been updated?
         assert res.bio == profile_dict['bio']
+    def test_update_profile_tags(self, profile):
+
+        assert profile.tags.count() == 0
+
+        profile_dict = {
+            "tags": ["tech"],
+        }
+
+        ps = ProfileSerializer(data=profile_dict)
+        assert ps.is_valid()
+
+        res = ps.update(profile, ps.data)
+
+        new_ps = ProfileSerializer(res)
+        new_data = new_ps.data
+
+        assert res.tags.first().name == "tech"
+        assert res.tags.first().name == "tech"
+
