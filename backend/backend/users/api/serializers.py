@@ -10,7 +10,7 @@ from rest_framework.utils import model_meta
 
 User = get_user_model()
 from ..models import Profile
-
+from django.utils.text import slugify
 
 class ConstellateTagListSerializerField(TagListSerializerField):
     """
