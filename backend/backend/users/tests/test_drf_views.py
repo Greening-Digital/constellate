@@ -1,10 +1,13 @@
 import pytest
 from django.test import RequestFactory
 
-from backend.users.api.views import ProfileViewSet
+from backend.users.api.views import ProfileViewSet, ProfilePhotoUploadView
 from backend.users.models import User, Profile
 from backend.users.api.serializers import ProfileSerializer
 from backend.users.tests.factories import ProfileFactory
+import shutil
+
+from pathlib import Path
 
 pytestmark = pytest.mark.django_db
 
@@ -117,3 +120,28 @@ class TestProfileViewSet:
         response = view.update(request, profile)
         assert response.status_code == 200
 
+
+# @pytest.mark.only
+class TestProfileUploadView:
+
+    def test_file_upload_for_profile(self, profile, rf, tmp_path, tmp_pic_path):
+        view = ProfilePhotoUploadView()
+        request = rf.get("/upload/")
+        request.user = profile.user
+        view.request = request
+
+        assert not profile.photo
+
+        filename = "test_pic.png"
+        test_pic = open(tmp_pic_path, 'rb')
+
+        request.data = {
+            'photo': test_pic,
+            "id": profile.id,
+        }
+
+        response = view.put(request, profile.id)
+        updated_profile = Profile.objects.get(pk=profile.id)
+
+        assert response.status_code == 200
+        assert updated_profile.photo

@@ -3,7 +3,7 @@ from django.test import RequestFactory
 
 from backend.users.api.views import ProfileViewSet
 from backend.users.models import User, Profile
-from backend.users.api.serializers import ProfileSerializer
+from backend.users.api.serializers import ProfileSerializer, ProfilePicSerializer
 from backend.users.tests.factories import ProfileFactory
 
 pytestmark = pytest.mark.django_db
@@ -104,3 +104,31 @@ class TestProfileSerializer:
         assert res.tags.first().name == "tech"
         assert res.tags.first().name == "tech"
 
+
+
+
+class TestProfilePicSerializer:
+
+    def test_serialise_existing_profile(self, profile):
+        pro = ProfilePicSerializer(profile)
+        assert pro.data['id'] == profile.id
+        assert pro.data['photo'] == profile.photo
+
+
+    def test_validate_profile_pic_submission(self, profile, tmp_pic_path):
+        """
+        We expect to see an orderedDict returned with the
+        id, and the file inside.
+        """
+
+        filename = "test_pic.png"
+        test_pic = open(tmp_pic_path, 'rb')
+
+        ps = ProfilePicSerializer(data={
+            'id': profile.id,
+            'photo': None
+        })
+
+        assert ps.is_valid()
+        assert 'id' in ps.validated_data
+        assert 'photo' in ps.validated_data
