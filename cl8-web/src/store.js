@@ -348,68 +348,32 @@ const actions = {
     //     debug('Error saving profile: ', payload, 'failed', error)
     //   })
   },
-  updateProfilePhoto: function(context, payload) {
-    debug('updateProfilePhoto: sending photo update to Firebase', payload)
+  updateProfilePhoto: async function(context, payload) {
     const profileId = payload.profile.id
-    const uploadedFileName = `profilePhotos/${profileId}-${Date.now()}`
-    debug('updateProfilePhoto: uploadedFileName', payload.photo)
-    debug('updateProfilePhoto: uploadedFileName', uploadedFileName)
-    const metadata = {
-      contentType: 'image/jpeg'
-    }
-    return new Promise((resolve, reject) => {
-      fbase
-        .storage()
-        .ref()
-        // we add the timestamp so photos are unique in buckets
-        .child(uploadedFileName)
-        .put(payload.photo, metadata)
-        .then(snapshot => {
-          debug('updateProfilePhoto: Succesfully uploaded photo', snapshot)
-          // build the photo array to pass in with the profile
-          return snapshot.ref
-            .getDownloadURL()
-            .then(function(downloadURL) {
-              console.log('updateProfilePhoto: File available at', downloadURL)
-              let returnedPhoto = {
-                url: downloadURL,
-                thumbnails: {}
-              }
-              // if there is no previous photo added from airtable, we need to create the
-              // property
-              if (typeof payload.profile.photo === 'undefined') {
-                payload.profile.photo = []
-              }
-              payload.profile.photo[0] = returnedPhoto
-              debug(
-                'updateProfilePhoto: payload.profile.photo[0]',
-                payload.profile.photo[0]
-              )
-              context
-                .dispatch('updateProfile', payload.profile)
-                .then(() => {
-                  debug('updateProfilePhoto: profile updated')
-                  resolve()
-                })
-                .catch(err => {
-                  debug('updateProfilePhoto: Updating profile failed', err)
-                  reject()
-                })
+    const token = context.getters.token
 
-              // TODO now we need to save the updated photo on the profile
-              // typically by dispatching a new action
-            })
-            .catch(error => {
-              reject()
-              debug(
-                'updateProfilePhoto: Saving uploaded photo: ',
-                payload,
-                'failed',
-                error
-              )
-            })
-        })
-    })
+    const photoPayload = new FormData()
+    photoPayload.append('photo', payload.photo)
+    photoPayload.append('id', profileId)
+
+    const response = await instance.put(
+      `/api/upload/${profileId}/`,
+      photoPayload,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    )
+
+    if (response) {
+      context.commit('SET_PROFILE', payload.profile)
+      context.dispatch('fetchVisibleProfileList')
+      router.push({ name: 'home' })
+    } else {
+      return 'Something went wrong with uploading the photo.'
+    }
   }
 }
 
