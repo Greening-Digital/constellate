@@ -26,7 +26,9 @@ export default {
       return this.data || []
     },
     sortedOptions: function() {
-      return sortBy(this.options, function(x){ return x.name.toLowerCase() })
+      return sortBy(this.options, function(x){
+        return x.name ? x.name.toLowerCase() : x.toLowerCase()
+      })
     }
   },
   data: () => {
