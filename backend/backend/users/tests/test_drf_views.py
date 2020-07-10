@@ -121,14 +121,6 @@ class TestProfileViewSet:
         assert response.status_code == 200
 
 
-@pytest.fixture
-def tmp_pic_path(tmp_path):
-    filename = "test_pic.png"
-    pic_path = Path().cwd() / 'backend' / 'users' / 'tests' / 'test_pic.png'
-    test_pic_path = tmp_path / filename
-    shutil.copy(pic_path, test_pic_path)
-    return test_pic_path
-
 @pytest.mark.only
 class TestProfileUploadView:
 
@@ -149,11 +141,7 @@ class TestProfileUploadView:
         }
 
         response = view.put(request, filename)
-
         updated_profile = Profile.objects.get(pk=profile.id)
-
-        # import ipdb ; ipdb.set_trace()
 
         assert response.status_code == 200
         assert updated_profile.photo
-        # import ipdb ; ipdb.set_trace()
