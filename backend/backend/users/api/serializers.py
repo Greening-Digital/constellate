@@ -88,27 +88,14 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
 
-        for user_key in ['name', 'email', 'admin']:
-            if user_key in validated_data.keys():
-                value = validated_data.pop(user_key)
-
-                if user_key == 'admin':
-                    instance.is_staff = value
-                else:
-                    setattr(instance.user, user_key, value)
-
+        # update our corresponding user first
+        instance.user.name = validated_data.pop('name', instance.user.name)
+        instance.user.email = validated_data.pop('email', instance.user.email)
+        instance.user.is_staff = validated_data.pop('admin', False)
         instance.user.save()
 
+        # update the profile itself
         for attr, value in validated_data.items():
-
-            # some values we don't want to allow setting
-            # via the API
-            if attr in ['id', 'tags']:
-                continue
-
-            if not value:
-                continue
-
             setattr(instance, attr, value)
         instance.save()
 
@@ -137,7 +124,9 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
             # need their own handler
             "tags",
+            "photo",
         ]
+        read_only_fields = ["photo", "id"]
 
 
 
