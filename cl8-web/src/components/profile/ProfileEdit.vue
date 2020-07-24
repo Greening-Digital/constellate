@@ -61,7 +61,7 @@
                   <li class="list website mt2">
                     <label class="f5" for>
                       website
-                      <small>(http:// is added automatically)</small>
+                      <small>(Don't forget the http:// bit!)</small>
                     </label>
                     <input class="w-100 mt1 pa1" v-model="profile.website" />
                   </li>
