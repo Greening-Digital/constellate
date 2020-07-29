@@ -12,6 +12,7 @@ import VeeValidate from 'vee-validate'
 import VueFuse from 'vue-fuse'
 
 import debugLib from 'debug'
+import { fetchCurrentUser } from './utils'
 const debug = debugLib('cl8.main.js')
 
 Vue.config.productionTip = false
@@ -45,19 +46,12 @@ const app = new Vue({
 
 app.$validator.localize('en', dict)
 
-// check for our user on load of the app
-;(async () => {
-  const currentUser = VueStore.getters.currentUser
-
-  if (!currentUser) {
-    await VueStore.dispatch('createUserSession')
-  }
-})()
-
 router.beforeEach(async (to, from, next) => {
+
   debug(to.name, to.from, next)
+
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  const currentUser = VueStore.getters.currentUser
+  const currentUser = await fetchCurrentUser(VueStore)
 
   if (currentUser && to.name === 'signin') {
     next('home')
@@ -65,7 +59,13 @@ router.beforeEach(async (to, from, next) => {
 
   if (requiresAuth && !currentUser) {
     // you need to be logged in, so log the user in
-    next('signin')
+    if (to.name === 'signin') {
+      next()
+    }
+    else {
+      next('signin')
+    }
+
   } else {
     next()
   }

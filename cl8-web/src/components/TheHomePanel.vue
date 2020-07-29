@@ -47,10 +47,7 @@ export default {
     }
   },
   watch: {},
-  methods: {},
-  created() {
-    debug('created')
-  }
+  methods: {}
 }
 </script>
 

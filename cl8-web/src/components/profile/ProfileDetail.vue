@@ -99,7 +99,7 @@ const debug = debugLib('cl8.ProfileDetail')
 
 Vue.component('v-gravatar', Gravatar)
 
-import linkify from '../../utils'
+import { linkify } from '../../utils'
 
 export default {
   name: 'ProfileDetail',

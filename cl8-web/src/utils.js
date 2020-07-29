@@ -1,3 +1,6 @@
+import debugLib from 'debug'
+const debug = debugLib('cl8.utils')
+
 function linkify (url, prefix) {
   // check if link already starts with 'http:', return if so
   let pattern = RegExp(/https?:/)
@@ -12,4 +15,19 @@ function linkify (url, prefix) {
   return `http://${url}`
 }
 
-export default linkify
+async function fetchCurrentUser(store) {
+  debug('currentProfile', store.getters.currentUser)
+  if (!localStorage.token) {
+    return false
+  }
+  if (!store.getters.currentUser && localStorage.token) {
+    await store.dispatch('createUserSession')
+  }
+
+  return store.getters.currentUser
+}
+
+export {
+  linkify,
+  fetchCurrentUser
+}

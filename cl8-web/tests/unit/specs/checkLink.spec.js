@@ -1,4 +1,4 @@
-import linkify from '../../../src/utils'
+import { linkify } from '../../../src/utils'
 
 describe('Linkify', () => {
   it("adds 'http://' to domain.com if not present", () => {
