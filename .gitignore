@@ -47,3 +47,10 @@ cl8-web/dist/
 coverage
 
 cruft
+
+# don't track generated files
+static-vue
+
+# don't track sqlite databases
+
+*.sqlite
