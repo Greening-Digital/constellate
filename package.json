@@ -8,7 +8,7 @@
     "serve": "vue-cli-service serve ./cl8-web/src/main.js",
     "build": "vue-cli-service build ./cl8-web/src/main.js",
     "build:django": "npm run build && cp ./static-vue/index.html ./backend/backend/templates/pages/vue.html && mv ./static-vue/ ./backend/backend/static-vue/",
-    "test:unit": "cd cl8-web && vue-cli-service test:unit",
+    "test:unit": "vue-cli-service test:unit --config=./cl8-web/jest.config.js",
     "lint": "vue-cli-service lint ./cl8-web/src/main.js",
     "release": "vue-cli-service build ./cl8-web/src/main.js && npm run notify"
   },
