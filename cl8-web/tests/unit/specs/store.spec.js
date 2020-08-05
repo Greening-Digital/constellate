@@ -35,3 +35,40 @@ describe.skip('Store/Actions/fetchVisibleUserList', () => {
 
   describe.skip('not authed', () => {})
 })
+
+describe('Store/Getters/tagList', () => {
+  it("returns a list of unique tags from a list of profiles", async () => {
+    //  instantivate Vue
+    const localVue = createLocalVue()
+    localVue.use(Vuex)
+    // console.log(Store.state)
+    Store.state.visibleProfileList = [{
+      "tags": [
+        {
+          "id": 2,
+          "slug": "web",
+          "name": "web"
+        },
+      ],
+    },
+    {
+      "tags": [
+        {
+          "id": 2,
+          "slug": "web",
+          "name": "web"
+        }
+      ]
+    }]
+
+    // console.log(Store.state)
+    const store = new Vuex.Store(Store)
+    // call action
+    await store.dispatch('fetchVisibleProfileList')
+    // assert we have what we think we have
+    expect(store.state.visibleProfileList).toHaveLength(2)
+    expect(store.state.fullTagList).toHaveLength(1)
+  })
+
+})
+

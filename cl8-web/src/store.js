@@ -1,6 +1,7 @@
 /* eslint-disable */
 import router from './routes'
 import axios from 'axios'
+import { tagList } from './utils'
 
 const debug = require('debug')('cl8.store')
 
@@ -23,11 +24,12 @@ const state = {
   profileShowing: false,
   profileList: [],
   visibleProfileList: [],
+  fullTagList: '',
   requestUrl: null,
   signInData: {
     message: null,
     email: null
-  }, 
+  },
   token: localStorage.token || null
 }
 
@@ -66,6 +68,10 @@ const getters = {
   profileList: function(state) {
     debug('getting profileList')
     return state.profileList
+  },
+  fullTagList: function(state) {
+    debug('getting fullTagList:', state.fullTagList)
+    return state.fullTagList
   },
   profileShowing: function(state) {
     return state.profileShowing
@@ -132,6 +138,11 @@ const mutations = {
     debug('setVisibleProfileList', payload)
     state.visibleProfileList = payload
   },
+  SET_TAG_LIST: function(state, payload) {
+    debug('profiles:', payload)
+    state.fullTagList = tagList(payload)
+    debug('tagList:', state.fullTagList)
+  } ,
   toggleProfileShowing: function(state) {
     debug('profileShowing', state.profileShowing)
     state.profileShowing = !state.profileShowing
@@ -233,6 +244,8 @@ const actions = {
       debug('profiles resp', response)
       const profileArray = response.data.filter(profile => profile.visible)
       context.commit('setVisibleProfileList', profileArray)
+      context.commit('SET_TAG_LIST', profileArray)
+
     } catch (error) {
       debug('Error fetching visibleProfileList', error)
     }
