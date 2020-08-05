@@ -14,16 +14,22 @@
 </template>
 <script>
 import { sortBy } from 'lodash'
+import debugLib from 'debug'
+
+const debug = debugLib('cl8.ProfileTagsComponent')
 // TODO
 export default {
   name: 'ProfileTagsComponent',
-  props: ['data', 'options'],
+  props: ['data'],
   created () {
     if (this.list === undefined ) this.list = []
   },
   computed: {
     list: function () {
       return this.data || []
+    },
+    options: function () {
+      return this.$store.getters.fullTagList
     },
     sortedOptions: function() {
       return sortBy(this.options, function(x){
@@ -51,17 +57,26 @@ export default {
       this.$emit('update:data', this.list)
     },
     newtag: function(event, val) {
+      //
       event.preventDefault()
       if (val.length > 0) {
         val = val.toLowerCase().trim()
+        // TODO replaces this with updating the store, instead
+        // of bubbling it up the tree
         if (this.list.find(x => x.name.toLowerCase() === val) === undefined) {
           this.$emit('newtag', val)
+
         }
       }
+      // then reset input
+      this.input = ''
     },
     checkInList: function(option){
+      const that = this
       if (this.list !== undefined) {
-        return this.list.filter(x => x.name === option.name).length > 0
+        debug({option})
+        // debug(that.options)
+        return that.list.filter(x => x.name === option.name).length > 0
       } else {
         return false
       }
