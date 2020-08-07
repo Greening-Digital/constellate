@@ -1,10 +1,13 @@
-import Vue from 'vue'
-import { mount } from '@vue/test-utils'
+
+import { mount} from '@vue/test-utils'
 
 import ProfileTagsComponent from '@/components/profile/ProfileTagsComponent'
 
+import debugLib from 'debug'
+
+const debug = debugLib('cl8.ProfileTagsComponent.spec')
+
 let sampleData = {
-  fields: {
     admin: 'true',
     bio: '',
     email: 'someone@domain.com',
@@ -21,8 +24,7 @@ let sampleData = {
       }
     ],
     visible: 'yes',
-  },
-  id: 'recxxxxxxxxxxxxxx',
+    id: 'recxxxxxxxxxxxxxx',
 }
 
 const sampleTagList = [
@@ -71,16 +73,28 @@ const sampleTagList = [
 describe('ProfileTagsComponent', () => {
   it('shows a list of active tags', () => {
     const wrapper = mount(ProfileTagsComponent, {
-      propsData: { data: sampleData.fields.tags, options: sampleTagList }
+      mocks: {
+        $store: {
+          getters: {
+            profile: sampleData,
+            fullTagList: sampleTagList
+          }
+        }
+      }
     })
     expect(wrapper.findAll('#tags button.active').length).toBe(2)
-    // expect(wrapper.findAll('.gravatar').length).toBe(0)
   })
   it('shows a list of inactive tags too', () => {
     const wrapper = mount(ProfileTagsComponent, {
-      propsData: { data: sampleData.fields.tags, options: sampleTagList}
+      mocks: {
+        $store: {
+          getters: {
+            profile: sampleData,
+            fullTagList: sampleTagList
+          }
+        }
+      }
     })
     expect(wrapper.findAll('#tags button').length).toBe(8)
-    // expect(wrapper.findAll('.gravatar').length).toBe(1)
   })
 })
