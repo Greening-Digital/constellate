@@ -5,13 +5,13 @@ import Vuex from 'vuex'
 describe.skip('Store/Actions/fetchUserList', () => {
   describe('authed', () => {
     it('fetches a list of users from our API server ', async () => {
-      //  instantivate Vue
+      //  arrange
       const localVue = createLocalVue()
       localVue.use(Vuex)
       const store = new Vuex.Store(Store)
-      // call action
+      // act
       await store.dispatch('fetchProfileList')
-      // assert we have what we think we have
+      // assert
       expect(store.state.profileList).toHaveLength(3)
     })
   })
@@ -22,13 +22,13 @@ describe.skip('Store/Actions/fetchUserList', () => {
 describe.skip('Store/Actions/fetchVisibleUserList', () => {
   describe('authed', () => {
     it('fetches a list of visible users from our API server ', async () => {
-      //  instantivate Vue
+      //  arrange
       const localVue = createLocalVue()
       localVue.use(Vuex)
       const store = new Vuex.Store(Store)
-      // call action
+      // act
       await store.dispatch('fetchVisibleProfileList')
-      // assert we have what we think we have
+      // assert
       expect(store.state.visibleProfileList).toHaveLength(2)
     })
   })
@@ -38,10 +38,10 @@ describe.skip('Store/Actions/fetchVisibleUserList', () => {
 
 describe('Store/Getters/tagList', () => {
   it("returns a list of unique tags from a list of profiles", async () => {
-    //  instantivate Vue
+
     const localVue = createLocalVue()
     localVue.use(Vuex)
-    // console.log(Store.state)
+
     const visibleProfileList = [{
       "tags": [
         {
@@ -61,13 +61,8 @@ describe('Store/Getters/tagList', () => {
       ]
     }]
 
-    // console.log(Store.state)
     const store = new Vuex.Store(Store)
-    // call action
-    // await store.dispatch('fetchVisibleProfileList')
     store.commit('SET_TAG_LIST', visibleProfileList)
-    // assert we have what we think we have
-    // expect(store.state.visibleProfileList).toHaveLength(2)
     expect(store.state.fullTagList).toHaveLength(1)
   })
 }),
@@ -75,7 +70,7 @@ describe("Store/Actions/newProfileTag", () => {
   it("adds a tag to a profile", async () => {
     const localVue = createLocalVue()
     localVue.use(Vuex)
-    // console.log(Store.state)
+
     const visibleProfileList = [{
       "id": 1,
       "name":"sample_user",
