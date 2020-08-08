@@ -35,7 +35,6 @@ function tagList(profileList) {
   // TODO: this seems like a terrible way to check equality - surely there's a better way?
   debug('profileList', profileList)
   let tags = new Set()
-  console.log(profileList)
 
   const profileTags = profileList.map((profile) => {
     if (profile.tags) {
