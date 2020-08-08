@@ -42,7 +42,7 @@ describe('Store/Getters/tagList', () => {
     const localVue = createLocalVue()
     localVue.use(Vuex)
     // console.log(Store.state)
-    Store.state.visibleProfileList = [{
+    const visibleProfileList = [{
       "tags": [
         {
           "id": 2,
@@ -64,11 +64,48 @@ describe('Store/Getters/tagList', () => {
     // console.log(Store.state)
     const store = new Vuex.Store(Store)
     // call action
-    await store.dispatch('fetchVisibleProfileList')
+    // await store.dispatch('fetchVisibleProfileList')
+    store.commit('SET_TAG_LIST', visibleProfileList)
     // assert we have what we think we have
-    expect(store.state.visibleProfileList).toHaveLength(2)
+    // expect(store.state.visibleProfileList).toHaveLength(2)
     expect(store.state.fullTagList).toHaveLength(1)
   })
+}),
+describe("Store/Actions/newProfileTag", () => {
+  it("adds a tag to a profile", async () => {
+    const localVue = createLocalVue()
+    localVue.use(Vuex)
+    // console.log(Store.state)
+    const visibleProfileList = [{
+      "id": 1,
+      "name":"sample_user",
+      "tags": [
+        {
+          "id": 2,
+          "slug": "web",
+          "name": "web"
+        },
+      ],
+    },
+    {
+      "id": 1,
+      "name":"second sample_user",
+      "tags": [
+        {
+          "id": 2,
+          "slug": "web",
+          "name": "web"
+        }
+      ]
+    }]
+    const store = new Vuex.Store(Store)
+    store.commit('SET_PROFILE', visibleProfileList[0])
+    store.commit('setProfileList', visibleProfileList)
+    store.dispatch('newProfileTag', 'new tag')
+    expect(store.state.fullTagList).toHaveLength(2)
 
+
+    // check that after we add new tag, the getter is returning the expected updated value
+  })
 })
 

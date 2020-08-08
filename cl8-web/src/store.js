@@ -2,6 +2,7 @@
 import router from './routes'
 import axios from 'axios'
 import { tagList } from './utils'
+import { reject } from 'lodash'
 
 const debug = require('debug')('cl8.store')
 
@@ -70,7 +71,7 @@ const getters = {
     return state.profileList
   },
   fullTagList: function(state) {
-    debug('getting fullTagList:', state.fullTagList)
+    debug('getting fullTagList:', state.fullTagList.length)
     return state.fullTagList
   },
   profileShowing: function(state) {
@@ -141,7 +142,7 @@ const mutations = {
   SET_TAG_LIST: function(state, payload) {
     debug('profiles:', payload)
     state.fullTagList = tagList(payload)
-    debug('tagList:', state.fullTagList)
+    debug('tagList:', state.fullTagList.length)
   } ,
   toggleProfileShowing: function(state) {
     debug('profileShowing', state.profileShowing)
@@ -324,8 +325,38 @@ const actions = {
     } else {
       return 'Something went wrong with uploading the photo.'
     }
-  }
+  },
+  updateProfileList: function(context, payload)   {
+      let profiles = context.getters.visibleProfileList
+      debug(`profiles count: ${profiles.length}`)
+      let newProfileList = reject(profiles, function(prof) {
+        return prof.id === payload.id
+      })
+      debug(`newProfiles count: ${newProfileList.length}`)
+      newProfileList.push(payload)
+      debug(`updated newProfiles count: ${newProfileList.length}`)
+      context.commit('setVisibleProfileList', newProfileList)
+      context.commit('SET_TAG_LIST', newProfileList)
+
+  },
+  newProfileTag: async function(context, payload) {
+    debug('new tag', payload)
+    const newTag = payload
+    let tempVal =
+      newTag.substring(0, 2) + Math.floor(Math.random() * 10000000)
+    const tag = {
+      name: newTag,
+      code: tempVal,
+      id: 'tempval' + tempVal
+    }
+    const profile = context.getters.profile
+    profile.tags.push(tag)
+    // const tags = context.getters.fullTagList
+    context.commit('SET_PROFILE', profile)
+    context.dispatch('updateProfileList', profile)
+  },
 }
+
 
 export default {
   state,
