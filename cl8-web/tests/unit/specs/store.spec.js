@@ -106,10 +106,29 @@ describe("Store/Actions/newProfileTag", () => {
   })
 }),
 describe("Store/Actions/updateProfileTags", () => {
-  it("adds removes tags no longer on a profile", async () => {
+  it("adds an active tag to a profile", async () => {
     const localVue = createLocalVue()
     localVue.use(Vuex)
-    // console.log(Store.state)
+    const sampleProfile = {
+      "id": 1,
+      "name":"sample_user",
+      "tags": []
+    }
+    const store = new Vuex.Store(Store)
+    store.commit('SET_PROFILE', sampleProfile)
+    store.commit('setProfileList', [sampleProfile])
+    store.dispatch('updateProfileTags', [
+      {
+        "id": 2,
+        "slug": "web",
+        "name": "web"
+      },
+    ])
+    expect(store.state.fullTagList).toHaveLength(1)
+  })
+  it("removes tags no longer on a profile", async () => {
+    const localVue = createLocalVue()
+    localVue.use(Vuex)
     const sampleProfile = {
       "id": 1,
       "name":"sample_user",
