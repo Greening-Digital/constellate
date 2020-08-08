@@ -1,19 +1,26 @@
 <template>
   <div id="tags">
-    <input type="text" v-model="input" v-on:keydown.enter="newtag($event, input)" placeholder="add a new tag"/>
-    <div id="tagoptions" v-if="sortedOptions">
-      <button
-        v-for="(option, index) in sortedOptions"
-        :key="index"
-        v-on:click="toggle($event, option)"
-        v-bind:class="{active: checkInList(option)}">
-          {{option.name}}
-      </button>
-    </div>
+      <input
+        type="text"
+        v-model="input"
+        v-on:keydown.enter="newtag"
+        data-tagname
+        placeholder="add a new tag"/>
+
+      <div id="tagoptions" v-if="sortedOptions">
+        <button
+          v-for="(option, index) in sortedOptions"
+          :key="index"
+          v-on:click="toggle($event, option)"
+          v-bind:class="{active: checkInList(option)}">
+            {{option.name}}
+        </button>
+      </div>
+
   </div>
 </template>
 <script>
-import { sortBy } from 'lodash'
+import { sortBy, includes } from 'lodash'
 import debugLib from 'debug'
 
 const debug = debugLib('cl8.ProfileTagsComponent')
@@ -45,10 +52,17 @@ export default {
     }
   },
   methods: {
+    inTagList: function(tagName) {
+      if (!this.list.length){
+        return false
+      }
+      return includes(this.list.map(x => x.name), tagName)
+    },
     toggle: function(event, val) {
       event.preventDefault()
+
       if (this.list !== undefined) {
-        if (this.list.find(x => x.name === val.name) === undefined) {
+        if (!this.inTagList(val.name)) {
           this.list.push(val)
         } else {
           this.list.splice(this.list.findIndex(x => x.name === val.name), 1)
@@ -56,18 +70,19 @@ export default {
       } else {
         this.list = [val]
       }
+      // TODO use the store instead here
       this.$emit('update:data', this.list)
     },
-    newtag: function(event, val) {
-      //
-      event.preventDefault()
-      if (val.length > 0) {
-        val = val.toLowerCase().trim()
-        // TODO replaces this with updating the store, instead
-        // of bubbling it up the tree
-        if (this.list.find(x => x.name.toLowerCase() === val) === undefined) {
-          this.$store.dispatch('newProfileTag', val)
+    newtag: function(event) {
+      debug('new tag submission:', this.input)
 
+      if (this.input.length > 0) {
+        const newTagName = this.input.toLowerCase().trim()
+        if (!this.inTagList(newTagName)) {
+          debug('new tag, adding to the list:', newTagName)
+          this.$store.dispatch('newProfileTag', newTagName)
+        } else {
+          debug('this tag already exists. Doing nothing for:', newTagName)
         }
       }
       // then reset input
@@ -77,9 +92,9 @@ export default {
       const that = this
       if (this.list !== undefined) {
         // debug({option})
-        debug(JSON.parse(JSON.stringify(option)))
+        // debug(JSON.parse(JSON.stringify(option)))
         // debug(that.options)
-        return that.list.filter(x => x.name === option.name).length > 0
+        return that.inTagList(option.name)
       } else {
         return false
       }
