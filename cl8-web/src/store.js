@@ -299,6 +299,15 @@ const actions = {
       return 'There was a problem saving changes to the profile.'
     }
   },
+  updateProfileTags: function(context, payload) {
+    // update the profile locally, without saving
+    // given that we have updateProfle above, we may be better
+    // with save Profile to send data to the server and update for local store changes
+    const profile = context.getters.profile
+    profile.tags = payload
+    context.commit('SET_PROFILE', profile)
+    context.dispatch('updateProfileList', profile)
+  },
   updateProfilePhoto: async function(context, payload) {
     const profileId = payload.profile.id
     const token = context.getters.token

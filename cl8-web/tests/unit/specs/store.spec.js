@@ -103,9 +103,49 @@ describe("Store/Actions/newProfileTag", () => {
     store.commit('setProfileList', visibleProfileList)
     store.dispatch('newProfileTag', 'new tag')
     expect(store.state.fullTagList).toHaveLength(2)
+  })
+}),
+describe("Store/Actions/updateProfileTags", () => {
+  it("adds an active tag to a profile", async () => {
+    const localVue = createLocalVue()
+    localVue.use(Vuex)
+    const sampleProfile = {
+      "id": 1,
+      "name":"sample_user",
+      "tags": []
+    }
+    const store = new Vuex.Store(Store)
+    store.commit('SET_PROFILE', sampleProfile)
+    store.commit('setProfileList', [sampleProfile])
+    store.dispatch('updateProfileTags', [
+      {
+        "id": 2,
+        "slug": "web",
+        "name": "web"
+      },
+    ])
+    expect(store.state.fullTagList).toHaveLength(1)
+  })
+  it("removes tags no longer on a profile", async () => {
+    const localVue = createLocalVue()
+    localVue.use(Vuex)
+    const sampleProfile = {
+      "id": 1,
+      "name":"sample_user",
+      "tags": [
+        {
+          "id": 2,
+          "slug": "web",
+          "name": "web"
+        },
+      ],
+    }
+    const store = new Vuex.Store(Store)
+    store.commit('SET_PROFILE', sampleProfile)
+    store.commit('setProfileList', [sampleProfile])
+    store.dispatch('updateProfileTags', [])
+    expect(store.state.fullTagList).toHaveLength(0)
 
-
-    // check that after we add new tag, the getter is returning the expected updated value
   })
 })
 

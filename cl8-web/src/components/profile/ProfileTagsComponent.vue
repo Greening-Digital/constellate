@@ -71,7 +71,7 @@ export default {
         this.list = [val]
       }
       // TODO use the store instead here
-      this.$emit('update:data', this.list)
+      this.$store.dispatch('updateProfileTags', this.list)
     },
     newtag: function(event) {
       debug('new tag submission:', this.input)
@@ -91,9 +91,6 @@ export default {
     checkInList: function(option){
       const that = this
       if (this.list !== undefined) {
-        // debug({option})
-        // debug(JSON.parse(JSON.stringify(option)))
-        // debug(that.options)
         return that.inTagList(option.name)
       } else {
         return false
