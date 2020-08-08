@@ -97,4 +97,24 @@ describe('ProfileTagsComponent', () => {
     })
     expect(wrapper.findAll('#tags button').length).toBe(8)
   })
+  it('dispatches the "newProfileTag" action when adding a new tag', async () => {
+    const mockStore = {
+      getters: {
+        profile: sampleData,
+        fullTagList: sampleTagList
+      },
+      dispatch: jest.fn()
+    }
+
+    const wrapper = mount(ProfileTagsComponent, {
+      mocks: {
+        $store: mockStore
+      }
+    })
+    wrapper.find("#tags [data-tagname]").setValue("new tag")
+    wrapper.find("#tags [data-tagname]").trigger("keydown.enter")
+
+    await wrapper.vm.$nextTick()
+    expect(mockStore.dispatch).toHaveBeenCalledWith('newProfileTag', 'new tag')
+  })
 })

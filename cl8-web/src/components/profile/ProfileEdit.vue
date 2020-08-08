@@ -119,7 +119,6 @@
                 <profile-tags-component
                   :data.sync="profile.tags"
                   :options="fullTagList"
-                  @newtag="addTag"
                 ></profile-tags-component>
               </div>
             </div>
@@ -178,17 +177,6 @@ export default {
     await this.$store.dispatch('fetchVisibleProfileList')
   },
   methods: {
-    addTag(newTag) {
-      debug('new tag', newtag)
-      let tempVal =
-        newTag.substring(0, 2) + Math.floor(Math.random() * 10000000)
-      const tag = {
-        name: newTag,
-        code: tempVal,
-        id: 'tempval' + tempVal
-      }
-      this.profile.tags.push(tag)
-    },
     onSubmit: function(item) {
       debug('updating profile', this.profile)
       this.$store.dispatch('updateProfile', this.profile)
