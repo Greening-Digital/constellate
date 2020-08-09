@@ -1,7 +1,8 @@
 <template>
   <div class="pa4 center w-80 cf tc">
     <form @submit.prevent="confirmPhoto" v-if="profile">
-      <img v-if="localPhoto" :src="this.localPhoto" class="supplied-photo dib b--light-silver ba" />
+      <img v-if="localPhoto" :src="this.localPhoto"
+      class="local-photo supplied-photo dib b--light-silver ba" />
 
       <img
         v-if="hasPhoto(profile) && !localPhoto"
@@ -10,7 +11,7 @@
       />
 
       <v-gravatar
-        v-else-if="!hasPhoto(profile)"
+        v-if="!hasPhoto(profile) && !localPhoto"
         :email="profile.email"
         :size="200"
         class="gravatar dib b--light-silver ba"
@@ -36,13 +37,12 @@
 import Vue from 'vue'
 import debugLib from 'debug'
 import { hasPhoto } from '@/utils'
-
+import Gravatar from 'vue-gravatar'
 const debug = debugLib('cl8.ProfilePhoto')
 
 export default {
   name: 'ProfilePhoto',
-  components: {},
-  props: [],
+  components: { Gravatar },
   data() {
     return {
       localPhoto: null,
