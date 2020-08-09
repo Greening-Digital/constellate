@@ -3,6 +3,17 @@ import lodash from 'lodash'
 
 const debug = debugLib('cl8.utils')
 
+function hasPhoto (profile) {
+
+  debug({profile})
+  debug({photo: profile.photo})
+  if (profile.photo) {
+    return true
+  }
+  // otherwise just return false
+  return false
+}
+
 function linkify (url, prefix) {
   // check if link already starts with 'http:', return if so
   let pattern = RegExp(/https?:/)
@@ -60,5 +71,6 @@ function tagList(profileList) {
 export {
   linkify,
   fetchCurrentUser,
-  tagList
+  tagList,
+  hasPhoto
 }

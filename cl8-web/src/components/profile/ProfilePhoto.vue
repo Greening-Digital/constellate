@@ -4,13 +4,13 @@
       <img v-if="localPhoto" :src="this.localPhoto" class="supplied-photo dib b--light-silver ba" />
 
       <img
-        v-if="hasPhoto() && !localPhoto"
-        :src="showPhoto('large')"
+        v-if="hasPhoto(profile) && !localPhoto"
+        :src="profile.photo"
         class="supplied-photo dib b--light-silver ba"
       />
 
       <v-gravatar
-        v-else-if="!localPhoto"
+        v-else-if="!hasPhoto(profile)"
         :email="profile.email"
         :size="200"
         class="gravatar dib b--light-silver ba"
@@ -35,6 +35,7 @@
 /* eslint-disable */
 import Vue from 'vue'
 import debugLib from 'debug'
+import { hasPhoto } from '@/utils'
 
 const debug = debugLib('cl8.ProfilePhoto')
 
@@ -61,29 +62,9 @@ export default {
       debug('can edit?', this.profile.id, this.user.uid)
       return this.profile.id == this.user.uid
     },
-    hasPhoto() {
-      if (typeof this.profile === 'undefined') {
-        return false
-      }
-      if (typeof this.profile.fields === 'undefined') {
-        return false
-      }
-      if (typeof this.profile.photo === 'undefined') {
-        return false
-      }
-      if (this.profile.photo.length > 0) {
-        return true
-      }
-      // otherwise just return false
-      return false
-    },
+    hasPhoto,
     showPhoto(size) {
-      try {
-        return this.profile.photo[0].thumbnails[size].url
-      } catch (e) {
-        debug(`error`, e)
-        return this.profile.photo[0].url
-      }
+      return this.profile.photo
     },
     updatePhoto(ev) {
       debug('image added')
