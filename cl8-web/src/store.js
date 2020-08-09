@@ -328,8 +328,8 @@ const actions = {
     )
 
     if (response) {
-      context.commit('SET_PROFILE', payload.profile)
-      context.dispatch('fetchVisibleProfileList')
+      context.commit('SET_PROFILE', response.data)
+      context.dispatch('updateProfileList', response.data)
       router.push({ name: 'home' })
     } else {
       return 'Something went wrong with uploading the photo.'
