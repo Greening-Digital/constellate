@@ -1,14 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Login.Vue mounting with expected data login mounts 1`] = `
-<div class="w-100">
-  <div>
-    <div class="spinner"><img src="../../assets/loading.svg" alt="loading"></div>
-  </div>
-  <!---->
-</div>
-`;
-
 exports[`Login.Vue mounting with expected data login mounts with when loading  1`] = `
 <div class="w-100">
   <div>
@@ -47,14 +38,5 @@ exports[`Login.Vue mounting with expected data shows login form when loaded 1`] 
       </div>
     </div>
   </div>
-</div>
-`;
-
-exports[`Login.Vue mounts with expected data login mounts 1`] = `
-<div class="w-100">
-  <div>
-    <div class="spinner"><img src="../../assets/loading.svg" alt="loading"></div>
-  </div>
-  <!---->
 </div>
 `;
