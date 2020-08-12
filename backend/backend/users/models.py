@@ -34,6 +34,7 @@ class Profile(models.Model):
     class Meta:
         verbose_name = _("Profile")
         verbose_name_plural = _("Profiles")
+        ordering = ['user__name']
 
     @property
     def name(self):
