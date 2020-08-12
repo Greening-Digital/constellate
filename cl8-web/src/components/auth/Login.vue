@@ -36,8 +36,7 @@
           </div>
 
           <form v-on:submit.prevent class="w-100 pa3 dib border-box mw6 ph5">
-              <p class="gray measure tl lh-copy">Enter the email address you signed up with to sign in. We'll send a one time login code, to finish logging in.</p>
-              <p class="gray measure tl lh-copy">No passwords needed. </p>
+              <p class="gray measure tl lh-copy">Enter the email address you signed up with to sign in. We'll send a one time login code, to finish logging you in.</p>
             <div class="w-100 mb3">
               <input
                 type="text"
@@ -59,6 +58,7 @@
 
             <div v-if="emailSubmitted">
               <div class="w-100">
+                <p class="gray measure tl lh-copy next-step-guidance">Ok, we've just sent an email to your address. It's valid for the next 15 minutes. Enter it below and you're in.</p>
                 <input
                   type="password"
                   name="login-code"
@@ -81,7 +81,7 @@
                   class="f6 link br3 bn pv2 mb2 mt2 bg-light-silver b white w-60 ml0 mr1 fl"
                   :class="{'bg-green pointer grow hover-bg-dark-green': formValid}"
                   :disabled="!formValid"
-                  name="button"
+                  name="sign-in"
                   @click="signIn"
                 >Sign in</button>
                 <button
