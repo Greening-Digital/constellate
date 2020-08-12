@@ -36,6 +36,8 @@
           </div>
 
           <form v-on:submit.prevent class="w-100 pa3 dib border-box mw6 ph5">
+              <p class="gray measure tl lh-copy">Enter the email address you signed up with to sign in. We'll send a one time login code, to finish logging in.</p>
+              <p class="gray measure tl lh-copy">No passwords needed. </p>
             <div class="w-100 mb3">
               <input
                 type="text"
@@ -59,12 +61,12 @@
               <div class="w-100">
                 <input
                   type="password"
-                  name="token"
+                  name="Login Code"
                   v-model="token"
                   class="input-reset pa2 ba br2 b--light-gray w-100"
                   :class=" {'bg-washed-red b--red': errors && errors.has('token') }"
-                  placeholder="your token"
-                  aria-label="your token"
+                  placeholder="your login code"
+                  aria-label="your login code"
                 />
 
                 <div>
@@ -97,10 +99,17 @@
                   :disabled="!formValid"
                   name="button"
                   @click="submitEmail"
-                >Get token</button>
+                >Request login code</button>
               </div>
             </div>
           </form>
+
+          <footer>
+            <p class="f6 tc gray">
+              <em>Having trouble logging in? <a class="f6 tc gray" :href="supportLink">Get in touch with support</a>.</em>
+            </p>
+          </footer>
+
         </div>
       </div>
     </div>
@@ -120,7 +129,8 @@ export default {
       token: null,
       announcement: '',
       formIsValid: false,
-      emailSubmitted: false
+      emailSubmitted: false,
+      supportLink: "mailto:support@domain.com"
     }
   },
   methods: {
