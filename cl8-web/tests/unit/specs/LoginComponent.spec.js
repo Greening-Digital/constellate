@@ -70,7 +70,7 @@ describe('Login.Vue', () => {
         expect(wrapper.find('button').element.disabled).toBe(true)
       })
 
-      test('the submit button should no longer be disabled with valid data', async () => {
+      test.skip('the submit button should no longer be disabled with valid data', async () => {
 
           // set the email now
           // update the store here
