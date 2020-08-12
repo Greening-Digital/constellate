@@ -1,6 +1,7 @@
 <template>
   <div id="tags">
       <input
+        class="mb3 w-100"
         type="text"
         v-model="input"
         v-on:keydown.enter="newtag"
@@ -9,10 +10,11 @@
 
       <div id="tagoptions" v-if="sortedOptions">
         <button
+        class="f6 grow no-underline b br-pill ph3 pv2 mb2 ml1 mr1 dib white bg-mid-gray bn pointer" 
           v-for="(option, index) in sortedOptions"
           :key="index"
           v-on:click="toggle($event, option)"
-          v-bind:class="{active: checkInList(option)}">
+          v-bind:class="{'bg-green': checkInList(option)}">
             {{option.name}}
         </button>
       </div>
@@ -42,8 +44,9 @@ export default {
   },
   data: () => {
     return {
-      input: ''
+      input: '',      
     }
+
   },
   methods: {
     inTagList: function(tagName) {
@@ -87,66 +90,3 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
-@mixin rounded($r: 5px) {
-  -webkit-border-radius: $r;
-  -moz-border-radius: $r;
-  border-radius: $r;
-}
-@mixin select() {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-input {
-  margin-bottom: 1em;
-  width: 100%;
-}
-#tags {
-  $tagbgcolor: #333 !default;
-  $tagbgcolorhover: #111 !default;
-  $tagtextcolor: #fff !default;
-  $deletecolor: #f00 !default;
-  $activecolor: green !default;
-  button {
-    display: inline-block;
-    margin: 0 0.5em 0.5em 0;
-    background: $tagbgcolor;
-    padding: 0.25em 0.5em;
-    @include rounded(3px);
-    color: $tagtextcolor;
-    border: 0;
-    cursor: pointer;
-    outline: none;
-    font-size: 1em;
-    @include select();
-    &:hover {
-      background: $tagbgcolorhover;
-      &.tag {
-        background: $deletecolor;
-      }
-    }
-    &.notag {
-      pointer-events: none;
-      font-style: italic;
-      opacity: 0.15;
-    }
-  }
-
-  #tagoptions {
-    button {
-      opacity: 0.5;
-      &.active {
-        background: $activecolor !important;
-        &:hover {
-          background: $deletecolor;
-        }
-      }
-      &:hover {
-        opacity: 1;
-      }
-    }
-  }
-}
-</style>
