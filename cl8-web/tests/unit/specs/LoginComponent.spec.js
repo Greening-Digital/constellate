@@ -132,7 +132,7 @@ describe('Login.Vue', () => {
       })
 
       it('shows new guidance after a user submits their email', async () => {
-        expect(wrapper.get('p.next-step-guidance').toBeTruthy()
+        expect(wrapper.get('p.next-step-guidance')).toBeTruthy()
       })
 
       it('sends the provided token to finish sign in', async () => {
