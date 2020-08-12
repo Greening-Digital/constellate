@@ -61,7 +61,7 @@
               <div class="w-100">
                 <input
                   type="password"
-                  name="Login Code"
+                  name="login-code"
                   v-model="token"
                   class="input-reset pa2 ba br2 b--light-gray w-100"
                   :class=" {'bg-washed-red b--red': errors && errors.has('token') }"
