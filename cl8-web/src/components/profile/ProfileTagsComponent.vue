@@ -14,7 +14,7 @@
           v-for="(option, index) in sortedOptions"
           :key="index"
           v-on:click="toggle($event, option)"
-          v-bind:class="{'bg-green': checkInList(option)}">
+          v-bind:class="{'active bg-green': checkInList(option)}">
             {{option.name}}
         </button>
       </div>
