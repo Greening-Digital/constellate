@@ -12,8 +12,8 @@
         <div class="w-100 tc">
           <div role="status" aria-live="polite" class="vh dib">
             <!--
-      when there is an error, we want list it in here, to a screen reader
-      can pick it up and read out the announcement
+              when there is an error, we want list it in here, to a screen reader
+              can pick it up and read out the announcement
             -->
             <div v-if="errors" class="errors">
               <p v-for="(key) in errors.all()" v-bind:key="key">{{ key }}</p>
@@ -106,7 +106,7 @@
 
           <footer>
             <p class="f6 tc gray">
-              <em>Having trouble logging in? <a class="f6 tc gray" :href="supportLink">Get in touch with support</a>.</em>
+              <em>Having trouble logging in? <a class="f6 tc gray" :href="supportEmail">Get in touch with support</a>.</em>
             </p>
           </footer>
 
@@ -130,7 +130,7 @@ export default {
       announcement: '',
       formIsValid: false,
       emailSubmitted: false,
-      supportLink: "mailto:support@domain.com"
+      supportEmail: `mailto:${process.env.VUE_APP_SUPPORT_EMAIL}`
     }
   },
   methods: {
@@ -138,6 +138,7 @@ export default {
       let validation = {
         email: this.email
       }
+
       return this.$validator
         .validateAll(validation)
         .then(result => {
