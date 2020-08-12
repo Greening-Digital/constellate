@@ -42,12 +42,13 @@
               <div class="fl w-100 w-75-ns mt0 pt0">
                 <ul class="list mt0 pt0 f4 pa0 border-box">
                   <li class="list name">
-                    <label class="f5" for>name</label>
+                    <label class="f5" for>Name <span class="f6 lh-copy i gray">(use your full name to make you easier to find)</span></label>
+
                     <input class="w-100 mt1 pa1" v-model="profile.name" />
                   </li>
 
                   <li class="list email mt2">
-                    <label class="f5" for>email</label>
+                    <label class="f5" for>Email</label>
                     <input
                       class="w-100 mt1 pa1 bg-light-gray light-silver"
                       :value="profile.email"
@@ -55,13 +56,14 @@
                     />
                   </li>
                   <li class="list phone mt2">
-                    <label class="f5 mb2" for>phone</label>
+                    <label class="f5 mb2" for>Phone</label>
+                    <span class="f6 lh-copy i gray">(include the country code +44 xxxx xxxxx) </span>
                     <input class="w-100 mt1 pa1" v-model="profile.phone" />
                   </li>
                   <li class="list website mt2">
                     <label class="f5" for>
-                      website
-                      <small>(Don't forget the http:// bit!)</small>
+                      Website
+                      <span class="f6 lh-copy i gray">(Don't forget the http:// bit!)</span>
                     </label>
                     <input class="w-100 mt1 pa1" v-model="profile.website" />
                   </li>
@@ -70,22 +72,22 @@
                 <ul class="list mt0 pt0 pa0">
                   <li class="list twitter">
                     <label class="f5" for>
-                      twitter
-                      <small>(just add your @username)</small>
+                      Twitter
+                      <span class="f6 lh-copy i gray">(just add your @username)</span>
                     </label>
                     <input class="w-100 mt1" v-model="profile.twitter" />
                   </li>
                   <li class="list facebook mt2">
                     <label class="f5" for>
-                      facebook
-                      <small>(ditto for facebook)</small>
+                      Facebook
+                      <span class="f6 lh-copy i gray">(ditto for facebook)</span>
                     </label>
                     <input class="w-100 mt1" v-model="profile.facebook" />
                   </li>
                   <li class="list linkedin mt2">
                     <label class="f5" for>
-                      linkedin
-                      <small>(just the bit after http://www.linked.com/in/)</small>
+                      LinkedIn
+                      <span class="f6 lh-copy i gray">(just the bit after http://www.linked.com/in/)</span>
                     </label>
                     <input class="w-100 mt1" v-model="profile.linkedin" />
                   </li>
@@ -93,10 +95,10 @@
                   <li class="list mt2">
                     <label class="f5" for>
                       Summary
-                      <small>
+                      <span class="f6 lh-copy i gray">
                         (Using
                         <a href="https://daringfireball.net/projects/markdown/">markdown</a> for formatting is supported)
-                      </small>
+                      </span>
                     </label>
                     <textarea
                       class="w-100 mt1 pa1 ba b--light-gray"
@@ -112,9 +114,9 @@
               </div>
 
               <div class="cf pt2 bg-white mb4 mb5">
-                <label class="typo__label">Skills and interests</label>
+                <label class="typo__label">Skills and Interests</label>
                 <p class="f6 mb3">
-                  <em>(type below to add new tags)</em>
+                  <span class="f6 lh-copy i gray">(type below to add new tags)</span>
                 </p>
                 <profile-tags-component
                   :data.sync="profile.tags"
@@ -123,13 +125,11 @@
               </div>
             </div>
 
-            <p class="f6 tc gray">
-              <em>Email gavin@dgen.net to remove your account</em>
-            </p>
           </form>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
