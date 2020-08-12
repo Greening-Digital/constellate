@@ -33,8 +33,27 @@
                       id="visible-checkbox"
                       v-model="profile.visible"
                     />
-                    <label for="visible-checkbox" class="dib w-70">Visible</label>
+                    <label 
+                    v-if="profile.visible"
+                    for="visible-checkbox"
+                    class="dib w-70">
+                      Visible
+                    </label>
+                    <label 
+                    v-else
+                    for="visible-checkbox"
+                    class="dib w-70">
+                      Hidden
+                    </label>
                   </div>
+<p 
+class="f6 lh-copy i gray ph2"
+v-if="profile.visible"
+>Your profile is visible to other members</p>
+<p 
+class="f6 lh-copy i gray ph2"
+v-else
+>Your profile is hidden from other members</p>
 
                 </div>
               </div>
