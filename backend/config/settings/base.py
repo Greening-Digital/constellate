@@ -112,7 +112,17 @@ LOGIN_URL = "account_login"
 PASSWORDLESS_AUTH = {
     'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
     'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': 'noreply@greening.digital',
+    'PASSWORDLESS_REGISTER_NEW_USERS': False,
+    'PASSWORDLESS_EMAIL_SUBJECT': "Your Login Code",
+    'PASSWORDLESS_MOBILE_MESSAGE': "Use this code to log in: %s. This code is valid for the next 15 minutes. You can request a new code at any time.",
+    'PASSWORDLESS_CONTEXT_PROCESSORS': [
+        "backend.utils.context_processors.support_email",
+    ],
 }
+SUPPORT_EMAIL = env("DJANGO_SUPPORT_EMAIL", default="info@greening.digital")
+
+
+
 
 # PASSWORDS
 # ------------------------------------------------------------------------------

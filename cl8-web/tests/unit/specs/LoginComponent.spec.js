@@ -3,61 +3,103 @@ import { mount, shallow, createLocalVue } from '@vue/test-utils'
 import VeeValidate from 'vee-validate'
 import Login from '@/components/auth/Login.vue'
 
+import debugLib from 'debug'
+
+const debug = debugLib('cl8.LoginComponent.spec')
+
+
 // we need to augment our Vue object for this component test
 // as we're not evaluating any setup in main.js
 const localVue = createLocalVue()
 const config = { events: 'blur' }
 localVue.use(VeeValidate, config)
 
-describe.skip('Login.Vue', () => {
+debug('localvue validator', localVue.$validator)
 
-  // declare variable to overwrite
+describe('Login.Vue', () => {
+
+  // declare mutable variable
   let wrapper
 
-  describe('mounts with expected data', () => {
-    let minimumData = { email: '', password: null }
-
-    beforeEach(() => {
-      wrapper = mount(Login, {propsData: minimumData})
-    })
-
-    test('login mounts', () => {
-      expect(wrapper.html()).toMatchSnapshot()
-    })
-  })
-
-  describe('adding valid data', () => {
-
-    test('the submit button should be disabled with invalid data', () => {
-        expect(wrapper.find('button').element.disabled).toBe(true)
-    })
-
-    test('the submit button should no longer be disabled', () => {
-      let validProps = {
-        email: 'chris@productscience.co.uk',
-        password: 'topSekrit'
+  let mockStore = {
+    getters: {
+      isLoading: true,
+      signInData: {
+        message: null,
+        email: null
       }
-      wrapper.setProps(validProps)
-      // Because validation occurs on blur, I think we need to simulate this
-      let passwordInput = wrapper.find("[name='password']")
-      passwordInput.trigger('blur')
+    },
+    dispatch: jest.fn()
+  }
 
-      return localVue.nextTick().then(() => {
+  describe('mounting with expected data', () => {
 
-        // console.log(otherMount.find('button').element.disabled)
-        expect(wrapper.find('button').element.disabled).toBe(false)
+    wrapper = mount(Login, {
+      mocks: {
+        $store: mockStore
+      }
+    })
+
+    test('login mounts with when loading ', () => {
+
+      expect(wrapper.html()).toMatchSnapshot()
+      expect(wrapper.findAll('form').length).toBe(0)
+    })
+
+    test('shows login form when loaded', async () => {
+      mockStore.getters.isLoading = false
+
+      wrapper = mount(Login, {
+        mocks: {
+          $store: mockStore
+        }
       })
+
+      
+      expect(wrapper.html()).toMatchSnapshot()
+      expect(wrapper.findAll('form').length).toBe(1)
     })
   })
 
-  describe('making a submission triggers our signIn function', () => {
-    // add valid data
 
-    // next tick?
+  describe('mounting and loading', () => {
 
-    // hit submit
+    describe('with valid data', () => {
+      mockStore.getters.isloading = false
 
-    // check that signin function was called
+      wrapper = mount(Login, {
+        localVue,
+        mocks: {
+          $store: mockStore
+        }
+      })
+
+      test('the submit button should be disabled with invalid data', () => {
+
+        expect(wrapper.find('button').element.disabled).toBeTruthy()
+      })
+
+      test.skip('the submit button should no longer be disabled with valid data', async () => {
+
+          // set the email now
+          // update the store here
+          await wrapper.vm.$nextTick()
+
+          // set the value
+          wrapper.find("input[name='email']").setValue("valid.email@domain.com")
+          // for reasons which aren't obvious we need to set the data too,
+          // wrapper.setData({email: "valid.email@domain.com"})
+          wrapper.find("input[name='email']").trigger('blur')
+
+          // Because validation occurs on blur
+        // I think we need to simulate this
+          await flushPromises();
+          await wrapper.vm.$nextTick()
+
+
+          expect(wrapper.find('button').element.disabled).toBe(false)
+        })
+
+    })
   })
-
 })

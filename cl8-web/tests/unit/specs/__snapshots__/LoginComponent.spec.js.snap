@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login.Vue mounting with expected data login mounts with when loading  1`] = `
+<div class="w-100">
+  <div>
+    <div class="spinner"><img src="../../assets/loading.svg" alt="loading"></div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Login.Vue mounting with expected data shows login form when loaded 1`] = `
+<div class="w-100">
+  <!---->
+  <div>
+    <div class="v-mid sign-in-prompt">
+      <h2 class="pt5 tc fw3 tracked">Constellation</h2>
+      <div class="w-100 tc">
+        <div role="status" aria-live="polite" class="vh dib">
+          <!---->
+        </div>
+        <!---->
+        <form class="w-100 pa3 dib border-box mw6 ph5">
+          <p class="gray measure tl lh-copy">Enter the email address you signed up with to sign in. We'll send a one time login code, to finish logging in.</p>
+          <p class="gray measure tl lh-copy">No passwords needed. </p>
+          <div class="w-100 mb3"><input type="text" name="email" placeholder="your email address" aria-label="your email address" autocomplete="email" class="input-reset br2 pa2 ba b--light-gray mt1 w-100">
+            <div>
+              <!---->
+            </div>
+          </div>
+          <div>
+            <div class="mt2 cf"><button disabled="disabled" name="button" class="f6 link br3 bn pv2 mb2 mt2 bg-light-silver b white w-60 ml0 mr1 fl">Request login code</button></div>
+          </div>
+        </form>
+        <footer>
+          <p class="f6 tc gray"><em>Having trouble logging in? <a href="mailto:support@domain.com" class="f6 tc gray">Get in touch with support</a>.</em></p>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+`;
