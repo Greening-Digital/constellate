@@ -20,24 +20,18 @@
   </div>
 </template>
 <script>
-import { sortBy, includes } from 'lodash'
+import { sortBy, includes, remove } from 'lodash'
 import debugLib from 'debug'
 
 const debug = debugLib('cl8.ProfileTagsComponent')
-// TODO
+
 export default {
   name: 'ProfileTagsComponent',
-  props: ['data'],
-  created () {
-    if (this.list === undefined ) this.list = []
-  },
-  computed: {
+    computed: {
     list: function () {
-      return this.$store.getters.profile.tags
-      // return this.data || []
+      return this.$store.getters.profile.tags || []
     },
     options: function () {
-      // debug(this.$store.getters.fullTagList
       return this.$store.getters.fullTagList
     },
     sortedOptions: function() {
@@ -48,34 +42,33 @@ export default {
   },
   data: () => {
     return {
-      input: '',
+      input: ''
     }
   },
   methods: {
     inTagList: function(tagName) {
-      if (!this.list.length){
+      if (this.list.length < 1){
         return false
       }
-      return includes(this.list.map(x => x.name), tagName)
+      const tagNames = this.list.map(x => x.name)
+
+      return includes(tagNames, tagName)
     },
     toggle: function(event, val) {
       event.preventDefault()
 
-      if (this.list !== undefined) {
-        if (!this.inTagList(val.name)) {
-          this.list.push(val)
-        } else {
-          this.list.splice(this.list.findIndex(x => x.name === val.name), 1)
-        }
+      let toggleList = this.list
+
+      if (this.inTagList(val.name)) {
+        remove(toggleList, function(x) { return x.name === val.name})
       } else {
-        this.list = [val]
+        toggleList.push(val)
       }
-      // TODO use the store instead here
-      this.$store.dispatch('updateProfileTags', this.list)
+
+      this.$store.dispatch('updateProfileTags', toggleList)
     },
     newtag: function(event) {
       debug('new tag submission:', this.input)
-
       if (this.input.length > 0) {
         const newTagName = this.input.toLowerCase().trim()
         if (!this.inTagList(newTagName)) {
@@ -89,13 +82,7 @@ export default {
       this.input = ''
     },
     checkInList: function(option){
-      const that = this
-      if (this.list !== undefined) {
-        return that.inTagList(option.name)
-      } else {
-        return false
-      }
-
+      return this.inTagList(option.name)
     }
   }
 }
