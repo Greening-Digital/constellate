@@ -164,16 +164,21 @@ const actions = {
     const emailPayload = {
       email: payload
     }
+    try {
+      const emailsubmitted = await instance.post(
+        '/auth/email/',
+        emailPayload)
 
-    const emailsubmitted = await instance.post(
-      '/auth/email/',
-      emailPayload)
+      if (emailsubmitted) {
+        return true
+      } else {
+        return false
+      }
 
-    if (emailsubmitted) {
-      return true
-    } else {
-      return false
+    }catch(error) {
+      return error
     }
+
   },
   login: async function(context, payload) {
     try {
