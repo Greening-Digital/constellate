@@ -39,11 +39,8 @@ async function fetchCurrentUser(store) {
 }
 
 function tagList(profileList) {
-  // Javscript's equality rules mean we need to stringify the objects
-  // to ensure that tags are deduped.
-  // TODO: this seems like a terrible way to check equality - surely there's a better way?
   debug('profileList length', profileList.length)
-  let tags = new Set()
+  let tags = []
 
   const profileTags = profileList.map((profile) => {
     if (profile.tags) {
@@ -52,19 +49,23 @@ function tagList(profileList) {
       else return []
   })
 
+
   profileTags.forEach((tagSet) => {
     tagSet.forEach((tag) => {
-      tags.add(JSON.stringify(tag))
+
+      let tagNames
+      if (tags.length > 0) {
+        const tagNames = tags.map(x => { return  x.name})
+        if (!tagNames.includes(tag.name)) {
+          tags.push(tag)
+        }
+      } else {
+        tags.push(tag)
+      }
     })
   })
-  debug(`tagset length: ${Array.from(tags).length}`)
-  if (tags) {
-    const tagArray = Array.from(tags).map((tagString) => { return JSON.parse(tagString)})
-    debug({tagArray})
-    return tagArray
-  } else {
-    return []
-  }
+
+  return tags
 }
 
 export {
