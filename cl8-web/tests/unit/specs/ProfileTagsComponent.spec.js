@@ -4,6 +4,7 @@ import { mount} from '@vue/test-utils'
 import ProfileTagsComponent from '@/components/profile/ProfileTagsComponent'
 
 import debugLib from 'debug'
+import { fetchCurrentUser } from '../../../src/utils'
 
 const debug = debugLib('cl8.ProfileTagsComponent.spec')
 
@@ -71,50 +72,59 @@ const sampleTagList = [
 ]
 
 describe('ProfileTagsComponent', () => {
-  it('shows a list of active tags', () => {
-    const wrapper = mount(ProfileTagsComponent, {
-      mocks: {
-        $store: {
-          getters: {
-            profile: sampleData,
-            fullTagList: sampleTagList
-          }
-        }
-      }
-    })
-    expect(wrapper.findAll('#tags button.active').length).toBe(2)
-  })
-  it('shows a list of inactive tags too', () => {
-    const wrapper = mount(ProfileTagsComponent, {
-      mocks: {
-        $store: {
-          getters: {
-            profile: sampleData,
-            fullTagList: sampleTagList
-          }
-        }
-      }
-    })
-    expect(wrapper.findAll('#tags button').length).toBe(8)
-  })
-  it('dispatches the "newProfileTag" action when adding a new tag', async () => {
-    const mockStore = {
+  let wrapper, mockStore
+
+  beforeEach(() => {
+    mockStore = {
       getters: {
         profile: sampleData,
         fullTagList: sampleTagList
       },
-      dispatch: jest.fn()
+      dispatch: jest.fn(),
+      commit: jest.fn()
     }
 
-    const wrapper = mount(ProfileTagsComponent, {
+     wrapper = mount(ProfileTagsComponent, {
       mocks: {
         $store: mockStore
       }
     })
+  })
+
+  it('shows a list of active tags', () => {
+    expect(wrapper.findAll('#tags button.active').length).toBe(2)
+  })
+  it('shows a list of inactive tags too', () => {
+    expect(wrapper.findAll('#tags button').length).toBe(8)
+  })
+  it('dispatches the "newProfileTag" action when adding a new tag', async () => {
     wrapper.find("#tags [data-tagname]").setValue("new tag")
     wrapper.find("#tags [data-tagname]").trigger("keydown.enter")
 
     await wrapper.vm.$nextTick()
     expect(mockStore.dispatch).toHaveBeenCalledWith('newProfileTag', 'new tag')
   })
+  describe('toggling tags', () => {
+    it('clicking on a tag name toggles', async () => {
+
+      wrapper.get('button[data-tagname="web"]').trigger('click')
+      await wrapper.vm.$nextTick()
+      expect(mockStore.commit).toHaveBeenCalledWith('SET_PROFILE_TAGS', [{
+        "id": 3,
+        "slug": "scoped-emissions",
+        "name": "scoped emissions"
+      }])
+
+
+    })
+    it('typing in a new value does not affect the displayed tags', async () => {
+      wrapper.find("#tags [data-tagname]").setValue("new tag")
+      // wrapper.find("#tags [data-tagname]").trigger("keydown.enter")
+  
+      await wrapper.vm.$nextTick()
+      expect(wrapper.findAll('#tags button').length).toBe(8)
+      expect(wrapper.findAll('#tags button.active').length).toBe(2)
+    })
+  })
+
 })

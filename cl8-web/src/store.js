@@ -3,6 +3,7 @@ import router from './routes'
 import axios from 'axios'
 import { tagList } from './utils'
 import { reject } from 'lodash'
+import Vue from 'vue'
 
 const debug = require('debug')('cl8.store')
 
@@ -23,9 +24,8 @@ const state = {
   profile: null,
   profilePhoto: null,
   profileShowing: false,
-  profileList: [],
   visibleProfileList: [],
-  fullTagList: '',
+  // fullTagList: '',
   requestUrl: null,
   signInData: {
     message: null,
@@ -62,24 +62,24 @@ const getters = {
   profile: function(state) {
     return state.profile
   },
-  //
   profilePhoto: function(state) {
     return state.profilePhoto
   },
   profileList: function(state) {
     debug('getting profileList')
-    return state.profileList
+    return state.visibleProfileList
   },
   fullTagList: function(state) {
-    debug('getting fullTagList:', state.fullTagList.length)
-    return state.fullTagList
+    // we add the profile again, in case there
+    // are new tags added to them
+    if (state.profile)
+      return tagList(state.visibleProfileList.concat([state.profile]))
+    else {
+      return tagList(state.visibleProfileList)
+    }
   },
   profileShowing: function(state) {
     return state.profileShowing
-  },
-  visibleProfileList: function(state) {
-    debug('getting visibleProfileList')
-    return state.visibleProfileList
   },
   requestUrl: function(state) {
     return state.requestUrl
@@ -124,26 +124,22 @@ const mutations = {
   },
   SET_PROFILE: function(state, payload) {
     debug('SET_PROFILE', payload)
+    debug('PROFILE TAGS', payload.tags.map(x => {return x.name}))
     state.profileShowing = true
     state.profile = payload
+  },
+  SET_PROFILE_TAGS: function(state, payload) {
+    debug('SET_PROFILE_TAGS', payload)
+    state.profile.tags = payload
   },
   setProfilePhoto: function(state, payload) {
     debug('setProfilePhoto', payload)
     state.profile.photo = [payload]
   },
-  setProfileList: function(state, payload) {
-    debug('setProfileList', payload)
-    state.profileList = payload
-  },
-  setVisibleProfileList: function(state, payload) {
-    debug('setVisibleProfileList', payload)
+  SET_VISIBLE_PROFILE_LIST: function(state, payload) {
+    debug('SET_VISIBLE_PROFILE_LIST', payload)
     state.visibleProfileList = payload
   },
-  SET_TAG_LIST: function(state, payload) {
-    debug('profiles:', payload)
-    state.fullTagList = tagList(payload)
-    debug('tagList:', state.fullTagList.length)
-  } ,
   toggleProfileShowing: function(state) {
     debug('profileShowing', state.profileShowing)
     state.profileShowing = !state.profileShowing
@@ -161,6 +157,7 @@ const mutations = {
 const actions = {
   // otherwise log user in here
   submitEmail: async function(context, payload) {
+    debug('action:submitEmail')
     const emailPayload = {
       email: payload
     }
@@ -217,6 +214,7 @@ const actions = {
     context.commit('SET_PROFILE', profileResponse.data)
   },
   updateActiveTags: function(context, payload) {
+    debug('action:updateActiveTags')
     debug('updateActiveTags', payload)
     let tag = payload
     let tags = context.state.searchTags
@@ -230,6 +228,7 @@ const actions = {
     context.commit('setTags', tags)
   },
   fetchProfileList: async function(context) {
+    debug('action:fetchProfileList')
     try {
       const response = await instance.get('/api/profiles', {
         headers: { Authorization: `Token ${localStorage.token}` }
@@ -242,21 +241,22 @@ const actions = {
     }
   },
   fetchVisibleProfileList: async function(context) {
-    debug('fetching visible profiles')
+    debug('action:fetchVisibleProfileList')
     try {
       const response = await instance.get('/api/profiles', {
         headers: { Authorization: `Token ${localStorage.token}` }
       })
       debug('profiles resp', response)
       const profileArray = response.data.filter(profile => profile.visible)
-      context.commit('setVisibleProfileList', profileArray)
-      context.commit('SET_TAG_LIST', profileArray)
+      context.commit('SET_VISIBLE_PROFILE_LIST', profileArray)
+
 
     } catch (error) {
       debug('Error fetching visibleProfileList', error)
     }
   },
   addUser: async function(context, payload) {
+    debug('action:fetchProfile')
     payload.tags = payload.tags.map(function(obj) {
       return obj.name
     })
@@ -274,6 +274,8 @@ const actions = {
     }
   },
   fetchProfile: async function(context, payload) {
+    debug('action:fetchProfile')
+    updateProfilePhoto
     debug('fetching profile for id:', payload.id)
     const profile = await instance.get(`/api/profiles/${payload.id}`, {
       headers: { Authorization: `Token ${localStorage.token}` }
@@ -304,16 +306,8 @@ const actions = {
       return 'There was a problem saving changes to the profile.'
     }
   },
-  updateProfileTags: function(context, payload) {
-    // update the profile locally, without saving
-    // given that we have updateProfle above, we may be better
-    // with save Profile to send data to the server and update for local store changes
-    const profile = context.getters.profile
-    profile.tags = payload
-    context.commit('SET_PROFILE', profile)
-    context.dispatch('updateProfileList', profile)
-  },
   updateProfilePhoto: async function(context, payload) {
+    debug('action:updateProfilePhoto')
     const profileId = payload.profile.id
     const token = context.getters.token
 
@@ -340,21 +334,9 @@ const actions = {
       return 'Something went wrong with uploading the photo.'
     }
   },
-  updateProfileList: function(context, payload)   {
-      let profiles = context.getters.visibleProfileList
-      debug(`profiles count: ${profiles.length}`)
-      let newProfileList = reject(profiles, function(prof) {
-        return prof.id === payload.id
-      })
-      debug(`newProfiles count: ${newProfileList.length}`)
-      newProfileList.push(payload)
-      debug(`updated newProfiles count: ${newProfileList.length}`)
-      context.commit('setVisibleProfileList', newProfileList)
-      context.commit('SET_TAG_LIST', newProfileList)
-
-  },
+  
   newProfileTag: async function(context, payload) {
-    debug('newProfileTag', payload)
+    debug('action:newProfileTag', payload)
     const newTag = payload
     let tempVal =
       newTag.substring(0, 2) + Math.floor(Math.random() * 10000000)
@@ -363,14 +345,13 @@ const actions = {
       code: tempVal,
       id: 'tempval' + tempVal
     }
-    const profile = context.getters.profile
-    profile.tags.push(tag)
-    context.commit('SET_PROFILE', profile)
-    context.dispatch('updateProfileList', profile)
+    let profile = context.getters.profile
+    let tags = profile.tags 
+    tags.push(tag)
+  
+    context.commit('SET_PROFILE_TAGS', tags)
   },
 }
-
-
 export default {
   state,
   getters,
