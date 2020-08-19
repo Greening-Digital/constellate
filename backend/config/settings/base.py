@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = [
     "drfpasswordless",
     "taggit",
     "corsheaders",
+    "mjml",
 ]
 
 LOCAL_APPS = [
@@ -308,3 +309,5 @@ REST_FRAMEWORK = {
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
+MJML_CHECK_CMD_ON_STARTUP = True
+MJML_EXEC_CMD = ['../node_modules/.bin/mjml', '--config.validationLevel', 'skip']
