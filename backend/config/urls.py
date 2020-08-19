@@ -19,6 +19,10 @@ urlpatterns = [
     # User management
     path("users/", include("backend.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+
+    path('about/', flatpage, {'url': '/about/'}, name='about'),
+    path('privacy/', flatpage, {'url': '/privacy/'}, name='privacy'),
+
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
