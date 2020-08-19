@@ -4,6 +4,43 @@ import Vuex from 'vuex'
 
 enableAutoDestroy(afterEach)
 
+describe('Store/Getters/tagList', () => {
+
+  let localVue, visibleProfileList, store
+
+  beforeEach(() => {
+
+    localVue = createLocalVue()
+    localVue.use(Vuex)
+
+    visibleProfileList = [{
+      "tags": [
+        {
+          "id": 2,
+          "slug": "web",
+          "name": "web"
+        },
+      ],
+    },
+    {
+      "tags": [
+        {
+          "id": 2,
+          "slug": "web",
+          "name": "web"
+        }
+      ]
+    }]
+
+  store = new Vuex.Store(Store)
+  store.commit('SET_VISIBLE_PROFILE_LIST', visibleProfileList)
+  })
+
+  it("returns a list of unique tags from a list of profiles", async () => {
+    expect(store.getters.fullTagList).toHaveLength(1)
+  })
+}),
+
 
 describe.skip('Store/Actions/fetchUserList', () => {
   describe('authed', () => {
@@ -39,45 +76,6 @@ describe.skip('Store/Actions/fetchVisibleUserList', () => {
   describe.skip('not authed', () => {})
 })
 
-describe('Store/Getters/tagList', () => {
-
-  let localVue, visibleProfileList, store
-
-  beforeEach(() => {
-
-    localVue = createLocalVue()
-    localVue.use(Vuex)
-
-    visibleProfileList = [{
-      "tags": [
-        {
-          "id": 2,
-          "slug": "web",
-          "name": "web"
-        },
-      ],
-    },
-    {
-      "tags": [
-        {
-          "id": 2,
-          "slug": "web",
-          "name": "web"
-        }
-      ]
-    }]
-
-  store = new Vuex.Store(Store)
-  store.commit('SET_TAG_LIST', visibleProfileList)
-
-  })
-
-
-  it("returns a list of unique tags from a list of profiles", async () => {
-
-    expect(store.state.fullTagList).toHaveLength(1)
-  })
-}),
 describe.skip("Store/Actions/newProfileTag", () => {
   it("adds just one tag to a profile with no tags", async () => {
     const localVue = createLocalVue()
@@ -94,6 +92,7 @@ describe.skip("Store/Actions/newProfileTag", () => {
     expect(store.state.fullTagList).toHaveLength(0)
     expect(store.state.fullTagList).toHaveLength(0)
     await store.dispatch('newProfileTag', 'new tag')
+    
 
     expect(store.state.fullTagList).toHaveLength(1)
     expect(store.state.profile.tags).toHaveLength(1)
@@ -134,30 +133,29 @@ describe.skip("Store/Actions/newProfileTag", () => {
     expect(store.state.profile.tags).toHaveLength(2)
   })
 }),
-describe("Store/Actions/updateProfileTags", () => {
-  it("adds an active tag to a profile", async () => {
-    const localVue = createLocalVue()
+describe("Store/Mutations/SET_PROFILE_TAGS", () => {
+
+  let store
+
+  beforeEach(() => { const localVue = createLocalVue()
     localVue.use(Vuex)
+    store = new Vuex.Store(Store)
+  })
+
+  it("adds an active tag to a profile", async () => {
+
     const sampleProfile = {
       "id": 1,
       "name":"sample_user",
       "tags": []
     }
-    const store = new Vuex.Store(Store)
+
     store.commit('SET_PROFILE', sampleProfile)
-    store.commit('setProfileList', [sampleProfile])
-    store.dispatch('updateProfileTags', [
-      {
-        "id": 2,
-        "slug": "web",
-        "name": "web"
-      },
-    ])
-    expect(store.state.fullTagList).toHaveLength(1)
+    await store.dispatch('newProfileTag', "web")
+    expect(store.getters.profile.tags).toHaveLength(1)
   })
+
   it("removes tags no longer on a profile", async () => {
-    const localVue = createLocalVue()
-    localVue.use(Vuex)
     const sampleProfile = {
       "id": 1,
       "name":"sample_user",
@@ -169,12 +167,11 @@ describe("Store/Actions/updateProfileTags", () => {
         },
       ],
     }
-    const store = new Vuex.Store(Store)
-    store.commit('SET_PROFILE', sampleProfile)
-    store.commit('setProfileList', [sampleProfile])
-    store.dispatch('updateProfileTags', [])
-    expect(store.state.fullTagList).toHaveLength(0)
 
+    store.commit('SET_PROFILE', sampleProfile)
+    expect(store.getters.profile.tags).toHaveLength(1)
+    store.commit('SET_PROFILE_TAGS', [])
+    expect(store.getters.profile.tags).toHaveLength(0)
   })
 })
 
