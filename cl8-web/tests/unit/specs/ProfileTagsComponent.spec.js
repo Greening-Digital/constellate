@@ -119,8 +119,7 @@ describe('ProfileTagsComponent', () => {
     })
     it('typing in a new value does not affect the displayed tags', async () => {
       wrapper.find("#tags [data-tagname]").setValue("new tag")
-      // wrapper.find("#tags [data-tagname]").trigger("keydown.enter")
-  
+
       await wrapper.vm.$nextTick()
       expect(wrapper.findAll('#tags button').length).toBe(8)
       expect(wrapper.findAll('#tags button.active').length).toBe(2)

@@ -57,28 +57,19 @@ export default {
         return false
       }
       const tagNames = this.profileTags.map(x => x.name)
-      // debug({tagNames})
-      // debug({tagName})
-      // debug({inlist: includes(tagNames, tagName)})
       return includes(tagNames, tagName)
     },
     toggle: function(tag) {
       debug('toggle', tag)
 
-      let toggleList = this.sortedTagList.slice()
       let profileTags = this.profileTags.slice()
 
       if (this.inProfileTags(tag.name)) {
-        console.log(`checking ${tag.name}`)
-        console.log(`found ${tag.name} in ${toggleList.map(x => x.name)}`)
         remove(profileTags, function(x) { return x.name === tag.name})
       } else {
-        console.log(`didn't find ${tag.name} in ${profileTags}`)
         profileTags.push(tag)
       }
-      // TODO: this is triggered for the first element whenever we load the element. Why?
       debug('profileTags', this.profileTags.map(x => x.name))
-      debug('toggleList', toggleList.map(x => x.name))
       this.$store.commit('SET_PROFILE_TAGS', profileTags)
 
     },
