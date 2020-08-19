@@ -138,8 +138,6 @@ v-else
                   <span class="f6 lh-copy i gray">(type below to add new tags)</span>
                 </p>
                 <profile-tags-component
-                  :data.sync="profile.tags"
-                  :options="fullTagList"
                 ></profile-tags-component>
               </div>
             </div>
