@@ -1,31 +1,29 @@
 
-import { mount} from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 
 import ProfileTagsComponent from '@/components/profile/ProfileTagsComponent'
 
 import debugLib from 'debug'
-import { fetchCurrentUser } from '../../../src/utils'
-
 const debug = debugLib('cl8.ProfileTagsComponent.spec')
 
 let sampleData = {
-    admin: 'true',
-    bio: '',
-    email: 'someone@domain.com',
-    tags: [
-      {
-        "id": 2,
-        "slug": "web",
-        "name": "web"
-      },
-      {
-        "id": 3,
-        "slug": "scoped-emissions",
-        "name": "scoped emissions"
-      }
-    ],
-    visible: 'yes',
-    id: 'recxxxxxxxxxxxxxx',
+  admin: 'true',
+  bio: '',
+  email: 'someone@domain.com',
+  tags: [
+    {
+      "id": 2,
+      "slug": "web",
+      "name": "web"
+    },
+    {
+      "id": 3,
+      "slug": "scoped-emissions",
+      "name": "scoped emissions"
+    }
+  ],
+  visible: 'yes',
+  id: 'recxxxxxxxxxxxxxx',
 }
 
 const sampleTagList = [
@@ -84,7 +82,7 @@ describe('ProfileTagsComponent', () => {
       commit: jest.fn()
     }
 
-     wrapper = mount(ProfileTagsComponent, {
+    wrapper = mount(ProfileTagsComponent, {
       mocks: {
         $store: mockStore
       }
@@ -114,8 +112,6 @@ describe('ProfileTagsComponent', () => {
         "slug": "scoped-emissions",
         "name": "scoped emissions"
       }])
-
-
     })
     it('typing in a new value does not affect the displayed tags', async () => {
       wrapper.find("#tags [data-tagname]").setValue("new tag")
