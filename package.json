@@ -4,7 +4,7 @@
   "description": "The front end for constellate",
   "author": "Chris Adams <chris@productscience.co.uk>",
   "private": true,
-  "scripts": { 
+  "scripts": {
     "serve": "vue-cli-service serve ./cl8-web/src/main.js",
     "build": "vue-cli-service build ./cl8-web/src/main.js",
     "build:django": "npm run build && cp ./static-vue/index.html ./backend/backend/templates/pages/vue.html && mv ./static-vue/ ./backend/backend/static-vue/",
@@ -17,6 +17,7 @@
     "core-js": "^3.6.5",
     "lodash": "^4.17.15",
     "marked": "^1.1.0",
+    "mjml": "^4.6.3",
     "regenerator-runtime": "^0.13.5",
     "sanitize-html": "^1.26.0",
     "tachyons": "4.12.0",
