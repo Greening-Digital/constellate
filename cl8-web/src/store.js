@@ -24,7 +24,7 @@ const state = {
   profile: null,
   profilePhoto: null,
   profileShowing: false,
-  visibleProfileList: [],
+  profileList: [],
   // fullTagList: '',
   requestUrl: null,
   signInData: {
@@ -43,11 +43,11 @@ const getters = {
   },
   isAdmin: function(state) {
     if (state.user == null) return false
-    if (state.visibleProfileList == null) return false
+    if (state.profileList == null) return false
 
     // Legacy profiles from Airtable have 'yes' in the admin field
     const truthy = ['yes', true]
-    return state.visibleProfileList
+    return state.profileList
       .filter(profile => truthy.includes(profile.admin))
       .map(profile => profile.id)
       .includes(state.user.id)
@@ -67,15 +67,15 @@ const getters = {
   },
   profileList: function(state) {
     debug('getting profileList')
-    return state.visibleProfileList
+    return state.profileList
   },
   fullTagList: function(state) {
     // we add the profile again, in case there
     // are new tags added to them
     if (state.profile)
-      return tagList(state.visibleProfileList.concat([state.profile]))
+      return tagList(state.profileList.concat([state.profile]))
     else {
-      return tagList(state.visibleProfileList)
+      return tagList(state.profileList)
     }
   },
   profileShowing: function(state) {
@@ -138,7 +138,7 @@ const mutations = {
   },
   SET_VISIBLE_PROFILE_LIST: function(state, payload) {
     debug('SET_VISIBLE_PROFILE_LIST', payload)
-    state.visibleProfileList = payload
+    state.profileList = payload
   },
   toggleProfileShowing: function(state) {
     debug('profileShowing', state.profileShowing)
@@ -240,8 +240,8 @@ const actions = {
       debug('Error fetching profileList', error)
     }
   },
-  fetchVisibleProfileList: async function(context) {
-    debug('action:fetchVisibleProfileList')
+  fetchprofileList: async function(context) {
+    debug('action:fetchprofileList')
     try {
       const response = await instance.get('/api/profiles', {
         headers: { Authorization: `Token ${localStorage.token}` }
@@ -252,7 +252,7 @@ const actions = {
 
 
     } catch (error) {
-      debug('Error fetching visibleProfileList', error)
+      debug('Error fetching profileList', error)
     }
   },
   addUser: async function(context, payload) {
@@ -266,7 +266,7 @@ const actions = {
       headers: { Authorization: `Token ${token}` }
     })
     if (response.data) {
-      context.dispatch('fetchVisibleProfileList')
+      context.dispatch('fetchprofileList')
       context.commit('SET_PROFILE', response.data)
       router.push({ name: 'home' })
     } else {
@@ -309,7 +309,7 @@ const actions = {
 
     if (profile) {
       context.commit('SET_PROFILE', profile.data)
-      context.dispatch('fetchVisibleProfileList')
+      context.dispatch('fetchprofileList')
       router.push({ name: 'home' })
     } else {
       return 'There was a problem saving changes to the profile.'

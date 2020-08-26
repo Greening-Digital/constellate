@@ -57,8 +57,8 @@ export default {
     activeTags() {
       return this.$store.getters.activeTags
     },
-    visibleProfiles() {
-      return this.$store.getters.visibleProfileList
+    profileList() {
+      return this.$store.getters.profileList
     }
   },
   watch: {
@@ -69,22 +69,21 @@ export default {
       this.checkAgainstSearch()
     }
   },
-  created() {
+  async created() {
     debug('created')
     this.$store.commit('startLoading')
 
     // make a new promise to fetch this stuff, then after they have loaded show the stuff
-    this.$store
-      .dispatch('fetchVisibleProfileList')
-      .then(() => {
-        debug('loaded the profiles in the component')
-        this.searchResults = this.visibleProfiles
-        this.$store.commit('stopLoading')
-        this.loading = false
-      })
-      .catch(err => {
-        debug("couldn't load in the profile: ", err)
-      })
+    await this.$store.dispatch('fetchprofileList')
+
+    debug('loaded the profiles in the component')
+    this.searchResults = this.profileList
+    this.$store.commit('stopLoading')
+    this.loading = false
+
+    // .catch(err => {
+    //   debug("couldn't load in the profile: ", err)
+    // })
   },
 
   methods: {
@@ -112,9 +111,9 @@ export default {
       const terms = this.activeTags
       debug('matchingTags', terms)
       if (typeof terms === 'undefined' || terms === '') {
-        return this.visibleProfiles
+        return this.profileList
       }
-      const availableProfiles = this.visibleProfiles
+      const availableProfiles = this.profileList
       debug('availableProfiles', availableProfiles)
       // clear out profiles with NO tags
       let profilesWithTags = availableProfiles.filter(function(profile) {

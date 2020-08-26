@@ -6,14 +6,14 @@ enableAutoDestroy(afterEach)
 
 describe('Store/Getters/tagList', () => {
 
-  let localVue, visibleProfileList, store
+  let localVue, profileList, store
 
   beforeEach(() => {
 
     localVue = createLocalVue()
     localVue.use(Vuex)
 
-    visibleProfileList = [{
+    profileList = [{
       "tags": [
         {
           "id": 2,
@@ -33,7 +33,7 @@ describe('Store/Getters/tagList', () => {
     }]
 
   store = new Vuex.Store(Store)
-  store.commit('SET_VISIBLE_PROFILE_LIST', visibleProfileList)
+  store.commit('SET_VISIBLE_PROFILE_LIST', profileList)
   })
 
   it("returns a list of unique tags from a list of profiles", async () => {
@@ -67,9 +67,9 @@ describe.skip('Store/Actions/fetchVisibleUserList', () => {
       localVue.use(Vuex)
       const store = new Vuex.Store(Store)
       // act
-      await store.dispatch('fetchVisibleProfileList')
+      await store.dispatch('fetchprofileList')
       // assert
-      expect(store.state.visibleProfileList).toHaveLength(2)
+      expect(store.state.profileList).toHaveLength(2)
     })
   })
 
@@ -103,7 +103,7 @@ describe.skip("Store/Actions/newProfileTag", () => {
   const localVue = createLocalVue()
     localVue.use(Vuex)
 
-    const visibleProfileList = [{
+    const profileList = [{
       "id": 1,
       "name":"sample_user",
       "tags": [
@@ -126,8 +126,8 @@ describe.skip("Store/Actions/newProfileTag", () => {
       ]
     }]
     const store = new Vuex.Store(Store)
-    store.commit('SET_PROFILE', visibleProfileList[0])
-    store.commit('setProfileList', visibleProfileList)
+    store.commit('SET_PROFILE', profileList[0])
+    store.commit('setProfileList', profileList)
     store.dispatch('newProfileTag', 'new tag')
     expect(store.state.fullTagList).toHaveLength(2)
     expect(store.state.profile.tags).toHaveLength(2)
