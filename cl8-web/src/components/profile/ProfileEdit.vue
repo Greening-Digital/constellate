@@ -93,21 +93,19 @@ v-else
                   <li class="list twitter">
                     <label class="f5" for>
                       Twitter
-                      <span class="f6 lh-copy i gray">(just add your @username)</span>
                     </label>
                     <input class="w-100 mt1" v-model="profile.twitter" />
                   </li>
                   <li class="list facebook mt2">
                     <label class="f5" for>
                       Facebook
-                      <span class="f6 lh-copy i gray">(ditto for facebook)</span>
                     </label>
                     <input class="w-100 mt1" v-model="profile.facebook" />
                   </li>
                   <li class="list linkedin mt2">
                     <label class="f5" for>
                       LinkedIn
-                      <span class="f6 lh-copy i gray">(just the bit after http://www.linked.com/in/)</span>
+                      <span class="f6 lh-copy i gray">(it normally looks like http://www.linked.com/in/some-name-or-id)</span>
                     </label>
                     <input class="w-100 mt1" v-model="profile.linkedin" />
                   </li>
