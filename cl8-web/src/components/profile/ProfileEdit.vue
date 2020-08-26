@@ -69,7 +69,7 @@ v-else
                   <li class="list email mt2">
                     <label class="f5" for>
                       Email
-                      <span class="f6 lh-copy i gray">(We use this to confirm your identity when we login. You'll be able to change it soon.)</span>
+                      <span class="f6 lh-copy i gray">(You are unable to change your email address.)</span>
                       </label>
                     <div  class="w-100 mt1 bg-near-white pa2">
                       {{ profile.email }}
