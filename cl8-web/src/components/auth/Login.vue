@@ -36,7 +36,7 @@
           </div>
 
           <form v-on:submit.prevent class="w-100 pa3 dib border-box mw6 ph5">
-              <p class="gray measure tl lh-copy">Enter the email address you signed up with to sign in. We'll send a one time login code, to finish logging you in.</p>
+              <p class="gray measure tl lh-copy">Please enter the email address that is associated with your Icebreaker One CL8 account. We will send a one time login code, to finish logging you in:</p>
             <div class="w-100 mb3">
               <input
                 type="text"
