@@ -74,16 +74,16 @@ export default {
     this.$store.commit('startLoading')
 
     // make a new promise to fetch this stuff, then after they have loaded show the stuff
-    await this.$store.dispatch('fetchprofileList')
-
-    debug('loaded the profiles in the component')
-    this.searchResults = this.profileList
-    this.$store.commit('stopLoading')
-    this.loading = false
-
-    // .catch(err => {
-    //   debug("couldn't load in the profile: ", err)
-    // })
+    try {
+      await this.$store.dispatch('fetchprofileList')
+      debug('loaded the profiles in the component')
+      this.searchResults = this.profileList
+      this.$store.commit('stopLoading')
+      this.loading = false
+    }
+    catch (e) {
+      debug("couldn't load in the profile: ", e)
+    }
   },
 
   methods: {
