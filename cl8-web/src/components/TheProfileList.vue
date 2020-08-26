@@ -7,7 +7,7 @@
     </div>
 
     <div v-else>
-      <div class="tag-list pa2 bb b--light-gray" v-if="activeTags.length>0">
+      <div class="tag-list pa2 bb b--light-gray" v-if="activeTags">
         <p>
           <button
             v-for="tag in activeTags"
