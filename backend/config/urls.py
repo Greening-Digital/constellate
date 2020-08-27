@@ -30,7 +30,7 @@ urlpatterns += [
     path("api/", include("config.api_router")),
     # DRF auth token
     path("auth-token/", obtain_auth_token),
-    path('', include('drfpasswordless.urls')),
+    path('', include('backend.users.api.passwordless_urls')),
 ]
 # + [
 #     path('', TemplateView.as_view(template_name="pages/vue.html")),
