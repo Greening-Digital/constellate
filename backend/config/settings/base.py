@@ -115,7 +115,7 @@ PASSWORDLESS_AUTH = {
     'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
     'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': 'noreply@greening.digital',
     'PASSWORDLESS_REGISTER_NEW_USERS': False,
-    'PASSWORDLESS_EMAIL_SUBJECT': "Your Login Code",
+    'PASSWORDLESS_EMAIL_SUBJECT': "Your Constellation Login Code",
     'PASSWORDLESS_MOBILE_MESSAGE': "Use this code to log in: %s. This code is valid for the next 15 minutes. You can request a new code at any time.",
     'PASSWORDLESS_EMAIL_TOKEN_HTML_TEMPLATE_NAME': 'passwordless_default_token_email.mjml.html',
     'PASSWORDLESS_CONTEXT_PROCESSORS': [
