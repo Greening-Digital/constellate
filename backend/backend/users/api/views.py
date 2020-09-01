@@ -49,7 +49,7 @@ class ProfileViewSet(
 
     def create(self, request):
 
-        send_invite = request.data.get("sendinvite")
+        send_invite = request.data.get("sendInvite")
 
         serialized_profile = ProfileSerializer(data=request.data)
         serialized_profile.is_valid(raise_exception=True)

@@ -118,7 +118,7 @@ class TestProfileViewSet:
             'bio': 'Themselves TV western under. Tv can beautiful we throughout politics treat both. Fear speech left get answer over century.',
 
             'visible': False,
-            'sendinvite': True,
+            'sendInvite': True,
         }
 
         request.data = profile_dict
