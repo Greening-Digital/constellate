@@ -1,0 +1,7 @@
+Dear {{profile.name}},
+
+Welcome to the Icebreaker One constellation.
+
+(Copy goes here to mention terms of service and community guidelines)
+
+If you have any problems logging in, or you have not attempted to log in, please <a href="mailto:{{ support_email_address }}">contact support.</a>

@@ -4,7 +4,9 @@ from django.db.models import CharField
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
 from taggit.managers import TaggableManager
 
 
@@ -54,3 +56,32 @@ class Profile(models.Model):
 
     def get_absolute_url(self):
         return reverse("profile_detail", kwargs={"pk": self.pk})
+
+    def send_invite_mail(self):
+        support_email_address = settings.SUPPORT_EMAIL
+        rendered_templates = self.generate_invite_mail()
+
+        send_mail(
+            "Welcome to the Icebreaker One Constellation",
+            rendered_templates['text'],
+            support_email_address,
+            [self.user.email],
+            html_message=rendered_templates['html'],
+        )
+
+    def generate_invite_mail(self):
+        support_email_address = settings.SUPPORT_EMAIL
+
+        rendered_invite_txt = render_to_string(
+            "invite_new_profile.txt",
+            {"profile": self, "support_email_address": support_email_address},
+        )
+        rendered_invite_html = render_to_string(
+            "invite_new_profile.mjml.html",
+            {"profile": self, "support_email_address": support_email_address},
+        )
+
+        return {
+            'text': rendered_invite_txt,
+            'html': rendered_invite_html
+        }

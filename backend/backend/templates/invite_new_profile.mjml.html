@@ -1,0 +1,30 @@
+{% load mjml %}
+
+{% mjml %}
+<mjml>
+    <mj-head>
+        <mj-title>Welcome to the Icebreaker One Constellatation</mj-title>
+    </mj-head>
+    <mj-body>
+        <mj-section>
+            <mj-column >
+                <mj-text font-size="24px" line-height=1.5>
+                <p>
+                    Dear {{profile.name}},
+                </p>
+                <p>
+                    Welcome to the Icebreaker One constellation.
+                </p>
+                <p>
+                    <em>(Copy goes here to mention terms of service and community guidelines)</em>
+                </p>
+
+                <p>
+                    If you have any problems logging in, or you have not attempted to log in, please <a href="mailto:{{ support_email_address }}">contact support.</a>
+                </p>
+            </mj-text>
+            </mj-column>
+        </mj-section>
+    </mj-body>
+</mjml>
+{% endmjml %}

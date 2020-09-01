@@ -49,11 +49,16 @@ class ProfileViewSet(
 
     def create(self, request):
 
+        send_invite = request.data.get("sendinvite")
+
         serialized_profile = ProfileSerializer(data=request.data)
         serialized_profile.is_valid(raise_exception=True)
         new_profile = serialized_profile.create(serialized_profile.data)
 
         full_serialized_profile = ProfileSerializer(new_profile)
+
+        if send_invite:
+            new_profile.send_invite_mail()
 
         headers = self.get_success_headers(full_serialized_profile.data)
         return Response(
