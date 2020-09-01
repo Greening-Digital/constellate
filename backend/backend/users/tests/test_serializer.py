@@ -30,6 +30,7 @@ class TestProfileSerializer:
             'twitter': 'paul58',
             'facebook': 'fday',
             'linkedin': 'wpalmer',
+            "organisation": "Acme Inc",
 
             'tags': ["tech"],
 
@@ -65,6 +66,7 @@ class TestProfileSerializer:
             'twitter': profile.twitter,
             'facebook': profile.facebook,
             'linkedin': profile.linkedin,
+            "organisation": profile.organisation,
             'bio': "something new",
 
             'visible': profile.visible,

@@ -132,6 +132,7 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
             # user
             "name",
             "email",
+            "organisation",
 
             # profile
             "phone",

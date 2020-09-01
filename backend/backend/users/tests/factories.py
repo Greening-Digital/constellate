@@ -93,8 +93,8 @@ class ProfileFactory(DjangoModelFactory):
     twitter = Faker("user_name")
     facebook = Faker("user_name")
     linkedin = Faker("user_name")
+    organisation =  Faker('company')
     bio = Faker("paragraph")
-
     # tags = SubFactory(TagFactory)
 
     user = factory.SubFactory("backend.users.tests.factories.UserFactory", profile=None)

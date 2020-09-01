@@ -22,6 +22,7 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phone = models.CharField(_("phone"), max_length=254, blank=True, null=True)
     website = models.URLField(_("website"), max_length=200, blank=True, null=True)
+    organisation = models.CharField(_("organisation"), max_length=254, blank=True, null=True)
     twitter = models.CharField(_("twitter"), max_length=254, blank=True, null=True)
     facebook = models.CharField(_("facebook"), max_length=254, blank=True, null=True)
     linkedin = models.CharField(_("linkedin"), max_length=254, blank=True, null=True)
