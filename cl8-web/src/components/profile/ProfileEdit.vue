@@ -87,6 +87,13 @@ v-else
                     </label>
                     <input class="w-100 mt1 pa1" v-model="profile.website" />
                   </li>
+                  <li class="list organisation mt2">
+                    <label class="f5" for>
+                      Organisation
+
+                    </label>
+                    <input class="w-100 mt1 pa1" v-model="profile.organisation" />
+                  </li>
                 </ul>
 
                 <ul class="list mt0 pt0 pa0">

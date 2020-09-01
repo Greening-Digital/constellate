@@ -54,6 +54,9 @@
           <li v-if="profile.website" class="list f5 website">
             <a :href="websiteLink" target="_blank">{{ profile.website }}</a>
           </li>
+          <li v-if="profile.organisation" class="list f5 organisation mv3">
+            {{ profile.organisation }}
+          </li>
         </ul>
 
         <ul class="list pl0 social-links">

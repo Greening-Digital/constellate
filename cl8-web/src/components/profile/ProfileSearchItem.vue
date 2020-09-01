@@ -16,7 +16,11 @@
     <div class="dib w-70 ph2 flex-auto v-top h3 h-auto-m overflow-hidden">
       <ul class="list pt1 mt0 ml0 pl0 pb1 f4-m">
         <li class="name mid-gray">{{ item.name }}</li>
+        <li v-if="item.organisation" class="organisation black-40 f6 mt1">
+            {{ item.organisation }}
+          </li>
       </ul>
+
       <div class="dib mt1-m">
         <div class="dib mr2 black-30 f7 f6-m" v-for="tag in item.tags" :key="tag.id">{{tag.name}}</div>
       </div>
