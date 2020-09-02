@@ -3,6 +3,9 @@ import { mount } from '@vue/test-utils'
 
 import ProfileSearchItem from '@/components/profile/ProfileSearchItem.vue'
 
+const { axe, toHaveNoViolations } = require('jest-axe')
+expect.extend(toHaveNoViolations)
+
 let sampleData = {
   "fields": {
     "admin": "true",
@@ -68,5 +71,12 @@ describe.skip('ProfileSearchItem', () => {
     })
     expect(wrapper.findAll('img.supplied-photo').length).toBe(0)
     expect(wrapper.findAll('.gravatar').length).toBe(1)
+  })
+  it('passes a11y', async() => {
+    let wrapper = mount(ProfileSearchItem, {
+      propsData: { item: sampleData }
+    })
+    const results = await axe(wrapper.element)
+    expect(results).toHaveNoViolations()
   })
 })
