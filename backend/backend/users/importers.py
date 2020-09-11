@@ -3,6 +3,9 @@ from pathlib import Path
 import requests
 from datetime import datetime
 
+from typing import List
+from collections import OrderedDict
+
 from backend.users.models import User, Profile
 from django.core.files.images import ImageFile
 from django.utils.text import slugify
@@ -17,7 +20,7 @@ from django.utils.text import slugify
 import logging
 
 logger = logging.getLogger(__file__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 class NoEmailFound(Exception):
@@ -27,8 +30,6 @@ class NoEmailFound(Exception):
 class ProfileImporter:
 
     rows = []
-
-    # def __init__(self):
 
     def load_csv(self, import_path: Path = None):
         # Loads the rows contents of a CSV, returning an datastructure
@@ -60,6 +61,26 @@ class ProfileImporter:
 
         return created_users
 
+    def add_tags_to_profile(
+        self, profile: Profile, row: OrderedDict, columns: List = None
+    ):
+        """
+        Take a profile object, and add all the relevant tags, in the properties from the CSV listed `columns`.
+        """
+        if not columns:
+            columns = ["tags"]
+
+        for colname in columns:
+            tags = row.get(colname)
+            # exit early
+            if not tags:
+                continue
+
+            for tag in tags.split(","):
+                profile.tags.add(tag.strip())
+
+        return profile
+
     def create_user(self, row):
         """
         Accepts a row, and returns the corresponding user generated based
@@ -83,7 +104,6 @@ class ProfileImporter:
 
         visible = True
 
-        tags = f"{row.get('tags')}"
         profile, created = Profile.objects.get_or_create(
             user=user,
             phone=row.get("phone"),
@@ -95,11 +115,6 @@ class ProfileImporter:
             visible=visible,
             photo=self.fetch_user_pic(row.get("photo")),
         )
-
-        # create corresponding profile
-        for tag in tags.split(","):
-            profile.tags.add(tag)
-        profile.save()
 
         logger.debug(f"profile: {profile}")
         logger.debug(f"user: {user}")
