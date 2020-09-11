@@ -1,7 +1,4 @@
 import pytest
-from django.contrib.auth.models import AnonymousUser
-from django.http.response import Http404
-from django.test import RequestFactory
 
 from collections import OrderedDict
 

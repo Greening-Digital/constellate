@@ -4,6 +4,7 @@ from typing import Any, Sequence
 import factory
 import requests
 from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
 from django.db.models.signals import post_save
 from factory import (
     DjangoModelFactory,
@@ -18,7 +19,7 @@ from taggit.models import Tag
 from ..models import Profile
 
 
-def generated_profile_photo():
+def generated_realistic_profile_photo():
     image_bytes = requests.get("https://www.thispersondoesnotexist.com/image").content
     return io.BytesIO(image_bytes)
 
@@ -78,10 +79,6 @@ class TagFactory(DjangoModelFactory):
         model = Tag
 
 
-def list_of_tags():
-    website = factory.LazyFunction(url_factory)
-
-
 @factory.django.mute_signals(post_save)
 class ProfileFactory(DjangoModelFactory):
 
@@ -105,7 +102,14 @@ class ProfileFactory(DjangoModelFactory):
 @factory.django.mute_signals(post_save)
 class FakePhotoProfileFactory(ProfileFactory):
 
-    photo = ImageFieldFactory(from_func=generated_profile_photo)
+    photo = factory.LazyAttribute(
+        lambda o: ContentFile(
+            ImageFieldFactory()._make_data(
+                {"width": 400, "height": 400, "format": "jpeg"}
+            ),
+            "test_pic.jpg",
+        )
+    )
 
     class Meta:
         model = Profile

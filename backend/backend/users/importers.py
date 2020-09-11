@@ -65,7 +65,8 @@ class ProfileImporter:
         self, profile: Profile, row: OrderedDict, columns: List = None
     ):
         """
-        Take a profile object, and add all the relevant tags, in the properties from the CSV listed `columns`.
+        Take a profile object, and add all the relevant tags,
+        in the properties from the CSV listed `columns`.
         """
         if not columns:
             columns = ["tags"]
