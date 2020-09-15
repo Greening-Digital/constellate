@@ -20,6 +20,69 @@
           "signinButton": "Sign in",
           "resetButton": "Reset"
         }
+      },
+      "newPassword": {
+        "confirmPasswordPlaceholder": "Confirm your new password",
+        "passwordPlaceholder": "Your new password"
+      },
+      "resetPassword": {
+        "back": "Back to Sign In",
+        "email": "Your email address",
+        "resetPassword": "Reset Password"
+      },
+      "navHeaderLoggedIn": {
+        "myProfile": "My Profile",
+        "logOut": "Log Out",
+        "search": "Search"
+      },
+      "addUser": {
+        "email": "Email (required)",
+        "facebookMessage": "(ditto for Facebook)",
+        "linkedInMessage": "(just the bit after http://www.linked.com/in/)",
+        "name": "Name (required)",
+        "phone": "Phone",
+        "sendInvite": "Send the user an invite mail for this constellation",
+        "twitterMessage": "(just add your @username)",
+        "websiteMessage": "(http:// is added automatically)"
+      },
+      "profileDetail": {
+        "clusterMember": "Is a member of the following clusters",
+        "resendInvite": "Re-send Invite"
+      },
+      "profileEdit": {
+        "clusters": "Clusters",
+        "clusterMessage": "(list the clusters you want to be part of)",
+        "email": "Email",
+        "emailMessage": "(You are unable to change your email address.)",
+        "linkedInMessage": "(it normally looks like http://www.linked.com/in/some-name-or-id)",
+        "name": "Name",
+        "nameMessage": "(use your full name to make you easier to find)",
+        "organisation": "Organisation",
+        "phone": "Phone",
+        "phoneMessage": "(include the country code i.e. +44 78945 123 456)",
+        "profileHidden": "Your profile is hidden from other members",
+        "profileVisible": "Your profile is visible to other members"
+      },
+      "profileTagsComponent": {
+        "tagsPlaceholder": "add a new tag"
+      },
+      "shared": {
+        "about": "About",
+        "addUser": "Add User",
+        "bioPlaceholder": "Summary of interests and expertise relevant to Icebreaker One",
+        "cancel": "Cancel",
+        "editProfile": "Edit Profile",
+        "facebook": "Facebook",
+        "hidden": "Hidden",
+        "invisible": "Invisible",
+        "linkedIn": "LinkedIn",
+        "markdownMessage": "For formatting tips, see: ",
+        "save": "Save",
+        "tagMessage": "(type below to add new tags)",
+        "tags": "Skills and Interests",
+        "twitter": "Twitter",
+        "visible": "Visible",
+        "website": "Website"
       }
     }
   }
