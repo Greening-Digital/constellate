@@ -1,7 +1,8 @@
-import Vue from 'vue'
+
 import { mount, createLocalVue } from '@vue/test-utils'
 import VueRouter from 'vue-router'
-
+import VueFuse from 'vue-fuse'
+import { cloneDeep } from 'lodash'
 
 import TheProfileList from '@/components/TheProfileList.vue'
 import debugLib from 'debug'
@@ -13,6 +14,7 @@ let sampleData = [{
   email: 'someone@domain.com',
   visible: 'yes',
   id: 'rec1a',
+  clusters: [],
   tags: [
     {
       "id": 2,
@@ -32,6 +34,13 @@ let sampleData = [{
   email: 'someone.else@domain.com',
   visible: 'yes',
   id: 'rec2',
+  clusters: [
+    {
+      "id": 2,
+      "slug": "open-energy",
+      "name": "open energy"
+    },
+  ],
   tags: [
     {
       "id": 2,
@@ -78,36 +87,112 @@ let sampleData = [{
 
 
 describe('TheProfileList', () => {
-  let wrapper, mockStore
+  let wrapper, mockStore, localVue
 
-  beforeEach(() => {
-    mockStore = {
-      getters: {
-        profileList: sampleData,
-      },
-      dispatch: jest.fn(),
-      commit: jest.fn()
-    }
+  describe('no filtering by tag', () => {
+    beforeEach(() => {
+      mockStore = {
+        getters: {
+          profileList: sampleData,
+        },
+        dispatch: jest.fn(),
+        commit: jest.fn()
+      }
 
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const router = new VueRouter()
+      localVue = createLocalVue()
+      localVue.use(VueRouter)
+      const router = new VueRouter()
 
-    wrapper = mount(TheProfileList, {
-      localVue,
-      mocks: {
-        $store: mockStore,
-        stubs: ['router-view'],
-        $t: () => {}
-      },
+      wrapper = mount(TheProfileList, {
+        localVue,
+        mocks: {
+          $store: mockStore,
+          stubs: ['router-view'],
+          $t: () => { }
+        },
 
+      })
+    })
+
+    it('renders the component', async () => {
+      expect(wrapper.html()).toBeTruthy()
+    })
+    it('renders a list of profiles', async () => {
+      expect(wrapper.html()).toBeTruthy()
+      expect(wrapper.findAll('.list .peep').length).toBe(2)
     })
   })
-  it('renders the component', async () => {
-    expect(wrapper.html()).toBeTruthy()
+
+  describe('filtered by tag', () => {
+
+    beforeEach(() => {
+      mockStore = {
+        getters: {
+          profileList: sampleData,
+          activeTags: ['dgen']
+        },
+        dispatch: jest.fn(),
+        commit: jest.fn()
+      }
+
+      localVue = createLocalVue()
+      localVue.use(VueRouter)
+      localVue.use(VueFuse)
+      const router = new VueRouter()
+
+      wrapper = mount(TheProfileList, {
+        localVue,
+        mocks: {
+          $store: mockStore,
+          stubs: ['router-view'],
+          $t: () => { }
+        },
+
+      })
+    })
+
+
+    it('renders a list of profiles matching the tag', async () => {
+      expect(wrapper.html()).toBeTruthy()
+      console.log(wrapper.html())
+
+      await wrapper.vm.checkAgainstSearch()
+      expect(wrapper.findAll('.list .peep').length).toBe(1)
+    })
   })
-  it('renders a list of profiles', async () => {
-    expect(wrapper.html()).toBeTruthy()
-    expect(wrapper.findAll('.list .peep').length).toBe(2)
+  describe('filtered by tag', () => {
+    beforeEach(() => {
+      mockStore = {
+        getters: {
+          profileList: sampleData,
+          activeClusters: ['open energy']
+        },
+        dispatch: jest.fn(),
+        commit: jest.fn()
+      }
+
+      localVue = createLocalVue()
+      localVue.use(VueRouter)
+      localVue.use(VueFuse)
+      const router = new VueRouter()
+
+      wrapper = mount(TheProfileList, {
+        localVue,
+        mocks: {
+          $store: mockStore,
+          stubs: ['router-view'],
+          $t: () => { }
+        },
+
+      })
+    })
+
+
+    it.only('renders a list of profiles matching the cluster ', async () => {
+      expect(wrapper.html()).toBeTruthy()
+
+      await wrapper.vm.checkAgainstSearch()
+      expect(wrapper.findAll('.list .peep').length).toBe(1)
+    })
   })
 })
