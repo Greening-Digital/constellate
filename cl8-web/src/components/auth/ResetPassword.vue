@@ -3,7 +3,7 @@
 
     <div class="v-mid sign-in-prompt pa3">
 
-      <h2 class="pt5 fw3 tracked tc">Constellation</h2>
+      <h2 class="pt5 fw3 tracked tc">{{ $t('message.global.siteName') }}</h2>
       <div class="w-100 tc">
         <div
           role="status"
@@ -40,9 +40,9 @@
               class="input-reset pa2 ba mt1 w-100 b--light-gray br2"
               type="text"
               name="email"
-              placeholder="your email address"
+              :placeholder="$t('message.resetPassword.email')"
               autocomplete="email"
-              aria-label="your email address"
+              :aria-label="$t('message.resetPassword.email')"
               @input="checkForValidFormSubmission"
             >
 
@@ -62,13 +62,13 @@
               class="f6 link br2 bn pv2 mb2 bg-light-silver white w-50 ml0 mt2 mr3 fl"
               type="submit"
               name="button">
-              Reset Password
+              {{ $t('message.resetPassword.resetPassword') }}
             </button>
 
             <router-link
 	            :to="{ name: 'signin' }"
 	            class="f7 gray link w-40 fr dib pv3">
-	            Back to Sign in
+	            {{ $t('message.resetPassword.back') }}
 	        </router-link>
           </div>
 

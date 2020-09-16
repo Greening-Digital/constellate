@@ -41,9 +41,9 @@
 
             <input type="password" name="password" v-model="password"
             	class="input-reset pa2 ba br2 b--light-gray w-100" :class=" {'bg-washed-red b--red': errors && errors.has('password') }"
-							placeholder="your new password"
+							:placeholder="$t('message.newPassword.passwordPlaceholder')"
 							v-validate="'required|min:6'"
-							aria-label="your new password"
+							:aria-label="$t('message.newPassword.passwordPlaceholder')"
 							autocomplete="new-password"
 							@change="checkForValidFormSubmission"
 							ref="password" />
@@ -59,9 +59,9 @@
 
             <input type="password" name="confirmPassword" v-model="confirmPassword"
             	class="input-reset pa2 ba br2 b--light-gray w-100" :class=" {'bg-washed-red b--red': errors && errors.has('confirmPassword') }"
-							placeholder="confirm your new password"
+							:placeholder="$t('message.newPassword.confirmPasswordPlaceholder')"
 							v-validate="'required|confirmed:password'"
-							aria-label="confirm your new password"
+							:aria-label="$t('message.newPassword.confirmPasswordPlaceholder')"
 							autocomplete="confirm-password"
 							@input="checkForValidFormSubmission" />
 

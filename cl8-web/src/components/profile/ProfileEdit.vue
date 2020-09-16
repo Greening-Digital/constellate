@@ -33,27 +33,27 @@
                       id="visible-checkbox"
                       v-model="profile.visible"
                     />
-                    <label 
+                    <label
                     v-if="profile.visible"
                     for="visible-checkbox"
                     class="dib w-70">
-                      Visible
+                      {{ $t('message.shared.visible') }}
                     </label>
-                    <label 
+                    <label
                     v-else
                     for="visible-checkbox"
                     class="dib w-70">
-                      Hidden
+                      {{ $t('message.shared.hidden') }}
                     </label>
                   </div>
-<p 
+<p
 class="f6 lh-copy i gray ph2"
 v-if="profile.visible"
->Your profile is visible to other members</p>
-<p 
+>{{ $t('message.profileEdit.profileVisible') }}</p>
+<p
 class="f6 lh-copy i gray ph2"
 v-else
->Your profile is hidden from other members</p>
+>{{ $t('message.profileEdit.profileHidden') }}</p>
 
                 </div>
               </div>
@@ -61,35 +61,40 @@ v-else
               <div class="fl w-100 w-75-ns mt0 pt0">
                 <ul class="list mt0 pt0 f4 pa0 border-box">
                   <li class="list name">
-                    <label class="f5" for>Name <span class="f6 lh-copy i gray">(use your full name to make you easier to find)</span></label>
+                    <label class="f5" for>
+                      {{ $t('message.profileEdit.name') }}
+                      <span class="f6 lh-copy i gray">{{ $t('message.profileEdit.nameMessage') }}</span>
+                    </label>
 
                     <input class="w-100 mt1 pa1" v-model="profile.name" />
                   </li>
 
                   <li class="list email mt2">
                     <label class="f5" for>
-                      Email
-                      <span class="f6 lh-copy i gray">(You are unable to change your email address.)</span>
-                      </label>
+                      {{ $t('message.profileEdit.email') }}
+                      <span class="f6 lh-copy i gray">{{$t('message.profileEdit.emailMessage') }}</span>
+                    </label>
                     <div  class="w-100 mt1 bg-near-white pa2">
                       {{ profile.email }}
                     </div>
                   </li>
                   <li class="list phone mt2">
-                    <label class="f5 mb2" for>Phone</label>
-                    <span class="f6 lh-copy i gray"> (include the country code i.e. +44 78945 123 456) </span>
+                    <label class="f5 mb2" for>
+                      {{ $t('message.profileEdit.phone') }}
+                    </label>
+                    <span class="f6 lh-copy i gray"> {{ $t('message.profileEdit.phoneMessage') }} </span>
                     <input class="w-100 mt1 pa1" v-model="profile.phone" />
                   </li>
                   <li class="list website mt2">
                     <label class="f5" for>
-                      Website
+                      {{ $t('message.shared.website') }}
 
                     </label>
                     <input class="w-100 mt1 pa1" v-model="profile.website" />
                   </li>
                   <li class="list organisation mt2">
                     <label class="f5" for>
-                      Organisation
+                      {{ $t('message.profileEdit.organisation') }}
 
                     </label>
                     <input class="w-100 mt1 pa1" v-model="profile.organisation" />
@@ -99,36 +104,36 @@ v-else
                 <ul class="list mt0 pt0 pa0">
                   <li class="list twitter">
                     <label class="f5" for>
-                      Twitter
+                      {{ $t('message.shared.twitter') }}
                     </label>
                     <input class="w-100 mt1" v-model="profile.twitter" />
                   </li>
                   <li class="list facebook mt2">
                     <label class="f5" for>
-                      Facebook
+                      {{ $t('message.shared.facebook') }}
                     </label>
                     <input class="w-100 mt1" v-model="profile.facebook" />
                   </li>
                   <li class="list linkedin mt2">
                     <label class="f5" for>
-                      LinkedIn
-                      <span class="f6 lh-copy i gray">(it normally looks like http://www.linked.com/in/some-name-or-id)</span>
+                      {{ $t('message.shared.linkedIn') }}
+                      <span class="f6 lh-copy i gray"> {{ $t('message.profileEdit.linkedInMessage') }}</span>
                     </label>
                     <input class="w-100 mt1" v-model="profile.linkedin" />
                   </li>
 
                   <li class="list mt2">
                     <label class="f5" for>
-                      About
+                      {{ $t('message.shared.about') }}
                       <span class="f6 lh-copy i gray">
-                        (Using
-                        <a href="https://daringfireball.net/projects/markdown/">markdown</a> for formatting is supported)
+                        ({{ $t('message.shared.markdownMessage') }}
+                        <a href="https://daringfireball.net/projects/markdown/">markdown</a>)
                       </span>
                     </label>
                     <textarea
                       class="w-100 mt1 pa1 ba b--light-gray"
                       v-model="profile.bio"
-                      placeholder="Summary of interests and expertise relevant to Icebreaker One"
+                      :placeholder="$t('message.shared.bioPlaceholder')"
                       name
                       id
                       cols="30"
@@ -139,17 +144,17 @@ v-else
               </div>
 
               <div class="cf pt2 bg-white mb4 mb5">
-                <label class="typo__label">Clusters</label>
+                <label class="typo__label">{{ $t('message.profileEdit.clusters') }}</label>
                 <p class="f6 mb3">
-                  <span class="f6 lh-copy i gray">(list the clusters you want to be part of)</span>
+                  <span class="f6 lh-copy i gray">{{ $t('message.profileEdit.clusterMessage') }}</span>
                 </p>
                 <profile-clusters-component></profile-clusters-component>
               </div>
 
               <div class="cf pt2 bg-white mb4 mb5">
-                <label class="typo__label">Skills and Interests</label>
+                <label class="typo__label">{{ $t('message.shared.tags') }}</label>
                 <p class="f6 mb3">
-                  <span class="f6 lh-copy i gray">(type below to add new tags)</span>
+                  <span class="f6 lh-copy i gray">{{ $t('message.shared.tagMessage') }}</span>
                 </p>
                 <profile-tags-component></profile-tags-component>
               </div>

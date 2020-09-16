@@ -7,17 +7,17 @@
   <div v-else class="cf bg-white">
     <div class="editprofile cf bg-white">
       <nav class="pa3 ph3 ph4-ns bb b--light-gray flex items-center">
-        <span class="w-100">Add user</span>
+        <span class="w-100">{{ $t('message.shared.addUser') }}</span>
         <a
           href="#"
           v-on:submit.prevent="onSubmit"
           @click="onSubmit"
           class="fr v-btm f6 mr3 link br2 ph3 pv2 dib white bg-green hover-bg-green"
-        >Save</a>
+        >{{ $t('message.shared.save') }}</a>
         <router-link
           :to="{ name: 'home' }"
           class="fr v-btm f6 link br2 ph3 pv2 dib white bg-gray hover-bg-dark-gray"
-        >cancel</router-link>
+        >{{ $t('message.shared.cancel') }}</router-link>
       </nav>
     </div>
     <div class="fl pa2">
@@ -43,7 +43,7 @@
                       id="visible-checkbox"
                       v-model="profile.visible"
                     />
-                    <label for="visible-checkbox" class="dib w-70">Visible</label>
+                    <label for="visible-checkbox" class="dib w-70">{{ $t('message.shared.visible') }}</label>
                   </div>
 
                 </div>
@@ -74,22 +74,22 @@
 
                 <ul class="list mt0 pt0 f4 pa0 border-box">
                   <li class="list name">
-                    <label class="f5" for>name (required)</label>
+                    <label class="f5" for>{{ $t('message.addUser.name') }}</label>
                     <input class="w-100 mt1 pa1" v-model="profile.name" />
                   </li>
 
                   <li class="list email mt2">
-                    <label class="f5" for>email (required)</label>
+                    <label class="f5" for>{{ $t('message.addUser.email') }}</label>
                     <input class="w-100 mt1 pa1" v-model="profile.email" />
                   </li>
                   <li class="list phone mt2">
-                    <label class="f5 mb2" for>phone</label>
+                    <label class="f5 mb2" for>{{ $t('message.addUser.phone') }}</label>
                     <input class="w-100 mt1 pa1" v-model="profile.phone" />
                   </li>
                   <li class="list website mt2">
                     <label class="f5" for>
-                      website
-                      <small>(http:// is added automatically)</small>
+                      {{ $t('message.shared.website') }}
+                      <small>{{ $t('message.addUser.websiteMessage') }}</small>
                     </label>
                     <input class="w-100 mt1 pa1" v-model="profile.website" />
                   </li>
@@ -98,38 +98,38 @@
                 <ul class="list mt0 pt0 pa0">
                   <li class="list twitter">
                     <label class="f5" for>
-                      twitter
-                      <small>(just add your @username)</small>
+                      {{ $t('message.shared.twitter') }}
+                      <small></small>
                     </label>
                     <input class="w-100 mt1" v-model="profile.twitter" />
                   </li>
                   <li class="list facebook mt2">
                     <label class="f5" for>
-                      facebook
-                      <small>(ditto for facebook)</small>
+                      {{ $t('message.shared.facebook') }}
+                      <small>{{ $t('message.addUser.twitterMessage')}}</small>
                     </label>
                     <input class="w-100 mt1" v-model="profile.facebook" />
                   </li>
                   <li class="list linkedin mt2">
                     <label class="f5" for>
-                      linkedin
-                      <small>(just the bit after http://www.linked.com/in/)</small>
+                      {{ $t('message.shared.linkedIn')}}
+                      <small>{{ $t('message.addUser.linkedInMessage')}}</small>
                     </label>
                     <input class="w-100 mt1" v-model="profile.linkedin" />
                   </li>
 
                   <li class="list mt2">
                     <label class="f5" for>
-                      About
+                      {{ $t('message.shared.about') }}
                       <small>
-                        (Using
-                        <a href="https://daringfireball.net/projects/markdown/">markdown</a> for formatting is supported)
+                        ({{ $t('message.shared.markdownMessage') }}
+                        <a href="https://daringfireball.net/projects/markdown/">markdown</a>)
                       </small>
                     </label>
                     <textarea
                       class="w-100 mt1 pa1 ba b--light-gray"
                       v-model="profile.bio"
-                      placeholder="Summary of interests and expertise relevant to Icebreaker One"
+                      :placeholder="$t('message.shared.bioPlaceholder')"
                       name
                       id
                       cols="30"
@@ -140,9 +140,9 @@
               </div>
             </div>
             <div class="cf pt2 bg-white mb3">
-              <label class="typo__label">Skills and interests</label>
+              <label class="typo__label">{{ $t('message.shared.tags') }}</label>
               <p class="f6 mb3">
-                <em>(type below to add new tags)</em>
+                <em>{{ $t('message.shared.tagMessage') }}</em>
               </p>
               <profile-tags-component
                 :data.sync="profile.tags"
@@ -157,7 +157,7 @@
                 id="send-invite"
                 class="mr2"
                 v-model="profile.sendInvite" />
-                <label for="send-invite" class="f5">Send the user an invite mail for this constellation</label>
+                <label for="send-invite" class="f5">{{ $t('message.addUser.sendInvite') }}</label>
             </li>
             </ul>
           </form>

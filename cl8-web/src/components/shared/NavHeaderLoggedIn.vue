@@ -3,7 +3,7 @@
     <div class="v-mid flex-ns items-stretch tr-s">
       <div class="w-100 order-0">
         <input
-          placeholder="search"
+          :placeholder="$t('message.navHeaderLoggedIn.search')"
           class="input-reset ba br2 b--light-gray pa2 mr1 w-100 border-box"
           name="search-term"
           @input="updateSearchTerm"
@@ -15,21 +15,21 @@
         role="link"
         tabindex="0"
         class="link dark-gray f6 nowrap f6-ns dib fr fn-ns pointer pt0 pb3 pa2-m pa2-l ph3 v-mid order-1 tr"
-      >add user</router-link>
+      >{{ $t('message.shared.addUser') }}</router-link>
       <span
-        title="my profile"
+        :title="$t('message.navHeaderLoggedIn.myProfile')"
         role="link"
         tabindex="0"
         class="link dark-gray f6 nowrap f6-ns dib fr fn-ns pointer pt0 pb3 pa2-m pa2-l ph3 v-mid order-1 tr"
         @click="myProfile"
-      >my profile</span>
+      >{{ $t('message.navHeaderLoggedIn.myProfile') }}</span>
       <span
-        title="log out"
+        :title="$t('message.navHeaderLoggedIn.logOut')"
         role="link"
         tabindex="0"
         class="link dark-gray f6 nowrap f6-ns dib fr fn-ns pointer pt0 pb3 pa2-m pa2-l ph3 v-mid order-1 tr"
         @click="logout"
-      >log out</span>
+      >{{ $t('message.navHeaderLoggedIn.logOut') }}</span>
     </div>
   </nav>
 </template>

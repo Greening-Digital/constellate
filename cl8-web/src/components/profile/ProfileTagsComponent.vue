@@ -6,7 +6,7 @@
       v-model="input"
       v-on:keydown.enter="newtag"
       data-tagname
-      placeholder="add a new tag"
+      :placeholder="$t('message.profileTagsComponent.tagsPlaceholder')"
     />
 
     <div id="tagoptions" v-if="sortedTagList">

@@ -1,8 +1,11 @@
 <template>
   <div class="pa4 center w-80 cf tc">
     <form @submit.prevent="confirmPhoto" v-if="profile">
-      <img v-if="localPhoto" :src="this.localPhoto"
-      class="local-photo supplied-photo dib b--light-silver ba" />
+      <img
+        v-if="localPhoto"
+        :src="this.localPhoto"
+        class="local-photo supplied-photo dib b--light-silver ba"
+      />
 
       <img
         v-if="hasPhoto(profile) && !localPhoto"
@@ -22,7 +25,7 @@
         <router-link
           :to="{ name: 'editProfile' }"
           class="f6 link dim br2 ph3 pv2 mb2 dib white bg-gray"
-        >Cancel</router-link>
+        >{{ $t('message.shared.Cancel') }}</router-link>
       </div>
     </form>
 
@@ -58,7 +61,7 @@ export default {
     }
   },
   methods: {
-    canEdit: function() {
+    canEdit: function () {
       debug('can edit?', this.profile.id, this.user.uid)
       return this.profile.id == this.user.uid
     },
@@ -89,11 +92,11 @@ export default {
     if (!this.profile) {
       this.$store
         .dispatch('fetchProfile', this.user.uid)
-        .then(values => {
+        .then((values) => {
           debug('loaded the profiles in the component')
           this.$store.commit('stopLoading')
         })
-        .catch(err => {
+        .catch((err) => {
           debug("couldn't load in the component: ", payload, 'failed', error)
         })
     }

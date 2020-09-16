@@ -7,57 +7,46 @@
     </div>
 
     <div v-else>
-        <transition name="fade">
-          <div v-if="showFlashMessage"
-            class="status-message cf flex items-center pa3 mb2"
-            v-bind:class="messageClassObject"
-          >
-            <svg class="w1" data-icon="info" viewBox="0 0 32 32" style="fill:currentcolor">
-              <title>info icon</title>
-              <path
-                d="M16 0 A16 16 0 0 1 16 32 A16 16 0 0 1 16 0 M19 15 L13 15 L13 26 L19 26 z M16 6 A3 3 0 0 0 16 12 A3 3 0 0 0 16 6"
-              />
-            </svg>
-          <span
-            class="lh-title ml2" role="status"
-            style="flex-grow:1;">
-              {{ flashMessage }}
-            </span>
+      <transition name="fade">
+        <div
+          v-if="showFlashMessage"
+          class="status-message cf flex items-center pa3 mb2"
+          v-bind:class="messageClassObject"
+        >
+          <svg class="w1" data-icon="info" viewBox="0 0 32 32" style="fill:currentcolor">
+            <title>info icon</title>
+            <path
+              d="M16 0 A16 16 0 0 1 16 32 A16 16 0 0 1 16 0 M19 15 L13 15 L13 26 L19 26 z M16 6 A3 3 0 0 0 16 12 A3 3 0 0 0 16 6"
+            />
+          </svg>
+          <span class="lh-title ml2" role="status" style="flex-grow:1;">{{ flashMessage }}</span>
           <button
-            aria-hidden="true" role="button"
+            aria-hidden="true"
+            role="button"
             class="b--none ml2 mr2 bg-black-90 white br2 grow pointer close"
-            @click="hideFlashMessage">
-            x
-            </button>
+            @click="hideFlashMessage"
+          >x</button>
         </div>
-        </transition>
+      </transition>
 
-      
-      
       <div v-if="canEdit()" class="fn fr-l">
         <router-link
           :to="{ name: 'editProfile' }"
           role="link"
           tabindex="0"
           class="f6 link dim br2 ph3 pv2 mb3 dib white bg-gray"
-        >Edit profile</router-link>
+        >{{ $t('message.shared.editProfile') }}</router-link>
       </div>
 
-      <div
-        v-if="isAdmin"
-        class="fn fr-l">
+      <div v-if="isAdmin" class="fn fr-l">
         <button
           tabindex="0"
           class="resend-invite f6 link dim br2 ph3 pv2 mb3 dib white bg-gray b--none ml2 mr2"
-          @click="resendInvite">
-            Re-send Invite
-        </button>
-    </div>
-
-
+          @click="resendInvite"
+        >{{ $t('message.profileDetail.resendInvite') }}</button>
+      </div>
 
       <div class="fl w-70 w-20-m w-20-l mr3">
-        
         <img
           v-if="hasPhoto(profile)"
           :src="showPhoto()"
@@ -75,10 +64,11 @@
           <div
             v-if="isVisible()"
             class="f6 link dim br2 ph3 pv2 mb2 dib white bg-green w-100 mt2 tc"
-          >Visible</div>
-          <div v-else class="f6 link dim br2 ph3 pv2 mb2 dib white bg-red w-100 tc mt2">Invisible</div>
+          >{{ $t('message.shared.visible') }}</div>
+          <div v-else class="f6 link dim br2 ph3 pv2 mb2 dib white bg-red w-100 tc mt2">
+            {{ $t('message.shared.invisible') }}
+          </div>
         </div>
-
       </div>
 
       <div class="fl w-100 w-60-m w-60-l mt0 pt0">
@@ -94,20 +84,21 @@
           <li v-if="profile.website" class="list f5 website">
             <a :href="websiteLink" target="_blank">{{ profile.website }}</a>
           </li>
-          <li v-if="profile.organisation" class="list f5 organisation mv3">
-            {{ profile.organisation }}
-          </li>
+          <li
+            v-if="profile.organisation"
+            class="list f5 organisation mv3"
+          >{{ profile.organisation }}</li>
         </ul>
 
         <ul class="list pl0 social-links">
           <li v-if="this.profile.twitter" class="list f5 twitter dib mr1">
-            <a :href="twitterLink" target="_blank">Twitter</a>
+            <a :href="twitterLink" target="_blank">{{ $t('message.shared.twitter') }}</a>
           </li>
           <li v-if="this.profile.facebook" class="list f5 linkedin dib mr1">
-            <a :href="facebookLink" target="_blank">Facebook</a>
+            <a :href="facebookLink" target="_blank">{{ $t('message.shared.facebook') }}</a>
           </li>
           <li v-if="this.profile.linkedin" class="list f5 twitter dib mr1">
-            <a :href="linkedinLink" target="_blank">LinkedIn</a>
+            <a :href="linkedinLink" target="_blank">{{ $t('message.shared.linkedIn') }}</a>
           </li>
         </ul>
       </div>
@@ -124,7 +115,7 @@
         </ul>
 
         <!-- TODO, make this into a tag list component -->
-        <h3>Is a member of the following clusters</h3>
+        <h3>{{ $t('message.profileDetail.clusterMember')}}</h3>
         <ul class="db list tags clusters ml0 pl0">
           <li
             v-for="cluster in profile.clusters"
@@ -138,7 +129,6 @@
           <div v-html="bioOutput"></div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -164,7 +154,7 @@ export default {
     return {
       loading: false,
       showFlashMessage: false,
-      flashMessage: ""
+      flashMessage: ''
     }
   },
   computed: {
@@ -209,26 +199,26 @@ export default {
     }
   },
   methods: {
-    canEdit: function() {
+    canEdit: function () {
       debug('can edit?', this.profile.id, this.user.id)
       return this.profile.id == this.user.id
     },
-    toggleTag: function(ev) {
+    toggleTag: function (ev) {
       let tag = ev.target.textContent.trim()
       this.$store.dispatch('updateActiveTags', tag)
     },
-    hideFlashMessage: function() {
-      debug("hiding message")
+    hideFlashMessage: function () {
+      debug('hiding message')
       this.showFlashMessage = false
-      this.flashMessage = ""
+      this.flashMessage = ''
     },
-    isActive: function(term) {
+    isActive: function (term) {
       if (typeof this.activeTags !== 'undefined') {
         let matchesActiveTag = this.activeTags.indexOf(term) !== -1
         return matchesActiveTag
       }
     },
-    isVisible: function() {
+    isVisible: function () {
       return this.profile.visible
     },
     hasPhoto,
@@ -238,18 +228,20 @@ export default {
     async resendInvite() {
       debug('resendInvite', this.profile)
 
-        const response = await this.$store.dispatch('resendInvite', this.profile).catch(err => {
-          debug({errMessage: err.response.data.message})
+      const response = await this.$store
+        .dispatch('resendInvite', this.profile)
+        .catch((err) => {
+          debug({ errMessage: err.response.data.message })
           this.flashMessage = err.response.data.message
-          this.flashMessageClass = "error"
+          this.flashMessageClass = 'error'
           this.showFlashMessage = true
         })
-        if (response) {
-          debug({response})
-          this.flashMessage = response.data.message
-          this.flashMessageClass = "info"
-          this.showFlashMessage = true
-        }
+      if (response) {
+        debug({ response })
+        this.flashMessage = response.data.message
+        this.flashMessageClass = 'info'
+        this.showFlashMessage = true
+      }
     }
   }
 }
@@ -341,7 +333,7 @@ img.gravatar {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity .5s ease-out;
+  transition: opacity 0.5s ease-out;
 }
 
 .fade-leave-to {
