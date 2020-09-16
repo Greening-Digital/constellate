@@ -57,6 +57,9 @@ export default {
     activeTags() {
       return this.$store.getters.activeTags
     },
+    activeClusters() {
+      return this.$store.getters.activeClusters
+    },
     profileList() {
       return this.$store.getters.profileList
     }
@@ -89,7 +92,9 @@ export default {
   methods: {
     checkAgainstSearch() {
       debug('checkAgainstSearch: filtering against matching tags:', this.term)
-      this.searchResults = this.matchingTags()
+      let searchResults = this.matchingTags()
+      this.searchResults = this.matchingClusters(searchResults)
+
       debug('this.searchResults', this.searchResults.length)
 
       // if we have a term to search against too, after ouer tags
@@ -106,6 +111,22 @@ export default {
     toggleTag: function(ev) {
       const tag = ev.target.textContent.trim()
       this.$store.dispatch('updateActiveTags', tag)
+    },
+    matchingClusters(profileList) {
+      const clusters = this.activeClusters
+      if (typeof clusters === 'undefined' || clusters === '') {
+        return profileList
+      }
+      clusters.forEach(function(cluster) {
+        profileList = profileList.filter(function(profile) {
+          const profileClusters = profile.clusters.map(function(clst) {
+            return clst.name.toLowerCase()
+          })
+          return includes(profileClusters, cluster)
+        })
+      })
+      return profileList
+
     },
     matchingTags() {
       const terms = this.activeTags
