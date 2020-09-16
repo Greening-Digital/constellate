@@ -14,25 +14,34 @@ exports[`Login.Vue mounting with expected data shows login form when loaded 1`] 
   <!---->
   <div>
     <div class="v-mid sign-in-prompt">
-      <h2 class="pt5 tc fw3 tracked">Constellation</h2>
+      <h2 class="pt5 tc fw3 tracked"></h2>
       <div class="w-100 tc">
         <div role="status" aria-live="polite" class="vh dib">
           <!---->
         </div>
         <!---->
         <form class="w-100 pa3 dib border-box mw6 ph5">
-          <p class="gray measure tl lh-copy">Please enter the email address that is associated with your Icebreaker One CL8 account. We will send a one time login code, to finish logging you in:</p>
-          <div class="w-100 mb3"><input type="text" name="email" placeholder="your email address" aria-label="your email address" autocomplete="email" class="input-reset br2 pa2 ba b--light-gray mt1 w-100">
+          <p class="gray measure tl lh-copy">
+
+          </p>
+          <div class="w-100 mb3"><input type="text" name="email" autocomplete="email" class="input-reset br2 pa2 ba b--light-gray mt1 w-100">
             <div>
               <!---->
             </div>
           </div>
           <div>
-            <div class="mt2 cf"><button disabled="disabled" name="button" class="f6 link br3 bn pv2 mb2 mt2 bg-light-silver b white w-60 ml0 mr1 fl">Request login code</button></div>
+            <div class="mt2 cf"><button disabled="disabled" name="button" class="f6 link br3 bn pv2 mb2 mt2 bg-light-silver b white w-60 ml0 mr1 fl">
+
+              </button></div>
           </div>
         </form>
         <footer>
-          <p class="f6 tc gray"><em>Having trouble logging in? <a href="mailto:support@domain.com" class="f6 tc gray">Get in touch with support</a>.</em></p>
+          <p class="f6 tc gray"><em>
+
+              <a href="mailto:support@domain.com" class="f6 tc gray">
+                
+                </a>.
+              </em></p>
         </footer>
       </div>
     </div>
