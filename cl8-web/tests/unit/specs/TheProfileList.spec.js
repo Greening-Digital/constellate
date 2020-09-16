@@ -97,7 +97,8 @@ describe('TheProfileList', () => {
       localVue,
       mocks: {
         $store: mockStore,
-        stubs: ['router-view']
+        stubs: ['router-view'],
+        $t: () => {}
       },
 
     })

@@ -28,7 +28,8 @@ describe('ProfileTagsComponent', () => {
 
     wrapper = shallowMount(ProfileEdit, {
       mocks: {
-        $store: mockStore
+        $store: mockStore,
+        $t: () => {}
       },
       stubs: ['router-link', 'v-gravatar']
     })

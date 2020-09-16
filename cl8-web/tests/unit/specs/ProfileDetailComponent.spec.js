@@ -35,13 +35,14 @@ describe('ProfileDetail', () => {
   function mountWrapper(component, mockStore) {
     return mount(component, {
       mocks: {
-        $store: mockStore
+        $store: mockStore,
+        $t: () => {}
       },
       stubs: ['router-link']
     })
   }
 
-  
+
   beforeEach(() => {
     mockStore = {
       getters: {
@@ -101,7 +102,7 @@ describe('ProfileDetail', () => {
       await wrapper.vm.$nextTick()
       expect(mockStore.dispatch).toHaveBeenCalledWith('resendInvite', mockStore.getters.profile)
     })
-    
+
     it("updates status message on click", async () => {
       wrapper = mountWrapper(ProfileDetail, mockStore)
       wrapper.get("button.resend-invite").trigger('click')

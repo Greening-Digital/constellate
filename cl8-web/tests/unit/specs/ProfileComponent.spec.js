@@ -32,8 +32,8 @@ let sampleData = {
 
 
 describe('ProfileDetail', () => {
-  let wrapper, mockStore
-  
+  let mockStore
+
   beforeEach(() => {
     mockStore = {
       getters: {
@@ -46,10 +46,11 @@ describe('ProfileDetail', () => {
   })
 
   it('shows a user provided photo if present', () => {
-    let wrapper = mount(ProfileDetail, {
+    const wrapper = mount(ProfileDetail, {
       mocks: {
-        $store: mockStore
-      } 
+        $store: mockStore,
+        $t: () => {}
+      }
     })
     expect(wrapper.findAll('img.supplied-photo').length).toBe(1)
     expect(wrapper.findAll('.gravatar').length).toBe(0)
@@ -60,8 +61,9 @@ describe('ProfileDetail', () => {
     mockStore.getters.profile = copyData
     let wrapper = mount(ProfileDetail, {
       mocks: {
-        $store: mockStore
-      } 
+        $store: mockStore,
+        $t: () => {}
+      }
     })
     expect(wrapper.findAll('img.supplied-photo').length).toBe(0)
     expect(wrapper.findAll('.gravatar').length).toBe(1)

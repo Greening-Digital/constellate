@@ -36,7 +36,8 @@ describe('Login.Vue', () => {
 
     wrapper = mount(Login, {
       mocks: {
-        $store: mockStore
+        $store: mockStore,
+        $t: () => {}
       }
     })
 
@@ -51,7 +52,8 @@ describe('Login.Vue', () => {
 
       wrapper = mount(Login, {
         mocks: {
-          $store: mockStore
+          $store: mockStore,
+          $t: () => {}
         }
       })
 
@@ -70,7 +72,8 @@ describe('Login.Vue', () => {
       wrapper = mount(Login, {
         localVue,
         mocks: {
-          $store: mockStore
+          $store: mockStore,
+          $t: () => {}
         }
       })
 
@@ -126,7 +129,8 @@ describe('Login.Vue', () => {
                 }
               },
               dispatch: mockStore.dispatch
-            }
+            },
+            $t: () => {}
           }
         })
       })

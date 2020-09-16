@@ -25,7 +25,8 @@ describe('ProfilePhoto', () => {
             currentUser: sampleProfile
           },
           commit: jest.fn(),
-        }
+        },
+        $t: () => {}
       },
       stubs: ['router-link'],
       localVue
@@ -46,7 +47,8 @@ describe('ProfilePhoto', () => {
             user: profileWithPic
           },
           commit: jest.fn(),
-        }
+        },
+        $t: () => {}
       },
       stubs: ['router-link', 'v-gravatar']
     })
@@ -63,6 +65,7 @@ describe('ProfilePhoto', () => {
           },
           commit: jest.fn(),
         },
+        $t: () => {},
       },
       stubs: ['router-link', 'v-gravatar']
     })

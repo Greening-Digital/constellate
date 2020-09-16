@@ -84,7 +84,8 @@ describe('ProfileTagsComponent', () => {
 
     wrapper = mount(ProfileTagsComponent, {
       mocks: {
-        $store: mockStore
+        $store: mockStore,
+        $t: () => {}
       }
     })
   })
