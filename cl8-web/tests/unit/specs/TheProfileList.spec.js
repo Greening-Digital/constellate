@@ -160,7 +160,7 @@ describe('TheProfileList', () => {
       expect(wrapper.findAll('.list .peep').length).toBe(1)
     })
   })
-  describe('filtered by tag', () => {
+  describe('filtered by cluster', () => {
     beforeEach(() => {
       mockStore = {
         getters: {

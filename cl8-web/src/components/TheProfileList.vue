@@ -109,30 +109,52 @@ export default {
     },
     matchingTags() {
       const terms = this.activeTags
-      debug('matchingTags', terms)
-      if (typeof terms === 'undefined' || terms === '') {
+      const clusters = this.activeClusters
+      debug('matchingTags', { terms }, { clusters })
+
+      const noTerms = typeof terms === 'undefined' || terms === ''
+      const noClusters = typeof clusters === 'undefined' || clusters === ''
+
+      if (noClusters && noTerms) {
+        debug('returning early. no clusters or tags to filter by')
         return this.profileList
       }
+
       const availableProfiles = this.profileList
+      let profilesFilteredByTags
+
       debug('availableProfiles', availableProfiles)
       // clear out profiles with NO tags
-      let profilesWithTags = availableProfiles.filter(function(profile) {
-        return typeof profile.tags !== 'undefined'
-      })
-      // now reduce the list till we only have people matching all tags
-      terms.forEach(function(term) {
-        profilesWithTags = profilesWithTags.filter(function(profile) {
-          const profileTerms = profile.tags.map(function(tag) {
-            return tag.name.toLowerCase()
-          })
+      if (!noTerms) {
+        terms.forEach(function (term) {
+          profilesFilteredByTags = availableProfiles.filter(function (profile) {
+            const profileTerms = profile.tags.map(function (tag) {
+              return tag.name.toLowerCase()
+            })
 
-          return includes(profileTerms, term)
+            return includes(profileTerms, term)
+          })
         })
-      })
-      const visibleProfiles = profilesWithTags.filter(function(profile) {
-        return profile.visible
-      })
-      return visibleProfiles
+        // now reduce the list till we only have people matching all tags
+      }
+
+      let profilesFilteredByClusters = profilesFilteredByTags || availableProfiles
+      if (!noClusters) {
+        debug('checking against matchingClusters', clusters)
+        clusters.forEach(function (clusterName) {
+          profilesFilteredByClusters = profilesFilteredByClusters.filter(function (
+            profile
+          ) {
+            const profileClusters = profile.clusters.map(function (cluster) {
+              return cluster.name.toLowerCase()
+            })
+
+            return includes(profileClusters, clusterName)
+          })
+        })
+      }
+
+      return profilesFilteredByClusters
     }
   }
 }
