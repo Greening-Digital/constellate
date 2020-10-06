@@ -10,6 +10,7 @@ const state = {
   loading: false,
   searchTerm: '',
   searchTags: [],
+  searchClusters: [],
   profile: null,
   profilePhoto: null,
   profileShowing: false,
@@ -48,6 +49,10 @@ const getters = {
   activeTags: function(state) {
     debug('activeTags', state.searchTags)
     return state.searchTags
+},
+  activeClusters: function (state) {
+    debug('activeClusters', state.searchClusters)
+    return state.searchClusters
   },
   profile: function(state) {
     return state.profile
@@ -110,11 +115,15 @@ const mutations = {
     debug('setTerm', typeof payload)
     state.searchTerm = payload
   },
-  setTags: function(state, payload) {
-    debug('setTags', payload)
+  SET_TAGS: function (state, payload) {
+    debug('SET_TAGS', payload)
     state.searchTags = payload
   },
-  SET_AUTH_TOKEN: function(state, payload) {
+  SET_CLUSTERS: function (state, payload) {
+    debug('SET_CLUSTERS', payload)
+    state.searchClusters = payload
+  },
+  SET_AUTH_TOKEN: function (state, payload) {
     debug('SET_AUTH_TOKEN', payload)
     state.token = payload
     localStorage.token = payload
@@ -220,13 +229,13 @@ const actions = {
     const token = context.getters.token || localStorage.token
     debug('creating user session with token:', token)
 
-    const profileResponse = await instance.get('api/profiles/me', {
+    const profileResponse = await instance.get('/api/profiles/me', {
       headers: { Authorization: `Token ${token}` }
     })
     context.commit('SET_USER', profileResponse.data)
     context.commit('SET_PROFILE', profileResponse.data)
   },
-  updateActiveTags: function(context, payload) {
+  updateActiveTags: function (context, payload) {
     debug('action:updateActiveTags')
     debug('updateActiveTags', payload)
     let tag = payload
@@ -238,7 +247,21 @@ const actions = {
     } else {
       tags.push(tag)
     }
-    context.commit('setTags', tags)
+    context.commit('SET_TAGS', tags)
+  },
+  updateActiveClusters: function (context, payload) {
+    debug('action:updateActiveClusters')
+    debug('updateActiveClusters', payload)
+    let cluster = payload
+    let clusters = context.state.searchClusters
+    debug('clusters', clusters)
+    if (clusters.indexOf(cluster) !== -1) {
+      let index = clusters.indexOf(cluster)
+      clusters.splice(index, 1)
+    } else {
+      clusters.push(cluster)
+    }
+    context.commit('SET_CLUSTERS', clusters)
   },
   fetchProfileList: async function (context) {
     debug('action:fetchProfileList')

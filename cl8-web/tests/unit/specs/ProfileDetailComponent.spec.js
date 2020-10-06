@@ -1,5 +1,7 @@
 
 import { mount } from '@vue/test-utils'
+import { cloneDeep } from 'lodash'
+
 
 import ProfileDetail from '@/components/profile/ProfileDetail'
 
@@ -69,6 +71,49 @@ describe('ProfileDetail', () => {
     wrapper = mountWrapper(ProfileDetail, mockStore)
     expect(wrapper.findAll('img.supplied-photo').length).toBe(0)
     expect(wrapper.findAll('.gravatar').length).toBe(1)
+  })
+
+  describe("showing clusters:", () => {
+
+    let clusterProfileData
+
+    describe("profile with active clusters", () => {
+      beforeEach(() => {
+
+        clusterProfileData = cloneDeep(sampleData);
+
+        mockStore = {
+          getters: {
+            profile: clusterProfileData,
+            currentUser: clusterProfileData
+          },
+          dispatch: jest.fn(),
+          commit: jest.fn()
+        }
+      })
+
+      it('shows a list of cluster if we have clusters', async () => {
+        clusterProfileData.clusters = [
+          {
+            "id": 2,
+            "slug": "open-energy",
+            "name": "open energy"
+          },
+        ]
+        mockStore.getters.profile = clusterProfileData
+        mockStore.getters.currentUser = clusterProfileData
+
+        wrapper = mountWrapper(ProfileDetail, mockStore)
+        expect(wrapper.vm.hasActiveClusters()).toBe(true)
+        expect(wrapper.get(".cluster-component")).toBeTruthy()
+      })
+
+      it('shows no cluster head', async () => {
+        wrapper = mountWrapper(ProfileDetail, mockStore)
+        expect(wrapper.vm.hasActiveClusters()).toBeFalsy()
+        expect(wrapper.findAll(".cluster-component").length).toBe(0)
+      })
+    })
   })
 
   describe("resending invites:", () => {

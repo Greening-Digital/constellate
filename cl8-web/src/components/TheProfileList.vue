@@ -14,7 +14,23 @@
             :key="tag"
             class="remove-tag list pt2 pb2 mr1 mb1 ph3 pr5 br2 bn f7 white bg-dark-blue relative bg-animate hover-bg-red"
             @click.stop.prevent="toggleTag"
-          >{{ tag }}</button>
+          >
+            {{ tag }}
+          </button>
+        </p>
+      </div>
+
+      <div class="tag-list pa2 bb b--light-gray" v-if="activeClusters">
+        <p>
+          <button
+            v-for="cluster in activeClusters"
+            :key="cluster"
+            :data-name="cluster"
+            class="remove-cluster list pt2 pb2 mr1 mb1 ph3 pr5 br2 bn f7 white bg-dark-blue relative bg-animate hover-bg-red"
+            @click.stop.prevent="toggleCluster"
+          >
+            {{ cluster }}
+          </button>
         </p>
       </div>
 
@@ -57,6 +73,9 @@ export default {
     activeTags() {
       return this.$store.getters.activeTags
     },
+    activeClusters() {
+      return this.$store.getters.activeClusters
+    },
     profileList() {
       return this.$store.getters.profileList
     }
@@ -66,6 +85,9 @@ export default {
       this.checkAgainstSearch()
     },
     activeTags() {
+      this.checkAgainstSearch()
+    },
+    activeClusters() {
       this.checkAgainstSearch()
     }
   },
@@ -103,19 +125,25 @@ export default {
         )
       }
     },
-    toggleTag: function(ev) {
+    toggleTag: function (ev) {
       const tag = ev.target.textContent.trim()
+      debug('toggleTag', {tag})
       this.$store.dispatch('updateActiveTags', tag)
     },
+    toggleCluster: function (ev) {
+      const cluster = ev.target.textContent.trim()
+      debug('toggleCluster', {cluster})
+      this.$store.dispatch('updateActiveClusters', cluster)
+    },
     matchingTags() {
-      const terms = this.activeTags
-      const clusters = this.activeClusters
-      debug('matchingTags', { terms }, { clusters })
+      const activeTags = this.activeTags
+      const activeClusters = this.activeClusters
+      debug('matchingTags', { activeTags }, { activeClusters })
 
-      const noTerms = typeof terms === 'undefined' || terms === ''
-      const noClusters = typeof clusters === 'undefined' || clusters === ''
+      const noActiveTags = typeof activeTags === 'undefined' || activeTags === ''
+      const noActiveClusters = typeof activeClusters === 'undefined' || activeClusters === ''
 
-      if (noClusters && noTerms) {
+      if (noActiveTags && noActiveClusters) {
         debug('returning early. no clusters or tags to filter by')
         return this.profileList
       }
@@ -123,37 +151,37 @@ export default {
       const availableProfiles = this.profileList
       let profilesFilteredByTags
 
-      debug('availableProfiles', availableProfiles)
+      debug('availableProfiles', {availableProfiles})
       // clear out profiles with NO tags
-      if (!noTerms) {
-        terms.forEach(function (term) {
+      if (!noActiveTags) {
+        // now reduce the list till we only have people matching all tags
+        activeTags.forEach(function (activeTag) {
           profilesFilteredByTags = availableProfiles.filter(function (profile) {
-            const profileTerms = profile.tags.map(function (tag) {
+            const profileTags = profile.tags.map(function (tag) {
               return tag.name.toLowerCase()
             })
-
-            return includes(profileTerms, term)
+            debug("comparing",  {profileTags}, {activeTag})
+            return includes(profileTags, activeTag)
           })
         })
-        // now reduce the list till we only have people matching all tags
       }
-
+      debug('profilesFilteredByTags', {profilesFilteredByTags})
       let profilesFilteredByClusters = profilesFilteredByTags || availableProfiles
-      if (!noClusters) {
-        debug('checking against matchingClusters', clusters)
-        clusters.forEach(function (clusterName) {
+      if (!noActiveClusters) {
+        debug('checking against matchingClusters', activeClusters)
+        activeClusters.forEach(function (clusterName) {
           profilesFilteredByClusters = profilesFilteredByClusters.filter(function (
             profile
           ) {
             const profileClusters = profile.clusters.map(function (cluster) {
               return cluster.name.toLowerCase()
             })
-
+            debug("comparing",  {profileClusters}, {clusterName})
             return includes(profileClusters, clusterName)
           })
         })
       }
-
+      debug('profilesFilteredByClusters', {profilesFilteredByClusters})
       return profilesFilteredByClusters
     }
   }
