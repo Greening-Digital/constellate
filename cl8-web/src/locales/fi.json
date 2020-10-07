@@ -1,0 +1,89 @@
+{
+  "en": {
+    "message": {
+      "shared": {
+        "website": "Verkkosivusto",
+        "visible": "Näkyvissä",
+        "twitter": "Twitter",
+        "tags": "Taidot ja kiinnostuksen kohteet",
+        "tagMessage": "(lisää uusia tunnisteita kirjoittamalla alla)",
+        "save": "Tallenna",
+        "markdownMessage": "Lisätietoja muotoiluvihjeistä on kohdassa: ",
+        "linkedIn": "LinkedIn",
+        "invisible": "Näkymätön",
+        "hidden": "Piilotettu",
+        "facebook": "Facebook",
+        "editProfile": "Muokkaa profiilia",
+        "cancel": "Peruuta",
+        "bioPlaceholder": "Yhteenveto Icebreaker Oneen liittyvistä kiinnostuksen kohteista ja asiantuntemuksesta",
+        "addUser": "Lisää käyttäjä",
+        "about": "Tietoja"
+      },
+      "profileTagsComponent": {
+        "tagsPlaceholder": "lisää uusi tunniste"
+      },
+      "profileEdit": {
+        "profileVisible": "Profiilisi näkyy muille jäsenille",
+        "profileHidden": "Profiilisi on piilotettu muilta jäseniltä",
+        "phoneMessage": "(lisää maakoodi eli +44 78945123456)",
+        "phone": "Puhelin",
+        "organisation": "Järjestö",
+        "nameMessage": "(käytä koko nimeäsi, jotta sinut löydetään helpommin)",
+        "name": "Nimi",
+        "linkedInMessage": "(se näyttää tavallisesti tältä: http://www.linked.com/in/some-name-or-id)",
+        "emailMessage": "(Et voi muuttaa sähköpostiosoitettasi.)",
+        "email": "Sähköposti",
+        "clusterMessage": "(listaa joukot, joihin haluat olla osa)",
+        "clusters": "Tähtijoukko"
+      },
+      "profileDetail": {
+        "resendInvite": "Lähetä kutsu uudelleen",
+        "clusterMember": "On seuraavien tähtijoukkojen jäsen"
+      },
+      "addUser": {
+        "websiteMessage": "(http:// lisätään automaattisesti)",
+        "twitterMessage": "(lisää vain @käyttäjänimesi)",
+        "sendInvite": "Lähetä käyttäjälle kutsusähköposti tälle tähdistölle",
+        "phone": "Puhelin",
+        "name": "Nimi (pakollinen)",
+        "linkedInMessage": "(vain osa http://www.linked.com/in/ -jälkeen)",
+        "facebookMessage": "(sama Facebookissa)",
+        "email": "Sähköposti (pakollinen)"
+      },
+      "navHeaderLoggedIn": {
+        "search": "Hae",
+        "logOut": "Kirjautua ulos",
+        "myProfile": "Oma profiili"
+      },
+      "resetPassword": {
+        "resetPassword": "Vaihda salasana",
+        "email": "Sähköpostiosoitteesi",
+        "back": "Takaisin sisäänkirjautumiseen"
+      },
+      "newPassword": {
+        "passwordPlaceholder": "Uusi salasanasi",
+        "confirmPasswordPlaceholder": "Vahvista uusi salasanasi"
+      },
+      "login": {
+        "emailSubmitted": {
+          "resetButton": "Nollaa",
+          "signinButton": "Kirjaudu sisään",
+          "loginCode": "kirjautumiskoodisi",
+          "nextStepGuidance": "No niin, olemme juuri lähettäneet sähköpostia osoitteeseesi. Se on voimassa seuraavat 15 minuuttia. Syötä se alle ja olet sisään."
+        },
+        "form": {
+          "requestLoginCodeButton": "Pyydä kirjautumiskoodia",
+          "placeholder": "sähköpostiosoitteesi"
+        },
+        "helpInstructions": {
+          "suggestion": "Ota yhteyttä tukeen",
+          "question": "Onko sinulla vaikeuksia kirjautua sisään?"
+        },
+        "instructions": "Anna sähköpostiosoitteesi, joka liittyy Icebreaker One Constellation -tiliisi. Lähetämme kertakirjautumiskoodin kirjautumisen loppuun."
+      },
+      "global": {
+        "siteName": "Tähdistö"
+      }
+    }
+  }
+}

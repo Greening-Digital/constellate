@@ -1,0 +1,89 @@
+{
+  "en": {
+    "message": {
+      "shared": {
+        "bioPlaceholder": "Sammendrag av interesser og ekspertise relevant for Icebreaker One",
+        "website": "Nettside",
+        "visible": "Synlig",
+        "twitter": "Twitter",
+        "tags": "Ferdigheter og interesser",
+        "tagMessage": "(legg til nye etiketter ved å skrive nedenfor)",
+        "markdownMessage": "For formateringstips, sjekk ut: ",
+        "save": "Lagre",
+        "linkedIn": "LinkedIn",
+        "invisible": "Usynlig",
+        "hidden": "Skjult",
+        "facebook": "Facebook",
+        "editProfile": "Rediger profil",
+        "cancel": "Avbryt",
+        "addUser": "Legg til bruker",
+        "about": "Om"
+      },
+      "profileEdit": {
+        "phoneMessage": "(Inkluder retningsnummeret, altså +44 78945 123 456)",
+        "linkedInMessage": "(det ser normalt ut som http://www.linked.com/in/et-navn-eller-id)",
+        "clusterMessage": "(list opp sammenknytningene du ønsker å ta del i)",
+        "clusters": "Sammenknyninger",
+        "profileVisible": "Din profil er kun synlig for andre medlemmer",
+        "profileHidden": "Profilen din er skjult fra andre medlemmer",
+        "phone": "Telefon",
+        "organisation": "Organisasjon",
+        "nameMessage": "(bruk hele navnet ditt for å gjøre deg enklere å finne)",
+        "name": "Navn",
+        "emailMessage": "(Du kan ikke endre din e-postadresse.)",
+        "email": "E-post"
+      },
+      "profileDetail": {
+        "resendInvite": "Send invitasjon igjen",
+        "clusterMember": "Er medlem av følgende sammenknytninger"
+      },
+      "addUser": {
+        "websiteMessage": "(«http://» legges til automatisk)",
+        "sendInvite": "Send en bruker en invitasjon per e-post til denne konstellasjonen",
+        "linkedInMessage": "(kun en liten bit etter http://www.linked.com/in/)",
+        "twitterMessage": "(bare legg til ditt @brukernavn)",
+        "phone": "Telefon",
+        "name": "Navn (påkrevd)",
+        "facebookMessage": "(samme for Facebook)",
+        "email": "E-post (påkrevd)"
+      },
+      "login": {
+        "emailSubmitted": {
+          "nextStepGuidance": "En e-post har blitt sendt til din adresse. Den er gyldig det neste kvarteret. Skriv den inn nedenfor og du er inne.",
+          "resetButton": "Tilbakestill",
+          "signinButton": "Logg inn",
+          "loginCode": "din innloggingskode"
+        },
+        "helpInstructions": {
+          "suggestion": "Få hjelp av brukerstøtte",
+          "question": "Problemer med å logge inn?"
+        },
+        "instructions": "Skriv inn e-postadressen tilknyttet din Icebreaker One Konstellasjon-konto. Du vil bli sendt en engangsinnlogging for å fullføre innloggingen.",
+        "form": {
+          "requestLoginCodeButton": "Forespør innloggingskode",
+          "placeholder": "din e-postadresse"
+        }
+      },
+      "global": {
+        "siteName": "Konstellasjon"
+      },
+      "profileTagsComponent": {
+        "tagsPlaceholder": "legg til en ny etikett"
+      },
+      "navHeaderLoggedIn": {
+        "search": "Søk",
+        "logOut": "Logg ut",
+        "myProfile": "Min profil"
+      },
+      "resetPassword": {
+        "resetPassword": "Tilbakestill passord",
+        "email": "Din e-postadresse",
+        "back": "Tilbake til innlogging"
+      },
+      "newPassword": {
+        "passwordPlaceholder": "Ditt nye passord",
+        "confirmPasswordPlaceholder": "Bekreft ditt nye passord"
+      }
+    }
+  }
+}

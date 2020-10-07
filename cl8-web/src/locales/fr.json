@@ -1,0 +1,89 @@
+{
+  "en": {
+    "message": {
+      "profileEdit": {
+        "clusterMessage": "(lister les amas dont vous voulez faire partie)",
+        "profileVisible": "Votre profil est visible pour les autres membres",
+        "profileHidden": "Votre profil est caché aux autres membres",
+        "phoneMessage": "(inclure le code pays, par ex. : +44 7 89 45 12 34 56)",
+        "phone": "Téléphone",
+        "organisation": "Organisation",
+        "nameMessage": "(utilisez votre nom complet pour vous rendre plus facile à trouver)",
+        "name": "Nom",
+        "linkedInMessage": "(normalement, ça ressemble à http://www.linked.com/in/some-name-or-id)",
+        "emailMessage": "(Vous n'êtes pas capable de changer votre adresse courriel.)",
+        "email": "Courriel",
+        "clusters": "Amas"
+      },
+      "shared": {
+        "markdownMessage": "Pour des astuces de formatage, voir : ",
+        "website": "Site web",
+        "visible": "Visible",
+        "twitter": "Twitter",
+        "tags": "Compétences et intérêts",
+        "tagMessage": "(tapoter ci-dessous pour ajouter des étiquettes",
+        "save": "Enregistrer",
+        "linkedIn": "LinkedIn",
+        "invisible": "Invisible",
+        "hidden": "Masqué",
+        "facebook": "Facebook",
+        "editProfile": "Modifier le profil",
+        "cancel": "Annuler",
+        "bioPlaceholder": "Résumé des intérêts et de l'expertise en rapport avec le projet Icebreaker One",
+        "addUser": "Ajouter un utilisateur",
+        "about": "À propos"
+      },
+      "profileTagsComponent": {
+        "tagsPlaceholder": "ajouter une nouvelle étiquette"
+      },
+      "profileDetail": {
+        "resendInvite": "Réenvoyer l'invitation",
+        "clusterMember": "Est membre des amas suivants"
+      },
+      "addUser": {
+        "websiteMessage": "(http:// est ajouté automatiquement)",
+        "twitterMessage": "(ajouter simplement votre @nom_dutilisateur)",
+        "sendInvite": "Envoyer une invitation par courriel à l'utilisateur pour cette constellation",
+        "phone": "Téléphone",
+        "name": "Nom (requis)",
+        "linkedInMessage": "(juste le morceau après http://www.linked.com/in/)",
+        "facebookMessage": "(idem pour Facebook)",
+        "email": "Courriel (requis)"
+      },
+      "navHeaderLoggedIn": {
+        "search": "Rechercher",
+        "logOut": "Se déconnecter",
+        "myProfile": "Mon profil"
+      },
+      "resetPassword": {
+        "resetPassword": "Réinitialiser le mot de passe",
+        "email": "Votre adresse courriel",
+        "back": "Retour à Se connecter"
+      },
+      "newPassword": {
+        "passwordPlaceholder": "Votre nouveau mot de passe",
+        "confirmPasswordPlaceholder": "Confirmer votre nouveau mot de passe"
+      },
+      "login": {
+        "emailSubmitted": {
+          "resetButton": "Réinitialiser",
+          "signinButton": "Se connecter",
+          "loginCode": "votre code de connexion",
+          "nextStepGuidance": "D'accord, nous venons d'envoyer un courriel à votre adresse. Il est valable pour les 15 prochaines minutes. Saisissez-le ci-dessous et vous y êtes."
+        },
+        "form": {
+          "requestLoginCodeButton": "Demander un code de connexion",
+          "placeholder": "votre adresse courriel"
+        },
+        "helpInstructions": {
+          "suggestion": "Contacter l'assistance",
+          "question": "Des problèmes pour vous connecter ?"
+        },
+        "instructions": "Veuillez saisir l'adresse courriel associée à votre compte Icebreaker One Constellation. Nous vous enverrons un code de connexion unique pour terminer votre connexion."
+      },
+      "global": {
+        "siteName": "Constellation"
+      }
+    }
+  }
+}

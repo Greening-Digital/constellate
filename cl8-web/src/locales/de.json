@@ -1,0 +1,89 @@
+{
+  "en": {
+    "message": {
+      "shared": {
+        "website": "Website",
+        "visible": "Sichtbar",
+        "twitter": "Twitter",
+        "tags": "Fähigkeiten und Interessen",
+        "tagMessage": "(geben Sie unten ein, um neue Markierungen hinzuzufügen)",
+        "save": "Speichern",
+        "markdownMessage": "Für Formatierungstipps siehe: ",
+        "linkedIn": "LinkedIn",
+        "invisible": "Unsichtbar",
+        "hidden": "Verborgen",
+        "facebook": "Facebook",
+        "editProfile": "Profil bearbeiten",
+        "cancel": "Abbrechen",
+        "bioPlaceholder": "Zusammenfassung der für Icebreaker One relevanten Interessen und Fachkenntnisse",
+        "addUser": "Benutzer hinzufügen",
+        "about": "Über"
+      },
+      "profileTagsComponent": {
+        "tagsPlaceholder": "eine neue Markierung hinzufügen"
+      },
+      "profileEdit": {
+        "profileVisible": "Ihr Profil ist für andere Mitglieder sichtbar",
+        "profileHidden": "Ihr Profil ist vor anderen Mitgliedern verborgen",
+        "phoneMessage": "(Geben Sie auch die Landesvorwahl an, d. h. +44 78945 123 456)",
+        "phone": "Telefon",
+        "organisation": "Organisation",
+        "nameMessage": "(verwenden Sie Ihren vollen Namen, damit Sie leichter zu finden sind)",
+        "name": "Name",
+        "linkedInMessage": "(normalerweise sieht es so aus: http://www.linked.com/in/some-name-or-id)",
+        "emailMessage": "(Sie können Ihre E-Mail-Adresse nicht ändern.)",
+        "email": "E-Mail",
+        "clusterMessage": "(listen Sie die Sternhaufen auf, an denen Sie teilnehmen möchten)",
+        "clusters": "Sternhaufen"
+      },
+      "profileDetail": {
+        "resendInvite": "Einladung erneut senden",
+        "clusterMember": "Ist ein Mitglied der folgenden Sternhaufen"
+      },
+      "addUser": {
+        "websiteMessage": "(http:// wird automatisch hinzugefügt)",
+        "twitterMessage": "(fügen Sie einfach Ihren @Benutzernamen hinzu)",
+        "sendInvite": "Dem Benutzer eine Einladungs-E-Mail für diese Konstellation senden",
+        "phone": "Telefon",
+        "name": "Name (erforderlich)",
+        "linkedInMessage": "(nur der Teil nach http://www.linked.com/in/)",
+        "facebookMessage": "(ebenso für Facebook)",
+        "email": "E-Mail (erforderlich)"
+      },
+      "navHeaderLoggedIn": {
+        "search": "Suchen",
+        "logOut": "Abmelden",
+        "myProfile": "Mein Profil"
+      },
+      "resetPassword": {
+        "resetPassword": "Passwort zurücksetzen",
+        "email": "Ihre E-Mail-Adresse",
+        "back": "Zurück zur Anmeldung"
+      },
+      "newPassword": {
+        "passwordPlaceholder": "Ihr neues Passwort",
+        "confirmPasswordPlaceholder": "Bestätigen Sie Ihr neues Passwort"
+      },
+      "login": {
+        "emailSubmitted": {
+          "resetButton": "Zurücksetzen",
+          "signinButton": "Anmelden",
+          "loginCode": "Ihr Anmeldecode",
+          "nextStepGuidance": "Gut, wir haben gerade eine E-Mail an Ihre Adresse gesendet. Es ist gültig für die nächsten 15 Minuten. Geben Sie es unten ein und Sie sind dabei."
+        },
+        "form": {
+          "requestLoginCodeButton": "Anmeldecode anfordern",
+          "placeholder": "Ihre E-Mail-Adresse"
+        },
+        "helpInstructions": {
+          "suggestion": "Kontakt mit der Unterstützung aufnehmen",
+          "question": "Haben Sie Probleme beim Anmelden?"
+        },
+        "instructions": "Bitte geben Sie die E-Mail-Adresse ein, die Ihrem Icebreaker One Constellation-Konto zugeordnet ist. Wir senden Ihnen einen einmaligen Anmeldecode, um die Anmeldung abzuschließen."
+      },
+      "global": {
+        "siteName": "Konstellation"
+      }
+    }
+  }
+}

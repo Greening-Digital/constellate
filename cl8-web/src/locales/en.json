@@ -5,7 +5,7 @@
         "siteName": "Constellation"
       },
       "login": {
-        "instructions": "Please enter the email address that is associated with your Icebreaker One CL8 account. We will send a one time login code, to finish logging you in.",
+        "instructions": "Please enter the email address that is associated with your Icebreaker One Constellation account. We will send a one time login code, to finish logging you in.",
         "helpInstructions": {
           "question": "Having trouble logging in?",
           "suggestion": "Get in touch with support"

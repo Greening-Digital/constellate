@@ -1,0 +1,89 @@
+{
+  "en": {
+    "message": {
+      "shared": {
+        "tagMessage": "(upiši nove oznake ispod)",
+        "bioPlaceholder": "Sažetak interesa i stručnosti koji su relevantni za Icebreaker One",
+        "hidden": "Skriveno",
+        "about": "Informacije",
+        "visible": "Vidljivo",
+        "website": "Web-stranica",
+        "editProfile": "Uredi profil",
+        "twitter": "Twitter",
+        "markdownMessage": "Savjete za formatiranje pogledaj na: ",
+        "linkedIn": "LinkedIn",
+        "save": "Spremi",
+        "tags": "Stručnost i interesi",
+        "invisible": "Nevidljivo",
+        "addUser": "Dodaj korisnika",
+        "cancel": "Prekini",
+        "facebook": "Facebook"
+      },
+      "profileEdit": {
+        "clusterMessage": "(navedi klastere u kojima želiš sudjelovati)",
+        "phone": "Telefon",
+        "nameMessage": "(koristi ime i prezime kako bi te se lakše pronašlo)",
+        "phoneMessage": "(uključi predbroj, npr. +385 78945 123 456)",
+        "profileHidden": "Drugi članovi ne mogu vidjeti tvoj profil",
+        "organisation": "Organizacija",
+        "profileVisible": "Drugi članovi mogu vidjeti tvoj profil",
+        "linkedInMessage": "(uobičajeno izgleda poput http://www.linked.com/in/neko-ime-ili-id)",
+        "name": "Ime",
+        "clusters": "Klasteri",
+        "email": "E-adresa",
+        "emailMessage": "(Ne možeš promijeniti tvoju e-adresu.)"
+      },
+      "global": {
+        "siteName": "Konstelacija"
+      },
+      "addUser": {
+        "phone": "Telefon",
+        "name": "Ime (obavezno)",
+        "linkedInMessage": "(samo podatak nakon http://www.linked.com/in/)",
+        "sendInvite": "Pošalji korisniku pozivnicu za ovu konstalaciju",
+        "websiteMessage": "(http:// se automatski nadodaje)",
+        "facebookMessage": "(isto tako za Facebook)",
+        "email": "E-adresa (obavezno)",
+        "twitterMessage": "(dodaj samo tvoje @korisničko-ime)"
+      },
+      "navHeaderLoggedIn": {
+        "search": "Traži",
+        "logOut": "Odjava",
+        "myProfile": "Moj profil"
+      },
+      "newPassword": {
+        "passwordPlaceholder": "Tvoja nova lozinka",
+        "confirmPasswordPlaceholder": "Potvrdi tvoju novu lozinku"
+      },
+      "login": {
+        "helpInstructions": {
+          "suggestion": "Kontaktiraj podršku",
+          "question": "Poteškoće s prijavom?"
+        },
+        "emailSubmitted": {
+          "resetButton": "Postavi ponovo",
+          "nextStepGuidance": "U redu, upravo smo poslali e-mail na tvoju adresu. Vrijedit će sljedećih 15 minuta. Za prijavu, jednostavno dolje upiši kod.",
+          "signinButton": "Prijavi se",
+          "loginCode": "tvoj kod za prijavu"
+        },
+        "form": {
+          "placeholder": "tvoja e-adresa",
+          "requestLoginCodeButton": "Zatraži kod za prijavu"
+        },
+        "instructions": "Upiši e-adresu koja je povezana s tvojim računom konstelacije na Icebreaker One. Za završavanje tvoje prijave, poslat ćemo jednokratni kod za prijavu."
+      },
+      "profileTagsComponent": {
+        "tagsPlaceholder": "dodaj novu oznaku"
+      },
+      "profileDetail": {
+        "resendInvite": "Ponovo pošalji pozivnicu",
+        "clusterMember": "Član je sljedećih klastera"
+      },
+      "resetPassword": {
+        "email": "Tvoja e-adresa",
+        "back": "Natrag na prijavu",
+        "resetPassword": "Ponovo postavi lozinku"
+      }
+    }
+  }
+}
