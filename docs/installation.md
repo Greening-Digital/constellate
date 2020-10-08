@@ -1,6 +1,6 @@
 # Installation
 
-Constellate is made of two parts - a django API in `backend`, and a VueJS front end in `cl8-web`.
+Constellate is made of two parts - a django API in `backend`, and a VueJS front end in `frontend`.
 
 You need them both running to develop the site.
 

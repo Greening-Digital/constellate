@@ -1,5 +1,5 @@
 install:
-	pipenv install
+	pipenv install --dev
 	npm install
 
 serve: front_end_bundle

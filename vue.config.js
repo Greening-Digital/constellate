@@ -17,7 +17,7 @@ module.exports = {
 
   // because our front end is nested one folder down, and we compile as part of our deployment process, we need to tell webpack to point the '@' one folder in too.
   chainWebpack: config => {
-    config.resolve.alias.set('@', path.resolve(__dirname, 'cl8-web/src'))
+    config.resolve.alias.set('@', path.resolve(__dirname, 'frontend/src'))
   },
 
   // django and whitenoise does its own hashing and cache busting,

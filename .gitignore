@@ -42,7 +42,7 @@ selenium-debug.log
 .cache
 
 # minified files
-cl8-web/dist/
+frontend/dist/
 
 coverage
 

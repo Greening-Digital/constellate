@@ -1,4 +1,4 @@
-cd cl8-web
+cd frontend
 npm run build:django
 
 cd ../backend

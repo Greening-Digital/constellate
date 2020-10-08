@@ -7,7 +7,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./cl8-web
+    working-directory: ./frontend
 
 jobs:
   build:
@@ -34,9 +34,3 @@ jobs:
         VUE_APP_FIREBASE_DATABASEURL: ${{ secrets.DEMO_FIREBASE_DATABASEURL }}
         VUE_APP_FIREBASE_MESSAGINGSENDERID: ${{ secrets.DEMO_FIREBASE_MESSAGINGSENDERID }}
         VUE_APP_FIREBASE_STORAGEBUCKET: ${{ secrets.DEMO_FIREBASE_STORAGEBUCKET }}
-
-    - name: Run deploy using token
-      run: npx firebase deploy --only hosting --project="$FIREBASE_PROJECTID" --token="$FIREBASE_TOKEN"
-      env:
-        FIREBASE_TOKEN: ${{ secrets.DEMO_FIREBASE_TOKEN }}
-        FIREBASE_PROJECTID: ${{ secrets.DEMO_FIREBASE_PROJECTID }}
