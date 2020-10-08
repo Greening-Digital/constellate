@@ -33,7 +33,7 @@ class TestImporter:
         Load a CSV into memory, so we can manipulate it easily.
         """
         importer = ProfileImporter()
-        importer.load_csv(csv_path)
+        importer.load_csv_from_path(csv_path)
         assert len(importer.rows) > 0
         assert len(importer.rows) < 400
 
@@ -42,7 +42,7 @@ class TestImporter:
         Create a user with the provided email address
         """
         importer = ProfileImporter()
-        importer.load_csv(csv_path)
+        importer.load_csv_from_path(csv_path)
         assert User.objects.count() == 0
         importer.create_users()
 
@@ -51,7 +51,7 @@ class TestImporter:
     def test_create_user(self, csv_path):
 
         importer = ProfileImporter()
-        importer.load_csv(csv_path)
+        importer.load_csv_from_path(csv_path)
 
         user = importer.create_user(importer.rows[0])
 

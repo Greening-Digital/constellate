@@ -31,14 +31,18 @@ class ProfileImporter:
 
     rows = []
 
-    def load_csv(self, import_path: Path = None):
+    def load_csv_from_path(self, import_path: Path = None):
+        with open(import_path) as csvfile:
+            self.load_csv(csvfile)
+
+    def load_csv(self, csvfile=None):
         # Loads the rows contents of a CSV, returning an datastructure
         self.rows = []
-        with open(import_path) as csvfile:
-            reader = csv.DictReader(csvfile)
 
-            for row in reader:
-                self.rows.append(row)
+        reader = csv.DictReader(csvfile)
+
+        for row in reader:
+            self.rows.append(row)
 
     def create_users(self, rows=None):
         if not rows:
