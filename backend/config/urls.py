@@ -6,6 +6,7 @@ from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib.flatpages.views import flatpage
+from backend.users.admin import constellation_admin as cl8_admin
 
 urlpatterns = [
     # serve the vue template instead of the default home
@@ -13,7 +14,8 @@ urlpatterns = [
 
 
     # Django Admin, use {% url 'admin:index' %}
-    path("admin/", admin.site.urls),
+    path("admin/", cl8_admin.urls),
+    path("advanced-admin/", admin.site.urls),
     # User management
     path("users/", include("backend.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
