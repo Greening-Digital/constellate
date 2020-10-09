@@ -2,6 +2,9 @@
   "name": "constellate",
   "description": "An experiment in navigable, shared address books",
   "env": {
+    "ACCOUNT_ALLOW_REGISTRATION": {
+      "value": false
+    },
     "DJANGO_ADMIN_URL": {
       "required": false,
       "value": "admin"
@@ -33,6 +36,7 @@
       "value": false
     },
     "DISABLE_COLLECTSTATIC": {
+      "required": false,
       "value": 0
     },
     "MAILGUN_API_KEY": {
@@ -40,13 +44,6 @@
     },
     "MAILGUN_DOMAIN": {
       "required": true
-    },
-    "MAILGUN_PUBLIC_KEY": {
-      "required": true
-    },
-    "ACCOUNT_ALLOW_REGISTRATION": {
-      "required": true,
-      "value": false
     },
     "VUE_APP_SUPPORT_EMAIL": {
       "required": true
