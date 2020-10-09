@@ -33,6 +33,8 @@ django-extensions = "==2.2.9"
 django-mjml = "*"
 sorl-thumbnail = "*"
 django-taggit-labels = "*"
+django-debug-toolbar = "==2.2"
+django-extensions = "==2.2.9"
 
 [dev-packages]
 ipdb = "==0.13.3"
