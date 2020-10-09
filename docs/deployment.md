@@ -108,7 +108,7 @@ You should be able to deploy with a git push.
 git push your-app master
 ```
 
-## Deploying with heroku
+## Deploying with a regular server
 
 If you have constellate working locally, then you're halfway to running it on a virtual server.
 
