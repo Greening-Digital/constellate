@@ -7,6 +7,7 @@ from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib.flatpages.views import flatpage
 from backend.users.admin import constellation_admin as cl8_admin
+from backend.users.views import sample_csv_template
 
 urlpatterns = [
     # serve the vue template instead of the default home
@@ -16,6 +17,9 @@ urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
     path("admin/", cl8_admin.urls),
     path("advanced-admin/", admin.site.urls),
+    path(
+        "admin/import-csv/sample.csv", sample_csv_template, name="sample-csv-template"
+    ),
     # User management
     path("users/", include("backend.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),

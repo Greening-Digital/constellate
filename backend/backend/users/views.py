@@ -4,6 +4,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
+import csv
+from django.http import HttpResponse
+
 
 User = get_user_model()
 
@@ -48,3 +51,30 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
 
 user_redirect_view = UserRedirectView.as_view()
+
+
+def sample_csv_template(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="sample.csv"'
+
+    sampleProfile = {
+        "name": "Example name",
+        "admin": False,
+        "visible": False,
+        "tags": "comma, separated tags, here in quotes",
+        "photo": "https://link.website.com/profile-photo.jpg",
+        "email": "email@example.com",
+        "phone": "07974 123 456",
+        "website": "https://example.com",
+        "twitter": "https://twitter.com/username",
+        "linkedin": "https://linkedin.com/username",
+        "facebook": "https://facebook.com/username",
+        "bio": "A paragraph of text. Will be rendered as markdown and can contain links.",
+    }
+
+    writer = csv.writer(response)
+    writer.writerow(sampleProfile.keys())
+    writer.writerow(sampleProfile.values())
+
+    return response
