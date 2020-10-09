@@ -1,0 +1,66 @@
+{
+  "name": "constellate",
+  "description": "An experiment in navigable, shared address books",
+  "env": {
+    "DJANGO_ADMIN_URL": {
+      "required": false,
+      "value": "admin"
+    },
+    "DJANGO_ALLOWED_HOSTS": {
+      "required": true,
+      "value": "*"
+    },
+    "DJANGO_SECRET_KEY": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    },
+    "DJANGO_SETTINGS_MODULE": {
+      "required": true,
+      "value": "config.settings.production"
+    },
+    "DJANGO_AWS_ACCESS_KEY_ID": {
+      "required": true
+    },
+    "DJANGO_AWS_SECRET_ACCESS_KEY": {
+      "required": true
+    },
+    "DJANGO_AWS_STORAGE_BUCKET_NAME": {
+      "description": "The name of the chosen AWS bucket for storing uploaded photos pictures and files",
+      "required": true
+    },
+    "DJANGO_AWS_SECRET_ACCESS_KEY": {
+      "required": true,
+      "value": false
+    },
+    "DISABLE_COLLECTSTATIC": {
+      "value": 0
+    },
+    "MAILGUN_API_KEY": {
+      "required": true
+    },
+    "MAILGUN_DOMAIN": {
+      "required": true
+    },
+    "MAILGUN_PUBLIC_KEY": {
+      "required": true
+    },
+    "ACCOUNT_ALLOW_REGISTRATION": {
+      "required": true,
+      "value": false
+    },
+    "VUE_APP_SUPPORT_EMAIL": {
+      "required": true
+    }
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
