@@ -4,6 +4,6 @@
   "prettier.semi": false,
   "i18n-ally.localesPaths": [
     "backend/locale",
-    "cl8-web/src/locales"
+    "frontend/src/locales"
   ]
 }
