@@ -25,6 +25,16 @@ const state = {
   token: localStorage.token || null
 }
 
+// check if token exists
+function checkForToken(token, context, router) {
+  if (!token) {
+    debug('No working token found. Logging out.')
+    context.commit('CLEAR_USER')
+    router.push('signin')
+  }
+}
+
+
 const getters = {
   currentUser: function(state) {
     return state.user
@@ -224,10 +234,12 @@ const actions = {
     context.commit('CLEAR_USER')
     router.push('signin')
   },
-  createUserSession: async function(context, payload) {
+  createUserSession: async function (context, payload) {
 
     const token = context.getters.token || localStorage.token
-    debug('creating user session with token:', token)
+
+    // check we have token, or log user out
+    checkForToken(token)
 
     const profileResponse = await instance.get('/api/profiles/me', {
       headers: { Authorization: `Token ${token}` }
@@ -266,6 +278,10 @@ const actions = {
   fetchProfileList: async function (context) {
     debug('action:fetchProfileList')
     const token = context.getters.token || localStorage.token
+
+    // check we have token, or log user out
+    checkForToken(token)
+
     try {
       const response = await instance.get('/api/profiles', {
         headers: { Authorization: `Token ${token}` }
@@ -305,7 +321,10 @@ const actions = {
     payload.tags = payload.tags.map(function(obj) {
       return obj.name
     })
+
     const token = context.getters.token
+    // check we have token, or log user out
+    checkForToken(token)
 
     const response = await instance.post('/api/profiles/', payload, {
       headers: { Authorization: `Token ${token}` }
@@ -318,11 +337,18 @@ const actions = {
       return 'There was a problem creating the account'
     }
   },
-  fetchProfile: async function(context, payload) {
+  fetchProfile: async function (context, payload) {
+
+    debug('action:fetchProfileList')
+    const token = context.getters.token || localStorage.token
+
+    // check we have token, or log user out
+    checkForToken(token)
+
     debug('action:fetchProfile')
     debug('fetching profile for id:', payload.id)
     const profile = await instance.get(`/api/profiles/${payload.id}`, {
-      headers: { Authorization: `Token ${localStorage.token}` }
+      headers: { Authorization: `Token ${token}` }
     })
     context.commit('SET_PROFILE', profile.data)
   },
