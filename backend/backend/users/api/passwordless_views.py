@@ -1,14 +1,16 @@
 import logging
 
+from django.utils.module_loading import import_string
 from django.core.mail import send_mail
 from django.template import loader
+from django.contrib.auth import login
 from drfpasswordless.settings import api_settings
 from drfpasswordless.utils import (
     create_callback_token_for_user,
     inject_template_context,
     send_sms_with_callback_token,
 )
-from drfpasswordless.views import ObtainEmailCallbackToken
+from drfpasswordless import views as drfpwless_views
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -82,7 +84,13 @@ class RicherContextTokenService:
         return success
 
 
-class ConstellateEmailCallbackToken(ObtainEmailCallbackToken):
+class ConstellateEmailCallbackToken(drfpwless_views.ObtainEmailCallbackToken):
+    """
+    This subclass of ObtainEmailCallbackToken works the same way, but
+    also allows us to pass more context data into the templates when
+    generating a confirmation email, using the RicherContextTokenService.
+    """
+
     def post(self, request, *args, **kwargs):
         if self.alias_type.upper() not in api_settings.PASSWORDLESS_AUTH_TYPES:
             # Only allow auth types allowed in settings.
@@ -98,7 +106,6 @@ class ConstellateEmailCallbackToken(ObtainEmailCallbackToken):
             success = RicherContextTokenService.send_token(
                 user, self.alias_type, self.token_type, **self.message_payload
             )
-
             # Respond With Success Or Failure of Sent
             if success:
                 status_code = status.HTTP_200_OK
@@ -111,3 +118,58 @@ class ConstellateEmailCallbackToken(ObtainEmailCallbackToken):
             return Response(
                 serializer.error_messages, status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class ConstellateObtainAuthTokenFromCallbackToken(
+    drfpwless_views.ObtainAuthTokenFromCallbackToken
+):
+    """
+    A subclass of ObtainAuthTokenFromCallbackToken. Works the same way, but
+    also logs in the user to django, by setting a session cookie, to allow
+    authorised users access to the django admin.
+    """
+
+    def login_user_for_backend(self, request=None, user=None, backend=None):
+        """
+        Auth the provided user so the request has the user object added.
+        Used to allow staff to login using the email setup, without needing
+        to keep track of usernames, or passwords.
+
+        """
+        if backend is None:
+            backend = "django.contrib.auth.backends.ModelBackend"
+
+        login(request, user, backend=backend)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.validated_data["user"]
+            token_creator = import_string(api_settings.PASSWORDLESS_AUTH_TOKEN_CREATOR)
+            (token, _) = token_creator(user)
+
+            if token:
+                TokenSerializer = import_string(
+                    api_settings.PASSWORDLESS_AUTH_TOKEN_SERIALIZER
+                )
+                token_serializer = TokenSerializer(data=token.__dict__, partial=True)
+                if token_serializer.is_valid():
+
+                    # this is the one line that differes from
+                    # normal ObtainAuthTokenFromCallbackToken.post() method
+                    self.login_user_for_backend(request, user)
+
+                    # Return our key for consumption.
+                    return Response(token_serializer.data, status=status.HTTP_200_OK)
+        else:
+            logger.error(
+                "Couldn't log in unknown user. Errors on serializer: {}".format(
+                    serializer.error_messages
+                )
+            )
+        return Response(
+            {"detail": "Couldn't log you in. Try again later."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
