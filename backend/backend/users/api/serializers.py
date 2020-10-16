@@ -1,17 +1,18 @@
 from django.contrib.auth import get_user_model
+from django.utils.text import slugify
 from rest_framework import serializers
+
+from taggit.models import Tag
 from taggit_serializer.serializers import (
-    TagListSerializerField,
     TaggitSerializer,
     TagList,
+    TagListSerializerField,
 )
-from taggit.models import Tag
-
-from rest_framework.utils import model_meta
 
 User = get_user_model()
-from ..models import Profile, Cluster
-from django.utils.text import slugify
+
+
+from ..models import Cluster, Profile
 
 
 class ConstellateTagListSerializerField(TagListSerializerField):
@@ -140,12 +141,9 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
             "clusters",
             "photo",
             "thumbnail_photo",
+            "detail_photo",
         ]
-        read_only_fields = [
-            "photo",
-            "id",
-            "thumbnail_photo",
-        ]
+        read_only_fields = ["photo", "id", "thumbnail_photo", "detail_photo"]
 
 
 class TagSerializer(TaggitSerializer, serializers.ModelSerializer):

@@ -36,13 +36,13 @@ function checkForToken(token, context, router) {
 
 
 const getters = {
-  currentUser: function(state) {
+  currentUser: function (state) {
     return state.user
   },
-  isLoading: function(state) {
+  isLoading: function (state) {
     return state.loading
   },
-  isAdmin: function(state) {
+  isAdmin: function (state) {
     if (state.user == null) return false
     if (state.profileList == null) return false
 
@@ -53,24 +53,24 @@ const getters = {
       .map(profile => profile.id)
       .includes(state.user.id)
   },
-  currentTerm: function(state) {
+  currentTerm: function (state) {
     return state.searchTerm
   },
-  activeTags: function(state) {
+  activeTags: function (state) {
     debug('activeTags', state.searchTags)
     return state.searchTags
-},
+  },
   activeClusters: function (state) {
     debug('activeClusters', state.searchClusters)
     return state.searchClusters
   },
-  profile: function(state) {
+  profile: function (state) {
     return state.profile
   },
-  profilePhoto: function(state) {
+  profilePhoto: function (state) {
     return state.profilePhoto
   },
-  profileList: function(state) {
+  profileList: function (state) {
     debug('getting profileList')
     return state.profileList
   },
@@ -93,19 +93,19 @@ const getters = {
   profileShowing: function (state) {
     return state.profileShowing
   },
-  requestUrl: function(state) {
+  requestUrl: function (state) {
     return state.requestUrl
   },
-  signInData: function(state) {
+  signInData: function (state) {
     return state.signInData
   },
-  token: function(state) {
+  token: function (state) {
     return state.token
   }
 }
 
 const mutations = {
-  CLEAR_USER: function(state) {
+  CLEAR_USER: function (state) {
     state.profile = null
     state.user = null
     state.token = null
@@ -114,13 +114,13 @@ const mutations = {
     debug('state', state);
 
   },
-  stopLoading: function(state) {
+  stopLoading: function (state) {
     state.loading = false
   },
-  startLoading: function(state) {
+  startLoading: function (state) {
     state.loading = true
   },
-  setTerm: function(state, payload) {
+  setTerm: function (state, payload) {
     debug('setTerm', payload)
     debug('setTerm', typeof payload)
     state.searchTerm = payload
@@ -138,9 +138,9 @@ const mutations = {
     state.token = payload
     localStorage.token = payload
   },
-  SET_PROFILE: function(state, payload) {
+  SET_PROFILE: function (state, payload) {
     debug('SET_PROFILE', payload)
-    debug('PROFILE TAGS', payload.tags.map(x => {return x.name}))
+    debug('PROFILE TAGS', payload.tags.map(x => { return x.name }))
     state.profileShowing = true
     state.profile = payload
   },
@@ -164,7 +164,7 @@ const mutations = {
     debug('setProfilePhoto', payload)
     state.profile.photo = [payload]
   },
-  SET_VISIBLE_PROFILE_LIST: function(state, payload) {
+  SET_VISIBLE_PROFILE_LIST: function (state, payload) {
     debug('SET_VISIBLE_PROFILE_LIST', payload)
     state.profileList = payload
   },
@@ -176,11 +176,11 @@ const mutations = {
     debug('profileShowing', state.profileShowing)
     state.profileShowing = !state.profileShowing
   },
-  setRequestUrl: function(state, payload) {
+  setRequestUrl: function (state, payload) {
     debug('setrequestUrl', payload)
     state.requestUrl = payload
   },
-  SET_USER: function(state, payload) {
+  SET_USER: function (state, payload) {
     debug('SET_USER', payload)
     state.user = payload
   }
@@ -188,7 +188,7 @@ const mutations = {
 
 const actions = {
   // otherwise log user in here
-  submitEmail: async function(context, payload) {
+  submitEmail: async function (context, payload) {
     debug('action:submitEmail')
     const emailPayload = {
       email: payload
@@ -204,12 +204,12 @@ const actions = {
         return false
       }
 
-    }catch(error) {
-      return error
+    } catch (error) {
+      throw error
     }
 
   },
-  login: async function(context, payload) {
+  login: async function (context, payload) {
     try {
       const response = await instance.post('/auth/token/', payload)
       const token = response.data.token
@@ -230,7 +230,7 @@ const actions = {
       debug('Error logging in', error)
     }
   },
-  logout: function(context) {
+  logout: function (context) {
     context.commit('CLEAR_USER')
     router.push('signin')
   },
@@ -316,9 +316,9 @@ const actions = {
       debug('Error fetching tagList', error)
     }
   },
-  addUser: async function(context, payload) {
+  addUser: async function (context, payload) {
     debug('action:fetchProfile')
-    payload.tags = payload.tags.map(function(obj) {
+    payload.tags = payload.tags.map(function (obj) {
       return obj.name
     })
 
@@ -352,7 +352,7 @@ const actions = {
     })
     context.commit('SET_PROFILE', profile.data)
   },
-  resendInvite: async function(context, payload) {
+  resendInvite: async function (context, payload) {
     debug('action:resendInvite')
     const token = context.getters.token
     const profileId = payload.id
@@ -367,7 +367,7 @@ const actions = {
     )
     return response
   },
-  updateProfile: async function(context, payload) {
+  updateProfile: async function (context, payload) {
     debug('sending update to API', payload)
 
     // doing this round trip returns a JSON object we
@@ -403,7 +403,7 @@ const actions = {
       return 'There was a problem saving changes to the profile.'
     }
   },
-  updateProfilePhoto: async function(context, payload) {
+  updateProfilePhoto: async function (context, payload) {
     debug('action:updateProfilePhoto')
     const profileId = payload.profile.id
     const token = context.getters.token
@@ -432,7 +432,7 @@ const actions = {
     }
   },
 
-  newProfileTag: async function(context, payload) {
+  newProfileTag: async function (context, payload) {
     debug('action:newProfileTag', payload)
     const newTag = payload
     let tempVal =
@@ -443,9 +443,9 @@ const actions = {
       id: 'tempval' + tempVal
     }
     let profile = context.getters.profile
-    let tags = profile.tags 
+    let tags = profile.tags
     tags.push(tag)
-  
+
     context.commit('SET_PROFILE_TAGS', tags)
   },
 }

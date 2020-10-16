@@ -1,5 +1,5 @@
 import pytest
-from django.test import RequestFactory
+
 
 from backend.users.api.views import ProfileViewSet
 from backend.users.models import User, Profile
@@ -11,10 +11,11 @@ pytestmark = pytest.mark.django_db
 
 class TestProfileSerializer:
     @pytest.mark.only
-    def test_profile_with_photo(self, fake_photo_profile: Profile):
+    @pytest.mark.parametrize("photo_size", [("thumbnail_photo"), ("detail_photo")])
+    def test_profile_with_photo(self, fake_photo_profile: Profile, photo_size):
 
         ps = ProfileSerializer(fake_photo_profile)
-        assert "thumbnail_photo" in ps.data.keys()
+        assert photo_size in ps.data.keys()
 
     # @pytest.mark.only
     def test_create_profile_data(self):
@@ -23,7 +24,8 @@ class TestProfileSerializer:
         # user.save()
 
         profile_dict = {
-            # these are the bits we need to create for end users, before putting them back in the returned
+            # these are the bits we need to create for end users,
+            # before putting them back in the returned
             "name": "Joe Bloggs",
             "email": "person@email.com",
             "phone": "9329275526",
