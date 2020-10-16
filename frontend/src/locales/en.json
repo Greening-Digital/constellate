@@ -42,6 +42,7 @@
         "name": "Name (required)",
         "phone": "Phone",
         "sendInvite": "Send the user an invite mail for this constellation",
+        "isAdmin": "Make this user a constellation moderator",
         "twitterMessage": "(just add your @username)",
         "websiteMessage": "(http:// is added automatically)"
       },

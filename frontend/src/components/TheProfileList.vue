@@ -35,7 +35,11 @@
       </div>
 
       <ul class="list ma0 ml0 pl0 pa0">
-        <profile-search-item v-for="item in searchResults" :item="item" :key="item.id" />
+        <profile-search-item
+          v-for="item in searchResults"
+          :item="item"
+          :key="item.id"
+        />
       </ul>
     </div>
   </div>
@@ -102,8 +106,7 @@ export default {
       this.searchResults = this.profileList
       this.$store.commit('stopLoading')
       this.loading = false
-    }
-    catch (e) {
+    } catch (e) {
       debug("couldn't load in the profile: ", e)
     }
   },
@@ -118,7 +121,7 @@ export default {
       if (this.term !== '') {
         debug('checkAgainstSearch: searching against term:', this.term)
         this.$search(this.term, this.searchResults, searchOptions).then(
-          results => {
+          (results) => {
             debug('checkAgainstSearch: results', results.length)
             this.searchResults = results
           }
@@ -127,12 +130,12 @@ export default {
     },
     toggleTag: function (ev) {
       const tag = ev.target.textContent.trim()
-      debug('toggleTag', {tag})
+      debug('toggleTag', { tag })
       this.$store.dispatch('updateActiveTags', tag)
     },
     toggleCluster: function (ev) {
       const cluster = ev.target.textContent.trim()
-      debug('toggleCluster', {cluster})
+      debug('toggleCluster', { cluster })
       this.$store.dispatch('updateActiveClusters', cluster)
     },
     matchingTags() {
@@ -140,8 +143,10 @@ export default {
       const activeClusters = this.activeClusters
       debug('matchingTags', { activeTags }, { activeClusters })
 
-      const noActiveTags = typeof activeTags === 'undefined' || activeTags === ''
-      const noActiveClusters = typeof activeClusters === 'undefined' || activeClusters === ''
+      const noActiveTags =
+        typeof activeTags === 'undefined' || activeTags === ''
+      const noActiveClusters =
+        typeof activeClusters === 'undefined' || activeClusters === ''
 
       if (noActiveTags && noActiveClusters) {
         debug('returning early. no clusters or tags to filter by')
@@ -151,7 +156,7 @@ export default {
       const availableProfiles = this.profileList
       let profilesFilteredByTags
 
-      debug('availableProfiles', {availableProfiles})
+      debug('availableProfiles', { availableProfiles })
       // clear out profiles with NO tags
       if (!noActiveTags) {
         // now reduce the list till we only have people matching all tags
@@ -160,28 +165,29 @@ export default {
             const profileTags = profile.tags.map(function (tag) {
               return tag.name.toLowerCase()
             })
-            debug("comparing",  {profileTags}, {activeTag})
+            debug('comparing', { profileTags }, { activeTag })
             return includes(profileTags, activeTag)
           })
         })
       }
-      debug('profilesFilteredByTags', {profilesFilteredByTags})
-      let profilesFilteredByClusters = profilesFilteredByTags || availableProfiles
+      debug('profilesFilteredByTags', { profilesFilteredByTags })
+      let profilesFilteredByClusters =
+        profilesFilteredByTags || availableProfiles
       if (!noActiveClusters) {
         debug('checking against matchingClusters', activeClusters)
         activeClusters.forEach(function (clusterName) {
-          profilesFilteredByClusters = profilesFilteredByClusters.filter(function (
-            profile
-          ) {
-            const profileClusters = profile.clusters.map(function (cluster) {
-              return cluster.name.toLowerCase()
-            })
-            debug("comparing",  {profileClusters}, {clusterName})
-            return includes(profileClusters, clusterName)
-          })
+          profilesFilteredByClusters = profilesFilteredByClusters.filter(
+            function (profile) {
+              const profileClusters = profile.clusters.map(function (cluster) {
+                return cluster.name.toLowerCase()
+              })
+              debug('comparing', { profileClusters }, { clusterName })
+              return includes(profileClusters, clusterName)
+            }
+          )
         })
       }
-      debug('profilesFilteredByClusters', {profilesFilteredByClusters})
+      debug('profilesFilteredByClusters', { profilesFilteredByClusters })
       return profilesFilteredByClusters
     }
   }

@@ -13,18 +13,20 @@
           v-on:submit.prevent="onSubmit"
           @click="onSubmit"
           class="fr v-btm f6 mr3 link br2 ph3 pv2 dib white bg-green hover-bg-green"
-        >{{ $t('message.shared.save') }}</a>
+          >{{ $t('message.shared.save') }}</a
+        >
         <router-link
           :to="{ name: 'home' }"
           class="fr v-btm f6 link br2 ph3 pv2 dib white bg-gray hover-bg-dark-gray"
-        >{{ $t('message.shared.cancel') }}</router-link>
+          >{{ $t('message.shared.cancel') }}</router-link
+        >
       </nav>
     </div>
     <div class="fl pa2">
       <div class="pa3 center w-80-l cf">
         <div>
           <form class v-if="profile">
-            <div class="cf w-100" style="min-height:11em;">
+            <div class="cf w-100" style="min-height: 11em">
               <div class="fl w-100 w-25-ns mb3">
                 <v-gravatar
                   :email="profile.email"
@@ -35,7 +37,10 @@
                 <div class="w-40 w-100-ns fn-ns dib v-btm mt2">
                   <div
                     class="f6 dim br2 dib w-80 white mb2"
-                    v-bind:class="{ 'bg-green': profile.visible, 'bg-red': !profile.visible }"
+                    v-bind:class="{
+                      'bg-green': profile.visible,
+                      'bg-red': !profile.visible
+                    }"
                   >
                     <input
                       type="checkbox"
@@ -43,16 +48,25 @@
                       id="visible-checkbox"
                       v-model="profile.visible"
                     />
-                    <label for="visible-checkbox" class="dib w-70">{{ $t('message.shared.visible') }}</label>
+                    <label for="visible-checkbox" class="dib w-70">{{
+                      $t('message.shared.visible')
+                    }}</label>
                   </div>
-
                 </div>
               </div>
 
               <!-- Warning message box -->
               <div class="fl w-100 w-75-ns mt0 pt0">
-                <div v-if="warning" class="flex items-center pa3 bg-light-blue mb2">
-                  <svg class="w1" data-icon="info" viewBox="0 0 32 32" style="fill:currentcolor">
+                <div
+                  v-if="warning"
+                  class="flex items-center pa3 bg-light-blue mb2"
+                >
+                  <svg
+                    class="w1"
+                    data-icon="info"
+                    viewBox="0 0 32 32"
+                    style="fill: currentcolor"
+                  >
                     <title>info icon</title>
                     <path
                       d="M16 0 A16 16 0 0 1 16 32 A16 16 0 0 1 16 0 M19 15 L13 15 L13 26 L19 26 z M16 6 A3 3 0 0 0 16 12 A3 3 0 0 0 16 6"
@@ -62,8 +76,16 @@
                 </div>
 
                 <!-- Error message box -->
-                <div v-if="error" class="flex items-center pa3 bg-light-red mb2">
-                  <svg class="w1" data-icon="info" viewBox="0 0 32 32" style="fill:currentcolor">
+                <div
+                  v-if="error"
+                  class="flex items-center pa3 bg-light-red mb2"
+                >
+                  <svg
+                    class="w1"
+                    data-icon="info"
+                    viewBox="0 0 32 32"
+                    style="fill: currentcolor"
+                  >
                     <title>info icon</title>
                     <path
                       d="M16 0 A16 16 0 0 1 16 32 A16 16 0 0 1 16 0 M19 15 L13 15 L13 26 L19 26 z M16 6 A3 3 0 0 0 16 12 A3 3 0 0 0 16 6"
@@ -74,16 +96,22 @@
 
                 <ul class="list mt0 pt0 f4 pa0 border-box">
                   <li class="list name">
-                    <label class="f5" for>{{ $t('message.addUser.name') }}</label>
+                    <label class="f5" for>{{
+                      $t('message.addUser.name')
+                    }}</label>
                     <input class="w-100 mt1 pa1" v-model="profile.name" />
                   </li>
 
                   <li class="list email mt2">
-                    <label class="f5" for>{{ $t('message.addUser.email') }}</label>
+                    <label class="f5" for>{{
+                      $t('message.addUser.email')
+                    }}</label>
                     <input class="w-100 mt1 pa1" v-model="profile.email" />
                   </li>
                   <li class="list phone mt2">
-                    <label class="f5 mb2" for>{{ $t('message.addUser.phone') }}</label>
+                    <label class="f5 mb2" for>{{
+                      $t('message.addUser.phone')
+                    }}</label>
                     <input class="w-100 mt1 pa1" v-model="profile.phone" />
                   </li>
                   <li class="list website mt2">
@@ -106,14 +134,14 @@
                   <li class="list facebook mt2">
                     <label class="f5" for>
                       {{ $t('message.shared.facebook') }}
-                      <small>{{ $t('message.addUser.twitterMessage')}}</small>
+                      <small>{{ $t('message.addUser.twitterMessage') }}</small>
                     </label>
                     <input class="w-100 mt1" v-model="profile.facebook" />
                   </li>
                   <li class="list linkedin mt2">
                     <label class="f5" for>
-                      {{ $t('message.shared.linkedIn')}}
-                      <small>{{ $t('message.addUser.linkedInMessage')}}</small>
+                      {{ $t('message.shared.linkedIn') }}
+                      <small>{{ $t('message.addUser.linkedInMessage') }}</small>
                     </label>
                     <input class="w-100 mt1" v-model="profile.linkedin" />
                   </li>
@@ -123,7 +151,9 @@
                       {{ $t('message.shared.about') }}
                       <small>
                         ({{ $t('message.shared.markdownMessage') }}
-                        <a href="https://daringfireball.net/projects/markdown/">markdown</a>)
+                        <a href="https://daringfireball.net/projects/markdown/"
+                          >markdown</a
+                        >)
                       </small>
                     </label>
                     <textarea
@@ -238,7 +268,6 @@ export default {
         sendInvite: false,
         pitchable: false,
         tags: []
-
       }
     }
   },
@@ -248,15 +277,15 @@ export default {
         ? this.$store.getters.currentUser
         : false
     },
-    profileTags: function() {
+    profileTags: function () {
       let tagList = []
 
       if (this.items.length > 0) {
-        this.items.forEach(function(peep) {
+        this.items.forEach(function (peep) {
           if (typeof peep.fields !== 'undefined') {
             if (typeof peep.tags !== 'undefined') {
-              peep.tags.forEach(function(t) {
-                let tagListNames = tagList.map(function(tt) {
+              peep.tags.forEach(function (t) {
+                let tagListNames = tagList.map(function (tt) {
                   return tt.name
                 })
                 if (!includes(tagListNames, t.name)) {
@@ -268,7 +297,7 @@ export default {
         })
       }
       if (this.unsyncedTags.length > 0) {
-        this.unsyncedTags.forEach(function(t) {
+        this.unsyncedTags.forEach(function (t) {
           tagList.push(t)
         })
       }
@@ -287,7 +316,7 @@ export default {
       this.profile.tags.push(tag)
       this.unsyncedTags.push(tag)
     },
-    onSubmit: async function() {
+    onSubmit: async function () {
       this.error = null
       this.warning = null
 

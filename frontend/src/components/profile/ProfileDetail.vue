@@ -1,5 +1,7 @@
 <template>
-  <div class="theprofile pa3 pa4-ns center w-100 cf border-box fixed relative-l bg-white">
+  <div
+    class="theprofile pa3 pa4-ns center w-100 cf border-box fixed relative-l bg-white"
+  >
     <div v-if="loading">
       <div class="spinner">
         <img src="../../assets/loading.svg" alt="loading" width="50px" />
@@ -13,129 +15,158 @@
           class="status-message cf flex items-center pa3 mb2"
           v-bind:class="messageClassObject"
         >
-          <svg class="w1" data-icon="info" viewBox="0 0 32 32" style="fill:currentcolor">
+          <svg
+            class="w1"
+            data-icon="info"
+            viewBox="0 0 32 32"
+            style="fill: currentcolor"
+          >
             <title>info icon</title>
             <path
               d="M16 0 A16 16 0 0 1 16 32 A16 16 0 0 1 16 0 M19 15 L13 15 L13 26 L19 26 z M16 6 A3 3 0 0 0 16 12 A3 3 0 0 0 16 6"
             />
           </svg>
-          <span class="lh-title ml2" role="status" style="flex-grow:1;">{{ flashMessage }}</span>
+          <span class="lh-title ml2" role="status" style="flex-grow: 1">{{
+            flashMessage
+          }}</span>
           <button
             aria-hidden="true"
             role="button"
             class="b--none ml2 mr2 bg-black-90 white br2 grow pointer close"
             @click="hideFlashMessage"
-          >x</button>
+          >
+            x
+          </button>
         </div>
       </transition>
+      <div v-if="profile">
+        <div v-if="canEdit()" class="fn fr-l">
+          <router-link
+            :to="{ name: 'editProfile' }"
+            role="link"
+            tabindex="0"
+            class="f6 link dim br2 ph3 pv2 mb3 dib white bg-gray"
+            >{{ $t('message.shared.editProfile') }}</router-link
+          >
+        </div>
 
-      <div v-if="canEdit()" class="fn fr-l">
-        <router-link
-          :to="{ name: 'editProfile' }"
-          role="link"
-          tabindex="0"
-          class="f6 link dim br2 ph3 pv2 mb3 dib white bg-gray"
-        >{{ $t('message.shared.editProfile') }}</router-link>
-      </div>
+        <div v-if="isAdmin" class="fn fr-l">
+          <button
+            tabindex="0"
+            class="resend-invite f6 link dim br2 ph3 pv2 mb3 dib white bg-gray b--none ml2 mr2"
+            @click="resendInvite"
+          >
+            {{ $t('message.profileDetail.resendInvite') }}
+          </button>
+        </div>
 
-      <div v-if="isAdmin" class="fn fr-l">
-        <button
-          tabindex="0"
-          class="resend-invite f6 link dim br2 ph3 pv2 mb3 dib white bg-gray b--none ml2 mr2"
-          @click="resendInvite"
-        >{{ $t('message.profileDetail.resendInvite') }}</button>
-      </div>
+        <div class="fl w-70 w-20-m w-20-l mr3">
+          <img
+            v-if="hasPhoto(profile)"
+            :src="showPhoto()"
+            class="supplied-photo b--light-gray ba w-100"
+          />
 
-      <div class="fl w-70 w-20-m w-20-l mr3">
-        <img
-          v-if="hasPhoto(profile)"
-          :src="showPhoto()"
-          class="supplied-photo b--light-gray ba w-100"
-        />
+          <v-gravatar
+            v-else
+            :email="profile.email"
+            :size="200"
+            class="gravatar b--light-gray ba w-100"
+          />
 
-        <v-gravatar
-          v-else
-          :email="profile.email"
-          :size="200"
-          class="gravatar b--light-gray ba w-100"
-        />
-
-        <div v-if="canEdit()">
-          <div
-            v-if="isVisible()"
-            class="f6 link dim br2 ph3 pv2 mb2 dib white bg-green w-100 mt2 tc"
-          >{{ $t('message.shared.visible') }}</div>
-          <div v-else class="f6 link dim br2 ph3 pv2 mb2 dib white bg-red w-100 tc mt2">
-            {{ $t('message.shared.invisible') }}
+          <div v-if="canEdit()">
+            <div
+              v-if="isVisible()"
+              class="f6 link dim br2 ph3 pv2 mb2 dib white bg-green w-100 mt2 tc"
+            >
+              {{ $t('message.shared.visible') }}
+            </div>
+            <div
+              v-else
+              class="f6 link dim br2 ph3 pv2 mb2 dib white bg-red w-100 tc mt2"
+            >
+              {{ $t('message.shared.invisible') }}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="fl w-100 w-60-m w-60-l mt0 pt0">
-        <ul class="list mt0 pt0 pl0">
-          <li class="list f3 name mt2 mt0-l mb2 name truncate">{{ profile.name }}</li>
-          <li class="list f5 email truncate mb2">
-            <a :href="'mailto:'+profile.email">{{ profile.email }}</a>
-          </li>
-          <li class="list f5 phone">{{ profile.phone }}</li>
-        </ul>
+        <div class="fl w-100 w-60-m w-60-l mt0 pt0">
+          <ul class="list mt0 pt0 pl0">
+            <li class="list f3 name mt2 mt0-l mb2 name truncate">
+              {{ profile.name }}
+            </li>
+            <li class="list f5 email truncate mb2">
+              <a :href="'mailto:' + profile.email">{{ profile.email }}</a>
+            </li>
+            <li class="list f5 phone">{{ profile.phone }}</li>
+          </ul>
 
-        <ul class="list pl0">
-          <li v-if="profile.website" class="list f5 website">
-            <a :href="websiteLink" target="_blank">{{ profile.website }}</a>
-          </li>
-          <li
-            v-if="profile.organisation"
-            class="list f5 organisation mv3"
-          >{{ profile.organisation }}</li>
-        </ul>
+          <ul class="list pl0">
+            <li v-if="profile.website" class="list f5 website">
+              <a :href="websiteLink" target="_blank">{{ profile.website }}</a>
+            </li>
+            <li v-if="profile.organisation" class="list f5 organisation mv3">
+              {{ profile.organisation }}
+            </li>
+          </ul>
 
-        <ul class="list pl0 social-links">
-          <li v-if="this.profile.twitter" class="list f5 twitter dib mr1">
-            <a :href="twitterLink" target="_blank">{{ $t('message.shared.twitter') }}</a>
-          </li>
-          <li v-if="this.profile.facebook" class="list f5 linkedin dib mr1">
-            <a :href="facebookLink" target="_blank">{{ $t('message.shared.facebook') }}</a>
-          </li>
-          <li v-if="this.profile.linkedin" class="list f5 twitter dib mr1">
-            <a :href="linkedinLink" target="_blank">{{ $t('message.shared.linkedIn') }}</a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="fl cf pt2 w-100">
-        <ul class="db list tags ml0 pl0">
-          <li
-            v-for="tag in profile.tags"
-            v-bind:key="tag.name"
-            class="list bg-near-white br2 f7 pa2 mr1 mb1 ph3 b--light-silver bg-animate hover-bg-blue hover-white"
-            :class="{ 'bg-dark-blue white': isActive(tag.name.toLowerCase()) }"
-            @click="toggleTag"
-          >{{ tag.name.toLowerCase().trim() }}</li>
-        </ul>
-
-        <!-- TODO, make this into a tag list component -->
-        <div v-if="hasActiveClusters()" class="cluster-component">
-          <h4>
-            {{ $t('message.profileDetail.clusterMember') }}
-          </h4>
-          <ul class="db list tags clusters ml0 pl0">
-            <li
-              v-for="cluster in profile.clusters"
-              v-bind:key="cluster.name"
-              class="list bg-near-white br2 f7 pa2 mr1 mb1 ph3 b--light-silver bg-animate hover-bg-blue hover-white"
-              :class="{
-                'bg-dark-blue white': isActive(cluster.name.toLowerCase())
-              }"
-              @click="toggleCluster"
-            >
-              {{ cluster.name }}
+          <ul class="list pl0 social-links">
+            <li v-if="this.profile.twitter" class="list f5 twitter dib mr1">
+              <a :href="twitterLink" target="_blank">{{
+                $t('message.shared.twitter')
+              }}</a>
+            </li>
+            <li v-if="this.profile.facebook" class="list f5 linkedin dib mr1">
+              <a :href="facebookLink" target="_blank">{{
+                $t('message.shared.facebook')
+              }}</a>
+            </li>
+            <li v-if="this.profile.linkedin" class="list f5 twitter dib mr1">
+              <a :href="linkedinLink" target="_blank">{{
+                $t('message.shared.linkedIn')
+              }}</a>
             </li>
           </ul>
         </div>
 
-        <div v-if="this.profile.bio" class="w-100 bio lh-copy measure-wide">
-          <div v-html="bioOutput"></div>
+        <div class="fl cf pt2 w-100">
+          <ul class="db list tags ml0 pl0">
+            <li
+              v-for="tag in profile.tags"
+              v-bind:key="tag.name"
+              class="list bg-near-white br2 f7 pa2 mr1 mb1 ph3 b--light-silver bg-animate hover-bg-blue hover-white"
+              :class="{
+                'bg-dark-blue white': isActive(tag.name.toLowerCase())
+              }"
+              @click="toggleTag"
+            >
+              {{ tag.name.toLowerCase().trim() }}
+            </li>
+          </ul>
+
+          <!-- TODO, make this into a tag list component -->
+          <div v-if="hasActiveClusters()" class="cluster-component">
+            <h4>
+              {{ $t('message.profileDetail.clusterMember') }}
+            </h4>
+            <ul class="db list tags clusters ml0 pl0">
+              <li
+                v-for="cluster in profile.clusters"
+                v-bind:key="cluster.name"
+                class="list bg-near-white br2 f7 pa2 mr1 mb1 ph3 b--light-silver bg-animate hover-bg-blue hover-white"
+                :class="{
+                  'bg-dark-blue white': isActive(cluster.name.toLowerCase())
+                }"
+                @click="toggleCluster"
+              >
+                {{ cluster.name }}
+              </li>
+            </ul>
+          </div>
+
+          <div v-if="this.profile.bio" class="w-100 bio lh-copy measure-wide">
+            <div v-html="bioOutput"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -209,8 +240,11 @@ export default {
   },
   methods: {
     canEdit: function () {
-      debug('can edit?', this.profile.id, this.user.id)
-      return this.profile.id == this.user.id
+      if (this.profile && this.user) {
+        debug('can edit?', this.profile.id, this.user.id)
+        return this.profile.id == this.user.id
+      }
+      return false
     },
     toggleTag: function (ev) {
       let tag = ev.target.textContent.trim().toLowerCase()
