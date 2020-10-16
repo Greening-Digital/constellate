@@ -30,7 +30,7 @@ class ConstellationAdmin(AdminSite):
         app_list = super().get_app_list(request)
         patterns = [
             {
-                "name": "Import new profiles",
+                "name": "Utilities",
                 "app_label": "backend",
                 "app_url": "/admin/import-csv/",
                 "models": [
