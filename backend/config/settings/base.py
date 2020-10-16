@@ -315,6 +315,7 @@ REST_FRAMEWORK = {
 MJML_CHECK_CMD_ON_STARTUP = True
 MJML_EXEC_CMD = ['../node_modules/.bin/mjml', '--config.validationLevel', 'skip']
 
+MODERATOR_GROUP_NAME = "Constellation Moderators"
 
 # Photos
 

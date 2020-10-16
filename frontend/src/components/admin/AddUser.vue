@@ -152,15 +152,46 @@
             </div>
 
             <ul class="list mt0 pt0 f4 pa0 border-box bg-washed-green pa3">
-            <li class="list send-invite pt3">
-                <input type="checkbox"
-                id="send-invite"
-                class="mr2"
-                v-model="profile.sendInvite" />
-                <label for="send-invite" class="f5">{{ $t('message.addUser.sendInvite') }}</label>
-            </li>
+              <li class="list send-invite pt3">
+                <input
+                  type="checkbox"
+                  id="send-invite"
+                  class="mr2"
+                  v-model="profile.sendInvite"
+                />
+                <label for="send-invite" class="f5">{{
+                  $t('message.addUser.sendInvite')
+                }}</label>
+              </li>
+              <li class="list is-admin pt3">
+                <input
+                  type="checkbox"
+                  id="is-Admin"
+                  class="mr2"
+                  v-model="profile.admin"
+                />
+                <label for="is-Admin" class="f5">{{
+                  $t('message.addUser.isAdmin')
+                }}</label>
+              </li>
             </ul>
           </form>
+        </div>
+        <div class="editprofile cf bg-white">
+          <nav class="pv3 bb b--light-gray flex items-center">
+            <a
+              href="#"
+              v-on:submit.prevent="onSubmit"
+              @click="onSubmit"
+              class="fr v-btm f6 mr3 link br2 ph3 pv2 dib white bg-green hover-bg-green"
+              >{{ $t('message.shared.save') }}</a
+            >
+            <router-link
+              :to="{ name: 'home' }"
+              class="fr v-btm f6 link br2 ph3 pv2 dib white bg-gray hover-bg-dark-gray"
+              >{{ $t('message.shared.cancel') }}</router-link
+            >
+          </nav>
         </div>
       </div>
     </div>

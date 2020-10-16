@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user_model
+from django.conf import settings
+from django.contrib.auth.models import Group
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import (
@@ -89,6 +91,12 @@ class ProfileViewSet(
 
         full_serialized_profile = ProfileSerializer(new_profile)
 
+        if new_profile.user.is_staff:
+            mod_group_name = settings.MODERATOR_GROUP_NAME
+            moderators = Group.objects.get(name=mod_group_name)
+            new_profile.user.groups.add(moderators)
+            new_profile.user.save()
+            new_profile.save()
         if send_invite:
             new_profile.send_invite_mail()
 
