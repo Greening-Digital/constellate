@@ -276,7 +276,7 @@ export default {
     },
     hasPhoto,
     showPhoto() {
-      return this.profile.photo
+      return this.profile.detail_photo
     },
     async resendInvite() {
       debug('resendInvite', this.profile)
