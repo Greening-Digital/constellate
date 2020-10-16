@@ -16,7 +16,7 @@
               can pick it up and read out the announcement
             -->
             <div v-if="errors" class="errors">
-              <p v-for="(key) in errors.all()" v-bind:key="key">{{ key }}</p>
+              <p v-for="key in errors.all()" v-bind:key="key">{{ key }}</p>
             </div>
           </div>
 
@@ -26,26 +26,33 @@
             aria-live="polite"
             class="flex items-center justify-center pa3 bg-lightest-blue navy f6"
           >
-            <svg class="w1" data-icon="info" viewBox="0 0 32 32" style="fill:currentcolor">
+            <svg
+              class="w1"
+              data-icon="info"
+              viewBox="0 0 32 32"
+              style="fill: currentcolor"
+            >
               <title>info icon</title>
               <path
                 d="M16 0 A16 16 0 0 1 16 32 A16 16 0 0 1 16 0 M19 15 L13 15 L13 26 L19 26 z M16 6 A3 3 0 0 0 16 12 A3 3 0 0 0 16 6"
               />
             </svg>
-            <span class="ml3">{{signInData.message}}</span>
+            <span class="ml3">{{ signInData.message }}</span>
           </div>
 
           <form v-on:submit.prevent class="w-100 pa3 dib border-box mw6 ph5">
-              <p class="gray measure tl lh-copy">
-                {{ $t('message.login.instructions') }}
-              </p>
+            <p class="gray measure tl lh-copy">
+              {{ $t('message.login.instructions') }}
+            </p>
             <div class="w-100 mb3">
               <input
                 type="text"
                 name="email"
                 v-model="email"
                 class="input-reset br2 pa2 ba b--light-gray mt1 w-100"
-                :class=" {'bg-washed-red b--red': errors ? errors.has('email') : null}"
+                :class="{
+                  'bg-washed-red b--red': errors ? errors.has('email') : null
+                }"
                 :placeholder="$t('message.login.form.placeholder')"
                 :aria-label="$t('message.login.form.placeholder')"
                 autocomplete="email"
@@ -54,7 +61,9 @@
               />
 
               <div>
-                <small v-if="errors && errors.has('email')" class="red">{{ errors.first('email') }}</small>
+                <small v-if="errors && errors.has('email')" class="red">{{
+                  errors.first('email')
+                }}</small>
               </div>
             </div>
 
@@ -68,15 +77,15 @@
                   name="login-code"
                   v-model="token"
                   class="input-reset pa2 ba br2 b--light-gray w-100"
-                  :class=" {'bg-washed-red b--red': errors && errors.has('token') }"
+                  :class="{
+                    'bg-washed-red b--red': errors && errors.has('token')
+                  }"
                   :placeholder="$t('message.login.emailSubmitted.loginCode')"
                   :aria-label="$t('message.login.emailSubmitted.loginCode')"
                 />
 
                 <div>
-                  <small
-                    v-if="errors && errors.has('token')"
-                    class="red">
+                  <small v-if="errors && errors.has('token')" class="red">
                     {{ errors.first('token') }}
                   </small>
                 </div>
@@ -84,30 +93,37 @@
               <div class="mt2 cf">
                 <button
                   class="f6 link br3 bn pv2 mb2 mt2 bg-light-silver b white w-60 ml0 mr1 fl"
-                  :class="{'bg-green pointer grow hover-bg-dark-green': formValid}"
+                  :class="{
+                    'bg-green pointer grow hover-bg-dark-green': formValid
+                  }"
                   :disabled="!formValid"
                   name="sign-in"
-                  @click="signIn">
+                  @click="signIn"
+                >
                   {{ $t('message.login.emailSubmitted.signinButton') }}
                 </button>
                 <button
                   class="f6 link br3 bn pv2 mb2 mt2 bg-light-silver b white w-60 ml0 mr1 fl bg-red pointer grow hover-bg-dark-red"
                   name="button"
-                  @click="resetForm">
+                  @click="resetForm"
+                >
                   {{ $t('message.login.emailSubmitted.resetButton') }}
-                  </button>
+                </button>
               </div>
             </div>
             <div v-else>
               <div class="mt2 cf">
                 <button
                   class="f6 link br3 bn pv2 mb2 mt2 bg-light-silver b white w-60 ml0 mr1 fl"
-                  :class="{'bg-green pointer grow hover-bg-dark-green': formValid}"
+                  :class="{
+                    'bg-green pointer grow hover-bg-dark-green': formValid
+                  }"
                   :disabled="!formValid"
                   name="button"
-                  @click="submitEmail">
+                  @click="submitEmail"
+                >
                   {{ $t('message.login.form.requestLoginCodeButton') }}
-                  </button>
+                </button>
               </div>
             </div>
           </form>
@@ -117,12 +133,11 @@
               <em>
                 {{ $t('message.login.helpInstructions.question') }}
                 <a class="f6 tc gray" :href="supportEmail">
-                  {{ $t('message.login.helpInstructions.suggestion') }}
-                  </a>.
-                </em>
+                  {{ $t('message.login.helpInstructions.suggestion') }} </a
+                >.
+              </em>
             </p>
           </footer>
-
         </div>
       </div>
     </div>
@@ -136,7 +151,7 @@ const debug = debugLib('cl8.Login')
 export default {
   name: 'Login',
   components: {},
-  data: function() {
+  data: function () {
     return {
       email: '',
       token: null,
@@ -147,14 +162,14 @@ export default {
     }
   },
   methods: {
-    checkForValidFormSubmission: function() {
+    checkForValidFormSubmission: function () {
       let validation = {
         email: this.email
       }
 
       return this.$validator
         .validateAll(validation)
-        .then(result => {
+        .then((result) => {
           if (!result) {
             this.formIsValid = result
             return false
@@ -162,26 +177,29 @@ export default {
           this.formIsValid = result
           return result
         })
-        .catch(err => {
+        .catch((err) => {
           debug(err)
         })
     },
-    resetForm: function() {
+    resetForm: function () {
       this.email = null
       this.emailSubmitted = false
     },
-    signIn: function() {
+    signIn: function () {
       let user = {
         email: this.email,
         token: this.token
       }
       this.$store.dispatch('login', user)
     },
-    submitEmail: async function() {
-      const emailSubmitted = await this.$store.dispatch(
-        'submitEmail',
-        this.email
-      )
+    submitEmail: async function () {
+      let emailSubmitted
+      try {
+        emailSubmitted = await this.$store.dispatch('submitEmail', this.email)
+      } catch (e) {
+        debug({ e })
+        // bubble up the error so we see it in the login
+      }
 
       if (emailSubmitted) {
         this.emailSubmitted = true
@@ -189,13 +207,13 @@ export default {
     }
   },
   computed: {
-    formValid: function() {
+    formValid: function () {
       return this.formIsValid
     },
-    signInData: function() {
+    signInData: function () {
       return this.$store.getters.signInData
     },
-    loading: function() {
+    loading: function () {
       return this.$store.getters.isLoading
     }
   }

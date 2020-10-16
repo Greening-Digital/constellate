@@ -23,14 +23,13 @@ export default {
     const currentUser = await fetchCurrentUser(this.$store)
 
     if (!currentUser) {
-      this.$router.push({name: 'signin'})
+      if (this.$router.currentRoute.name !== 'signin') {
+        this.$router.push({ name: 'signin' })
+      }
     }
   }
-
-
 }
 </script>
 
 <style>
-
 </style>

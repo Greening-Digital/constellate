@@ -33,9 +33,13 @@ class TestProfile:
 
         assert profile.admin is True
 
-    def test_profile_photo_thumbs(self, fake_photo_profile: Profile, settings):
+    @pytest.mark.only
+    @pytest.mark.parametrize("photo_size", [("thumbnail_photo"), ("detail_photo")])
+    def test_profile_photo_thumbs(
+        self, fake_photo_profile: Profile, settings, photo_size
+    ):
 
-        pic_url = fake_photo_profile.thumbnail_photo
+        pic_url = getattr(fake_photo_profile, photo_size,)
 
         # is this pointing to the correct directory where our media is stored?
         assert settings.MEDIA_URL in pic_url

@@ -76,6 +76,18 @@ class Profile(models.Model):
 
         return get_thumbnail(self.photo, "100x100", crop="center", quality=99).url
 
+    @property
+    def detail_photo(self):
+        """
+        A photo, designed for showing on a page, when viewing a profile, with
+        a user's details
+
+        """
+        if not self.photo:
+            return None
+
+        return get_thumbnail(self.photo, "250x250", crop="center", quality=99).url
+
     def __str__(self):
         return self.user.name
 
