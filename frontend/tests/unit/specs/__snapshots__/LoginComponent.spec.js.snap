@@ -39,9 +39,8 @@ exports[`Login.Vue mounting with expected data shows login form when loaded 1`] 
           <p class="f6 tc gray"><em>
 
               <a href="mailto:support@domain.com" class="f6 tc gray">
-                
-                </a>.
-              </em></p>
+                 </a>.
+            </em></p>
         </footer>
       </div>
     </div>
