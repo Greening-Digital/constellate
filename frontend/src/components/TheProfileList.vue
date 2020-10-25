@@ -140,6 +140,21 @@ export default {
       debug('toggleCluster', { cluster })
       this.$store.dispatch('updateActiveClusters', cluster)
     },
+    matchingClusters(profileList) {
+      const clusters = this.activeClusters
+      if (typeof clusters === 'undefined' || clusters === '') {
+        return profileList
+      }
+      clusters.forEach(function (cluster) {
+        profileList = profileList.filter(function (profile) {
+          const profileClusters = profile.clusters.map(function (clst) {
+            return clst.name.toLowerCase()
+          })
+          return includes(profileClusters, cluster)
+        })
+      })
+      return profileList
+    },
     matchingTags() {
       const activeTags = this.activeTags
       const activeClusters = this.activeClusters
