@@ -17,13 +17,19 @@ pytestmark = pytest.mark.django_db
 
 
 class TestProfileViewSet:
-    def test_get_queryset(self, profile: Profile, rf: RequestFactory):
+    @pytest.mark.parametrize("visible,profile_count", [(True, 1), (False, 0),])
+    def test_get_queryset(
+        self, profile: Profile, rf: RequestFactory, visible, profile_count
+    ):
+
+        profile.visible = visible
+        profile.save()
         view = ProfileViewSet()
         request = rf.get("/fake-url/")
         request.user = profile.user
         view.request = request
 
-        assert profile in view.get_queryset()
+        assert len(view.get_queryset()) is profile_count
 
     def test_me(self, profile_with_tags: Profile, rf: RequestFactory):
         view = ProfileViewSet()
