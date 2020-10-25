@@ -183,6 +183,10 @@ const mutations = {
   SET_USER: function (state, payload) {
     debug('SET_USER', payload)
     state.user = payload
+  },
+  SET_SIGNIN_DATA: function (state, payload) {
+    debug('SET_SIGNIN_DATA', payload)
+    state.signInData.message = payload
   }
 }
 
@@ -205,7 +209,18 @@ const actions = {
       }
 
     } catch (error) {
+      // is the problem with the supplied email?
+      if (error.response.data.email) {
+        let msg = error.response.data.email[0]
+        throw new Error(msg)
+      }
+      // is there server able to handle the request?
+      if (error.response.data.detail) {
+        let msg = error.response.data.detail
+        throw new Error(msg)
+      }
       throw error
+
     }
 
   },

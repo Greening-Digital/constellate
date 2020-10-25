@@ -73,7 +73,6 @@
                   {{ $t('message.login.emailSubmitted.nextStepGuidance') }}
                 </p>
                 <input
-                  type="password"
                   name="login-code"
                   v-model="token"
                   class="input-reset pa2 ba br2 b--light-gray w-100"
@@ -199,6 +198,7 @@ export default {
       } catch (e) {
         debug({ e })
         // bubble up the error so we see it in the login
+        await this.$store.commit('SET_SIGNIN_DATA', e.message)
       }
 
       if (emailSubmitted) {
