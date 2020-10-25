@@ -23,13 +23,12 @@ def test_redirect():
     assert reverse("users:redirect") == "/users/~redirect/"
     assert resolve("/users/~redirect/").view_name == "users:redirect"
 
+
 @pytest.mark.only
 def test_cms():
     """Do we have the flat pages CMS active?"""
     # check one way…
     assert reverse("about") == "/about/"
     # and the other
-    assert resolve("/about/").func.__name__ == 'flatpage'
-    assert resolve("/about/").kwargs['url'] == '/about/'
-
-
+    assert resolve("/about/").func.__name__ == "flatpage"
+    assert resolve("/about/").kwargs["url"] == "/about/"

@@ -1,17 +1,18 @@
 from django.contrib.auth import get_user_model
+from django.utils.text import slugify
 from rest_framework import serializers
+
+from taggit.models import Tag
 from taggit_serializer.serializers import (
-    TagListSerializerField,
     TaggitSerializer,
     TagList,
+    TagListSerializerField,
 )
-from taggit.models import Tag
-
-from rest_framework.utils import model_meta
 
 User = get_user_model()
-from ..models import Profile, Cluster
-from django.utils.text import slugify
+
+
+from ..models import Cluster, Profile
 
 
 class ConstellateTagListSerializerField(TagListSerializerField):
@@ -35,6 +36,7 @@ class ConstellateTagListSerializerField(TagListSerializerField):
 
         return value
 
+
 class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     tags = ConstellateTagListSerializerField(required=False)
@@ -54,12 +56,7 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
         username = slugify(full_name)
 
         # create our related User from the details passed in
-        new_user = User(
-            username=username,
-            email=email,
-            name=full_name,
-            is_staff=admin,
-        )
+        new_user = User(username=username, email=email, name=full_name, is_staff=admin,)
 
         # if you don't set password like this this, you get an
         # unhashed string, as django makes no assumptions about
@@ -78,17 +75,17 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
 
         except TypeError as exc:
             msg = (
-                'Got a `TypeError` when calling `%s.objects.create()`. '
-                'This may be because you have a writable field on the '
-                'serializer class that is not a valid argument to '
-                '`%s.objects.create()`. You may need to make the field '
-                'read-only, or override the %s.create() method to handle '
-                'this correctly.\nOriginal exception text was: %s.' %
-                (
+                "Got a `TypeError` when calling `%s.objects.create()`. "
+                "This may be because you have a writable field on the "
+                "serializer class that is not a valid argument to "
+                "`%s.objects.create()`. You may need to make the field "
+                "read-only, or override the %s.create() method to handle "
+                "this correctly.\nOriginal exception text was: %s."
+                % (
                     ModelClass.__name__,
                     ModelClass.__name__,
                     self.__class__.__name__,
-                    exc
+                    exc,
                 )
             )
             raise TypeError(msg)
@@ -98,9 +95,9 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
     def update(self, instance, validated_data):
 
         # update our corresponding user first
-        instance.user.name = validated_data.pop('name', instance.user.name)
-        instance.user.email = validated_data.pop('email', instance.user.email)
-        instance.user.is_staff = validated_data.pop('admin', False)
+        instance.user.name = validated_data.pop("name", instance.user.name)
+        instance.user.email = validated_data.pop("email", instance.user.email)
+        instance.user.is_staff = validated_data.pop("admin", False)
         instance.user.save()
 
         # we need to update the tags separately to the other properties
@@ -116,26 +113,20 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
     def update_tags(self, instance, validated_data):
 
         to_be_tagged, validated_data = self._pop_tags(validated_data)
-        tag_object = super(TaggitSerializer, self).update(
-            instance, validated_data)
+        tag_object = super(TaggitSerializer, self).update(instance, validated_data)
 
         saved_tags = self._save_tags(tag_object, to_be_tagged)
 
         return validated_data
 
-
-
-
     class Meta:
         model = Profile
         fields = [
             "id",
-
             # user
             "name",
             "email",
             "organisation",
-
             # profile
             "phone",
             "website",
@@ -143,17 +134,16 @@ class ProfileSerializer(TaggitSerializer, serializers.ModelSerializer):
             "facebook",
             "linkedin",
             "bio",
-
             "visible",
             "admin",
-
             # need their own handler
             "tags",
             "clusters",
             "photo",
             "thumbnail_photo",
+            "detail_photo",
         ]
-        read_only_fields = ["photo", "id", "thumbnail_photo",]
+        read_only_fields = ["photo", "id", "thumbnail_photo", "detail_photo"]
 
 
 class TagSerializer(TaggitSerializer, serializers.ModelSerializer):
@@ -177,11 +167,12 @@ class ClusterSerializer(TaggitSerializer, serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "name", "slug"]
 
+
 class ProfilePicSerializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField(required=False)
-    photo =  serializers.ImageField(required=False)
+    photo = serializers.ImageField(required=False)
 
     class Meta:
         model = Profile
-        fields = ('id', 'photo')
+        fields = ("id", "photo")

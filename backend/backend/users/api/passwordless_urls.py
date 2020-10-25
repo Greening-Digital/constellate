@@ -4,9 +4,12 @@ from drfpasswordless.views import (
     ObtainAuthTokenFromCallbackToken,
     VerifyAliasFromCallbackToken,
     ObtainEmailVerificationCallbackToken,
-    ObtainEmailCallbackToken
+    ObtainEmailCallbackToken,
 )
-from .passwordless_views import ConstellateEmailCallbackToken
+from .passwordless_views import (
+    ConstellateEmailCallbackToken,
+    ConstellateObtainAuthTokenFromCallbackToken,
+)
 
 urlpatterns = [
     path(
@@ -16,7 +19,7 @@ urlpatterns = [
     ),
     path(
         api_settings.PASSWORDLESS_AUTH_PREFIX + "token/",
-        ObtainAuthTokenFromCallbackToken.as_view(),
+        ConstellateObtainAuthTokenFromCallbackToken.as_view(),
         name="auth_token",
     ),
     path(

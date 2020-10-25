@@ -10,6 +10,7 @@ const state = {
   loading: false,
   searchTerm: '',
   searchTags: [],
+  searchClusters: [],
   profile: null,
   profilePhoto: null,
   profileShowing: false,
@@ -24,14 +25,24 @@ const state = {
   token: localStorage.token || null
 }
 
+// check if token exists
+function checkForToken(token, context, router) {
+  if (!token) {
+    debug('No working token found. Logging out.')
+    context.commit('CLEAR_USER')
+    router.push('signin')
+  }
+}
+
+
 const getters = {
-  currentUser: function(state) {
+  currentUser: function (state) {
     return state.user
   },
-  isLoading: function(state) {
+  isLoading: function (state) {
     return state.loading
   },
-  isAdmin: function(state) {
+  isAdmin: function (state) {
     if (state.user == null) return false
     if (state.profileList == null) return false
 
@@ -42,20 +53,24 @@ const getters = {
       .map(profile => profile.id)
       .includes(state.user.id)
   },
-  currentTerm: function(state) {
+  currentTerm: function (state) {
     return state.searchTerm
   },
-  activeTags: function(state) {
+  activeTags: function (state) {
     debug('activeTags', state.searchTags)
     return state.searchTags
   },
-  profile: function(state) {
+  activeClusters: function (state) {
+    debug('activeClusters', state.searchClusters)
+    return state.searchClusters
+  },
+  profile: function (state) {
     return state.profile
   },
-  profilePhoto: function(state) {
+  profilePhoto: function (state) {
     return state.profilePhoto
   },
-  profileList: function(state) {
+  profileList: function (state) {
     debug('getting profileList')
     return state.profileList
   },
@@ -78,19 +93,19 @@ const getters = {
   profileShowing: function (state) {
     return state.profileShowing
   },
-  requestUrl: function(state) {
+  requestUrl: function (state) {
     return state.requestUrl
   },
-  signInData: function(state) {
+  signInData: function (state) {
     return state.signInData
   },
-  token: function(state) {
+  token: function (state) {
     return state.token
   }
 }
 
 const mutations = {
-  CLEAR_USER: function(state) {
+  CLEAR_USER: function (state) {
     state.profile = null
     state.user = null
     state.token = null
@@ -99,29 +114,33 @@ const mutations = {
     debug('state', state);
 
   },
-  stopLoading: function(state) {
+  stopLoading: function (state) {
     state.loading = false
   },
-  startLoading: function(state) {
+  startLoading: function (state) {
     state.loading = true
   },
-  setTerm: function(state, payload) {
+  setTerm: function (state, payload) {
     debug('setTerm', payload)
     debug('setTerm', typeof payload)
     state.searchTerm = payload
   },
-  setTags: function(state, payload) {
-    debug('setTags', payload)
+  SET_TAGS: function (state, payload) {
+    debug('SET_TAGS', payload)
     state.searchTags = payload
   },
-  SET_AUTH_TOKEN: function(state, payload) {
+  SET_CLUSTERS: function (state, payload) {
+    debug('SET_CLUSTERS', payload)
+    state.searchClusters = payload
+  },
+  SET_AUTH_TOKEN: function (state, payload) {
     debug('SET_AUTH_TOKEN', payload)
     state.token = payload
     localStorage.token = payload
   },
-  SET_PROFILE: function(state, payload) {
+  SET_PROFILE: function (state, payload) {
     debug('SET_PROFILE', payload)
-    debug('PROFILE TAGS', payload.tags.map(x => {return x.name}))
+    debug('PROFILE TAGS', payload.tags.map(x => { return x.name }))
     state.profileShowing = true
     state.profile = payload
   },
@@ -145,7 +164,7 @@ const mutations = {
     debug('setProfilePhoto', payload)
     state.profile.photo = [payload]
   },
-  SET_VISIBLE_PROFILE_LIST: function(state, payload) {
+  SET_VISIBLE_PROFILE_LIST: function (state, payload) {
     debug('SET_VISIBLE_PROFILE_LIST', payload)
     state.profileList = payload
   },
@@ -157,11 +176,11 @@ const mutations = {
     debug('profileShowing', state.profileShowing)
     state.profileShowing = !state.profileShowing
   },
-  setRequestUrl: function(state, payload) {
+  setRequestUrl: function (state, payload) {
     debug('setrequestUrl', payload)
     state.requestUrl = payload
   },
-  SET_USER: function(state, payload) {
+  SET_USER: function (state, payload) {
     debug('SET_USER', payload)
     state.user = payload
   }
@@ -169,7 +188,7 @@ const mutations = {
 
 const actions = {
   // otherwise log user in here
-  submitEmail: async function(context, payload) {
+  submitEmail: async function (context, payload) {
     debug('action:submitEmail')
     const emailPayload = {
       email: payload
@@ -185,12 +204,12 @@ const actions = {
         return false
       }
 
-    }catch(error) {
-      return error
+    } catch (error) {
+      throw error
     }
 
   },
-  login: async function(context, payload) {
+  login: async function (context, payload) {
     try {
       const response = await instance.post('/auth/token/', payload)
       const token = response.data.token
@@ -211,22 +230,24 @@ const actions = {
       debug('Error logging in', error)
     }
   },
-  logout: function(context) {
+  logout: function (context) {
     context.commit('CLEAR_USER')
     router.push('signin')
   },
-  createUserSession: async function(context, payload) {
+  createUserSession: async function (context, payload) {
 
     const token = context.getters.token || localStorage.token
-    debug('creating user session with token:', token)
 
-    const profileResponse = await instance.get('api/profiles/me', {
+    // check we have token, or log user out
+    checkForToken(token)
+
+    const profileResponse = await instance.get('/api/profiles/me', {
       headers: { Authorization: `Token ${token}` }
     })
     context.commit('SET_USER', profileResponse.data)
     context.commit('SET_PROFILE', profileResponse.data)
   },
-  updateActiveTags: function(context, payload) {
+  updateActiveTags: function (context, payload) {
     debug('action:updateActiveTags')
     debug('updateActiveTags', payload)
     let tag = payload
@@ -238,11 +259,29 @@ const actions = {
     } else {
       tags.push(tag)
     }
-    context.commit('setTags', tags)
+    context.commit('SET_TAGS', tags)
+  },
+  updateActiveClusters: function (context, payload) {
+    debug('action:updateActiveClusters')
+    debug('updateActiveClusters', payload)
+    let cluster = payload
+    let clusters = context.state.searchClusters
+    debug('clusters', clusters)
+    if (clusters.indexOf(cluster) !== -1) {
+      let index = clusters.indexOf(cluster)
+      clusters.splice(index, 1)
+    } else {
+      clusters.push(cluster)
+    }
+    context.commit('SET_CLUSTERS', clusters)
   },
   fetchProfileList: async function (context) {
     debug('action:fetchProfileList')
     const token = context.getters.token || localStorage.token
+
+    // check we have token, or log user out
+    checkForToken(token)
+
     try {
       const response = await instance.get('/api/profiles', {
         headers: { Authorization: `Token ${token}` }
@@ -277,12 +316,15 @@ const actions = {
       debug('Error fetching tagList', error)
     }
   },
-  addUser: async function(context, payload) {
+  addUser: async function (context, payload) {
     debug('action:fetchProfile')
-    payload.tags = payload.tags.map(function(obj) {
+    payload.tags = payload.tags.map(function (obj) {
       return obj.name
     })
+
     const token = context.getters.token
+    // check we have token, or log user out
+    checkForToken(token)
 
     const response = await instance.post('/api/profiles/', payload, {
       headers: { Authorization: `Token ${token}` }
@@ -295,15 +337,22 @@ const actions = {
       return 'There was a problem creating the account'
     }
   },
-  fetchProfile: async function(context, payload) {
+  fetchProfile: async function (context, payload) {
+
+    debug('action:fetchProfileList')
+    const token = context.getters.token || localStorage.token
+
+    // check we have token, or log user out
+    checkForToken(token)
+
     debug('action:fetchProfile')
     debug('fetching profile for id:', payload.id)
     const profile = await instance.get(`/api/profiles/${payload.id}`, {
-      headers: { Authorization: `Token ${localStorage.token}` }
+      headers: { Authorization: `Token ${token}` }
     })
     context.commit('SET_PROFILE', profile.data)
   },
-  resendInvite: async function(context, payload) {
+  resendInvite: async function (context, payload) {
     debug('action:resendInvite')
     const token = context.getters.token
     const profileId = payload.id
@@ -318,7 +367,7 @@ const actions = {
     )
     return response
   },
-  updateProfile: async function(context, payload) {
+  updateProfile: async function (context, payload) {
     debug('sending update to API', payload)
 
     // doing this round trip returns a JSON object we
@@ -354,7 +403,7 @@ const actions = {
       return 'There was a problem saving changes to the profile.'
     }
   },
-  updateProfilePhoto: async function(context, payload) {
+  updateProfilePhoto: async function (context, payload) {
     debug('action:updateProfilePhoto')
     const profileId = payload.profile.id
     const token = context.getters.token
@@ -383,7 +432,7 @@ const actions = {
     }
   },
 
-  newProfileTag: async function(context, payload) {
+  newProfileTag: async function (context, payload) {
     debug('action:newProfileTag', payload)
     const newTag = payload
     let tempVal =
@@ -394,9 +443,9 @@ const actions = {
       id: 'tempval' + tempVal
     }
     let profile = context.getters.profile
-    let tags = profile.tags 
+    let tags = profile.tags
     tags.push(tag)
-  
+
     context.commit('SET_PROFILE_TAGS', tags)
   },
 }

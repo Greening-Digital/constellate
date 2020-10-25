@@ -15,7 +15,7 @@
 
       </div>
     </div>
-
+    <the-footer />
   </div>
 
 </template>
@@ -26,6 +26,7 @@ import NavHeaderLoggedIn from '@/components/shared/NavHeaderLoggedIn.vue'
 import ProfileDetail from '@/components/profile/ProfileDetail.vue'
 import ProfileSearchItem from '@/components/profile/ProfileSearchItem.vue'
 import TheProfileList from '@/components/TheProfileList.vue'
+import TheFooter from '@/components/TheFooter.vue'
 
 import debugLib from 'debug'
 const debug = debugLib('cl8.TheHomePanel')
@@ -35,7 +36,8 @@ export default {
   components: {
     NavHeaderLoggedIn,
     ProfileDetail,
-    TheProfileList
+    TheProfileList,
+    TheFooter
   },
 
   data() {

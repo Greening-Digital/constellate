@@ -164,7 +164,7 @@ v-else
         </div>
       </div>
     </div>
-
+    <the-footer />
   </div>
 </template>
 
@@ -173,6 +173,8 @@ v-else
 import NavHeaderEdit from '../shared/NavHeaderEdit.vue'
 import ProfileTagsComponent from '@/components/profile/ProfileTagsComponent.vue'
 import ProfileClustersComponent from '@/components/profile/ProfileClusters.vue'
+import TheFooter from '@/components/TheFooter.vue'
+
 import { includes } from 'lodash'
 import debugLib from 'debug'
 import { hasPhoto } from '@/utils'
@@ -184,7 +186,8 @@ export default {
   components: {
     NavHeaderEdit,
     ProfileTagsComponent,
-    ProfileClustersComponent
+    ProfileClustersComponent,
+    TheFooter
   },
 
   data() {

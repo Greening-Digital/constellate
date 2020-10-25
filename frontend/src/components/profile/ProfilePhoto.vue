@@ -19,13 +19,22 @@
         :size="200"
         class="gravatar dib b--light-silver ba"
       />
-      <input type="file" @change="updatePhoto($event)" class="ma2 br2" accept="image/*" id="file" />
+      <input
+        type="file"
+        @change="updatePhoto($event)"
+        class="ma2 br2"
+        accept="image/*"
+        id="file"
+      />
       <div class="nav tc">
-        <button class="f6 link dim br2 ph3 pv2 mb2 mr2 dib bn white bg-green">Confirm</button>
+        <button class="f6 link dim br2 ph3 pv2 mb2 mr2 dib bn white bg-green">
+          Confirm
+        </button>
         <router-link
           :to="{ name: 'editProfile' }"
           class="f6 link dim br2 ph3 pv2 mb2 dib white bg-gray"
-        >{{ $t('message.shared.Cancel') }}</router-link>
+          >{{ $t('message.shared.cancel') }}</router-link
+        >
       </div>
     </form>
 

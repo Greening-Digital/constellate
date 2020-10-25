@@ -1,0 +1,19 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+    <div>
+        <form action="." method="POST" enctype="multipart/form-data">
+
+            <p>If you have a set of users in a spreadsheet or csv file, you can import them in bulk.</p>
+
+            Download the <a href="{% url 'sample-csv-template' %}">sample csv file</a>, fill in the columns, then upload the file with the widget below.
+
+            {{ form.as_p }}
+            {% csrf_token %}
+
+            <button type="submit">Upload CSV</button>
+        </form>
+    </div>
+    <br />
+
+{% endblock %}

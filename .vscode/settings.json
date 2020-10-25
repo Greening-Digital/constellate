@@ -1,5 +1,9 @@
 {
   "prettier.eslintIntegration": true,
   "prettier.singleQuote": true,
-  "prettier.semi": false
+  "prettier.semi": false,
+  "i18n-ally.localesPaths": [
+    "backend/locale",
+    "frontend/src/locales"
+  ]
 }

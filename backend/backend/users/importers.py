@@ -1,9 +1,14 @@
 import csv
 from pathlib import Path
 import requests
+from datetime import datetime
+
+from typing import List
+from collections import OrderedDict
 
 from backend.users.models import User, Profile
 from django.core.files.images import ImageFile
+from django.utils.text import slugify
 
 # How it works
 
@@ -15,38 +20,71 @@ from django.core.files.images import ImageFile
 import logging
 
 logger = logging.getLogger(__file__)
+logger.setLevel(logging.INFO)
+
+
+class NoEmailFound(Exception):
+    pass
 
 
 class ProfileImporter:
 
     rows = []
 
-    # def __init__(self):
+    def load_csv_from_path(self, import_path: Path = None):
+        with open(import_path) as csvfile:
+            self.load_csv(csvfile)
 
-    def load_csv(self, import_path: Path = None):
+    def load_csv(self, csvfile=None):
         # Loads the rows contents of a CSV, returning an datastructure
         self.rows = []
-        with open(import_path) as csvfile:
-            reader = csv.DictReader(csvfile)
 
-            for row in reader:
-                self.rows.append(row)
+        reader = csv.DictReader(csvfile)
+
+        for row in reader:
+            self.rows.append(row)
 
     def create_users(self, rows=None):
         if not rows:
             rows = self.rows
 
         created_users = []
+        skipped_users = []
 
         for count, row in enumerate(rows):
 
             logger.debug(f"{count}, {row['name']}, rows to run through: {len(rows)}")
-            new_user = self.create_user(row)
-            created_users.append(new_user)
+            try:
+                new_user = self.create_user(row)
+                created_users.append(new_user)
+            except NoEmailFound:
+                skipped_users.append(row)
 
-        logger.debug("made it")
+        logger.debug(f"Added {len(created_users)}")
+        logger.debug(f"Skipped {len(created_users)}")
 
         return created_users
+
+    def add_tags_to_profile(
+        self, profile: Profile, row: OrderedDict, columns: List = None
+    ):
+        """
+        Take a profile object, and add all the relevant tags,
+        in the properties from the CSV listed `columns`.
+        """
+        if not columns:
+            columns = ["tags"]
+
+        for colname in columns:
+            tags = row.get(colname)
+            # exit early
+            if not tags:
+                continue
+
+            for tag in tags.split(","):
+                profile.tags.add(tag.strip())
+
+        return profile
 
     def create_user(self, row):
         """
@@ -54,34 +92,35 @@ class ProfileImporter:
         on the info passed in
         """
         if not row["email"]:
+            raise (NoEmailFound)
             return None
 
         # create django user
-        user = User(name=row["name"], email=row["email"], username=row["name"])
+        safer_int = str(datetime.now().microsecond)[:4]
+        safer_name = f"{slugify(row['name'])}-{safer_int}"
+
+        user, created = User.objects.get_or_create(
+            name=row["name"], email=row["email"], username=safer_name
+        )
+
         logger.debug(user)
         user.save()
         logger.debug(user.id)
 
-        visible = (
-            row["visible"] == "visible"
-            or row["visible"] == "true"
-            or row["visible"] == "yes"
-        )
+        visible = True
 
-        profile = Profile(
+        profile, created = Profile.objects.get_or_create(
             user=user,
-            phone=row["phone"],
-            website=row["website"],
-            twitter=row["twitter"],
-            facebook=row["facebook"],
-            linkedin=row["linkedin"],
-            bio=row["blurb"],
+            phone=row.get("phone"),
+            website=row.get("website"),
+            twitter=row.get("twitter"),
+            facebook=row.get("facebook"),
+            linkedin=row.get("linkedin"),
+            bio=row.get("bio"),
             visible=visible,
-            photo=self.fetch_user_pic(row["photo"]),
+            photo=self.fetch_user_pic(row.get("photo")),
         )
 
-        # create corresponding profile
-        profile.save()
         logger.debug(f"profile: {profile}")
         logger.debug(f"user: {user}")
         logger.debug(profile.user.id)

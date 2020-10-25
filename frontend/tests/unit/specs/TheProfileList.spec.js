@@ -160,7 +160,7 @@ describe('TheProfileList', () => {
       expect(wrapper.findAll('.list .peep').length).toBe(1)
     })
   })
-  describe('filtered by tag', () => {
+  describe('filtered by cluster', () => {
     beforeEach(() => {
       mockStore = {
         getters: {
@@ -183,16 +183,25 @@ describe('TheProfileList', () => {
           stubs: ['router-view'],
           $t: () => { }
         },
-
       })
     })
 
 
-    it.only('renders a list of profiles matching the cluster ', async () => {
+    it('renders a list of profiles matching the cluster', async () => {
       expect(wrapper.html()).toBeTruthy()
 
       await wrapper.vm.checkAgainstSearch()
+      expect(wrapper.vm.matchingTags()).toHaveLength(1)
       expect(wrapper.findAll('.list .peep').length).toBe(1)
     })
+    it.only('it dispatches a call to updateActiveClusters on click', async () => {
+      expect(wrapper.html()).toBeTruthy()
+
+      await wrapper.vm.checkAgainstSearch()
+      expect(wrapper.vm.matchingTags()).toHaveLength(1)
+      expect(wrapper.get('button[data-name="open energy"]').trigger('click'))
+      expect(mockStore.dispatch).toHaveBeenCalledWith('updateActiveClusters', "open energy")
+    })
   })
+
 })

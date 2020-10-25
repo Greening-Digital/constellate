@@ -47,7 +47,6 @@ DATABASES = {
     # replace the "postgres:///backend" with "sqlite:///backend_db",
     # or pass it in as an environment variable
     "default": env.db("DATABASE_URL", default="postgres:///backend")
-
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
@@ -84,7 +83,7 @@ THIRD_PARTY_APPS = [
     "taggit_labels",
     "corsheaders",
     "mjml",
-    'sorl.thumbnail',
+    "sorl.thumbnail",
 ]
 
 LOCAL_APPS = [
@@ -114,19 +113,17 @@ LOGIN_REDIRECT_URL = "users:redirect"
 LOGIN_URL = "account_login"
 
 PASSWORDLESS_AUTH = {
-    'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
-    'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': 'noreply@greening.digital',
-    'PASSWORDLESS_REGISTER_NEW_USERS': False,
-    'PASSWORDLESS_EMAIL_SUBJECT': "Your Constellation Login Code",
-    'PASSWORDLESS_MOBILE_MESSAGE': "Use this code to log in: %s. This code is valid for the next 15 minutes. You can request a new code at any time.",
-    'PASSWORDLESS_EMAIL_TOKEN_HTML_TEMPLATE_NAME': 'passwordless_default_token_email.mjml.html',
-    'PASSWORDLESS_CONTEXT_PROCESSORS': [
+    "PASSWORDLESS_AUTH_TYPES": ["EMAIL"],
+    "PASSWORDLESS_EMAIL_NOREPLY_ADDRESS": "noreply@greening.digital",
+    "PASSWORDLESS_REGISTER_NEW_USERS": False,
+    "PASSWORDLESS_EMAIL_SUBJECT": "Your Constellation Login Code",
+    "PASSWORDLESS_MOBILE_MESSAGE": "Use this code to log in: %s. This code is valid for the next 15 minutes. You can request a new code at any time.",
+    "PASSWORDLESS_EMAIL_TOKEN_HTML_TEMPLATE_NAME": "passwordless_default_token_email.mjml.html",
+    "PASSWORDLESS_CONTEXT_PROCESSORS": [
         "backend.utils.context_processors.support_email",
     ],
 }
 SUPPORT_EMAIL = env("DJANGO_SUPPORT_EMAIL", default="info@greening.digital")
-
-
 
 
 # PASSWORDS
@@ -313,8 +310,9 @@ REST_FRAMEWORK = {
 # Your stuff...
 # ------------------------------------------------------------------------------
 MJML_CHECK_CMD_ON_STARTUP = True
-MJML_EXEC_CMD = ['../node_modules/.bin/mjml', '--config.validationLevel', 'skip']
+MJML_EXEC_CMD = ["../node_modules/.bin/mjml", "--config.validationLevel", "skip"]
 
+MODERATOR_GROUP_NAME = "Constellation Moderators"
 
 # Photos
 

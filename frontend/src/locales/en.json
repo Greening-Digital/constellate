@@ -42,6 +42,7 @@
         "name": "Name (required)",
         "phone": "Phone",
         "sendInvite": "Send the user an invite mail for this constellation",
+        "isAdmin": "Make this user a constellation moderator",
         "twitterMessage": "(just add your @username)",
         "websiteMessage": "(http:// is added automatically)"
       },
@@ -83,6 +84,9 @@
         "twitter": "Twitter",
         "visible": "Visible",
         "website": "Website"
+      },
+      "footer": {
+        "helpMessage": "If you have any questions about the CL8 software, or to remove yourself please send an email to support@icebreakerone.org"
       }
     }
   }

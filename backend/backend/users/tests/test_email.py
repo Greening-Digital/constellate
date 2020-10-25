@@ -3,6 +3,7 @@ from django.template.loader import render_to_string
 import webbrowser
 from rest_framework.test import RequestsClient, APIClient
 
+
 def view_rendered_html_in_browser(string_template):
     """
     Accepts a string, containing generated HTML template
@@ -15,9 +16,9 @@ def view_rendered_html_in_browser(string_template):
 
     webbrowser.open("email_test.html")
 
+
 @pytest.mark.django_db
 class TestTemplateEmail:
-
     def test_render_email(self, profile):
         """
         Test that the tempalte renders with based on what we're passing into context.
@@ -27,20 +28,19 @@ class TestTemplateEmail:
         ctx = {
             "callback_token": 272100,
             "support_email_address": "email@domain.com",
-            'user': profile.user
+            "user": profile.user,
         }
 
         rendered_html = render_to_string(
-            "passwordless_default_token_email.mjml.html",
-            context=ctx
+            "passwordless_default_token_email.mjml.html", context=ctx
         )
 
         # uncomment this to view the rendered mjml/html template
         # view_rendered_html_in_browser(rendered_html)
 
         assert len(rendered_html) > 0
-        assert str(ctx['callback_token']) in rendered_html
-        assert str(ctx['support_email_address']) in rendered_html
+        assert str(ctx["callback_token"]) in rendered_html
+        assert str(ctx["support_email_address"]) in rendered_html
         assert str(profile.name) in rendered_html
 
     @pytest.mark.django_db

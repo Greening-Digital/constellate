@@ -24,5 +24,5 @@ app_name = "api"
 urlpatterns = router.urls
 
 urlpatterns += [
-  	path('upload/<id>/', ProfilePhotoUploadView.as_view(), name='profile-pic-upload'),
+    path("upload/<id>/", ProfilePhotoUploadView.as_view(), name="profile-pic-upload"),
 ]

@@ -37,27 +37,20 @@ class TestIntegrationTestForCRUD:
 
 @pytest.mark.only
 class TestIntegrationTestToAddProfilePhoto:
-
     def test_add_photo(self, db, profile, tmp_pic_path):
 
         requests_client = RequestsClient()
 
-        token = Token(
-            key="short-and-readable",
-            user=profile.user
-        )
+        token = Token(key="short-and-readable", user=profile.user)
         token.save()
 
         client = APIClient()
-        client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
         res = client.get("http://testserver/api/profiles/")
 
         assert res.status_code == 200
 
-        payload = {
-            'photo': open(tmp_pic_path, 'rb'),
-            'id': profile.id
-        }
+        payload = {"photo": open(tmp_pic_path, "rb"), "id": profile.id}
 
         res = client.put(f"http://testserver/api/upload/{profile.id}/", payload)
 
@@ -73,6 +66,4 @@ class TestIntegrationTestToAddProfilePhoto:
 
         #  response = requests_client.get("http://testserver/users/api/profiles/", headers={"Authorization": "Token a0c22cbb9d95930d31e5d75af3affe8073e78b52" }, files={ 'file': pic })
 
-
         # response = requests.requests_client("http://localhost:8000/api/upload/66/", headers={"Authorization": "Token a0c22cbb9d95930d31e5d75af3affe8073e78b52" }, files={ 'file': pic })
-
