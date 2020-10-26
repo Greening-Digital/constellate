@@ -13,7 +13,7 @@
     "release": "vue-cli-service build ./frontend/src/main.js && npm run notify"
   },
   "dependencies": {
-    "ajv": "6.12.3",
+    "ajv": "6.12.5",
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "lodash": "^4.17.20",
