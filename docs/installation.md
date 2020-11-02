@@ -7,7 +7,7 @@ You need them both running to develop the site.
 
 ### Setting up the django backend
 
-While you almost definitely should be using postgres in development and production to to avoid surprises during deployment.
+While you almost definitely should be using postgres in development and production to avoid surprises during deployment.
 
 But you CAN use sqlite to spin up an instance and try it out. Pass in a database url string like the one below:
 
@@ -23,7 +23,7 @@ For the `runserver`, you will need to load the environment variables listed in `
 
 ### Set up the front end
 
-The front end is a Vuejs application, that talks to the backend. Like a lot of VueJS apps you can install using npm or yarn.
+The front end is a VueJS application, that talks to the backend. Like a lot of VueJS apps you can install using npm or yarn.
 
 The examples below use npm for brevity.
 
