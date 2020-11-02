@@ -124,7 +124,7 @@ make front_end_bundle
 
 ### Configure gunicorn to serve the application, and a reverse provxy
 
-Next you'll need to serve the application  behind a apache or nginx acting as a reverse proxy. Django's [own documentation is on deploting with WSGI/Gunicorn](https://docs.djangoproject.com/en/3.0/howto/deployment/wsgi/gunicorn/, is stellar.
+Next you'll need to serve the application  behind a apache or nginx acting as a reverse proxy. Django's [own documentation is on deploting with WSGI/Gunicorn](https://docs.djangoproject.com/en/3.0/howto/deployment/wsgi/gunicorn/), is stellar.
 
 It's also worth consulting the procfile to see how gunicorn serves the constellate app in production.
 
