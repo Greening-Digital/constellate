@@ -1,6 +1,6 @@
 # Example Apache + Gunicorn configuration
 
-Im these examples, replace `cl8.example.net` with your domain, and `/path/to/constellate` with the path to your constellate installation.
+In these examples, replace `cl8.example.net` with your domain, and `/path/to/constellate` with the path to your constellate installation.
 There should be a virtualenv (configured using `pipenv`) in the project root directory, as described in Constellate's [installation](https://github.com/Greening-Digital/constellate/blob/master/docs/installation.md) and [deployment](https://github.com/Greening-Digital/constellate/blob/master/docs/deployment.md) docs.
 
 ## Gunicorn systemd config
