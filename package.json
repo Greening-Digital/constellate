@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "ajv": "6.12.3",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "lodash": "^4.17.20",
     "marked": "^1.1.0",
