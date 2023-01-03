@@ -14,7 +14,6 @@ urlpatterns = [
     # serve the vue template instead of the default home
     path("", HomepageView.as_view(), name="home"),
     # Django Admin, use {% url 'admin:index' %}
-    path("admin/", cl8_admin.urls),
     path("advanced-admin/", admin.site.urls),
     path(
         "admin/import-csv/sample.csv", sample_csv_template, name="sample-csv-template"
@@ -31,6 +30,7 @@ urlpatterns = [
     path(
         "favicon.ico", RedirectView.as_view(url="/static/images/favicons/favicon.ico")
     ),
+    path("admin/", cl8_admin.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS
@@ -67,3 +67,8 @@ if settings.DEBUG:
         import debug_toolbar
 
         urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+
+    if "django_browser_reload" in settings.INSTALLED_APPS:
+        urlpatterns = [path("__reload__/", include("django_browser_reload.urls"))] + urlpatterns
+
+

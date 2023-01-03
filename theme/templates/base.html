@@ -1,0 +1,33 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <title>Constellate</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		{% tailwind_css %}
+	</head>
+
+	<body class="bg-gray-100 leading-normal tracking-normal">
+		<div class="container mx-auto">
+			{% block content %}
+			<section class="flex items-center justify-center h-screen">
+				<h1 class="text-5xl">Django + Tailwind = ❤️</h1>
+			</section>
+			{% endblock content %}
+		</div>
+
+
+		<footer class="footer p-10 bg-neutral text-neutral-content">
+
+			<div>
+				<span class="footer-title">Legal</span>
+				<a class="link link-hover">Terms of use</a>
+				<a class="link link-hover">Privacy policy</a>
+				<a class="link link-hover">Cookie policy</a>
+			</div>
+		</footer>
+	</body>
+
+</html>

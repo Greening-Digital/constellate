@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.contrib.auth.models import Group
+from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import (
@@ -9,6 +10,7 @@ from rest_framework.mixins import (
     UpdateModelMixin,
     CreateModelMixin,
 )
+
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.views import APIView
@@ -42,7 +44,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class HomepageView(TemplateView):
+class HomepageView(LoginRequiredMixin, TemplateView):
     """
     A template view that exposes information about the
     user being logged in
@@ -56,6 +58,7 @@ class HomepageView(TemplateView):
         and expose sign in tokens to Vue, to support social sign-in.
         """
         is_authenticated = self.request.user.is_authenticated
+
         ctx = {
             "is_authenticated": self.request.user.is_authenticated,
         }
@@ -66,6 +69,8 @@ class HomepageView(TemplateView):
             token, created = Token.objects.get_or_create(user=user)
 
             ctx["local_storage_token"] = token.key
+
+        ctx['profiles'] = Profile.objects.all().prefetch_related('tags')
 
         return ctx
 

@@ -85,6 +85,9 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "mjml",
     "sorl.thumbnail",
+    "tailwind",
+    "theme",
+
 ]
 
 LOCAL_APPS = [
@@ -196,7 +199,12 @@ TEMPLATES = [
         # https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-TEMPLATES-BACKEND
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         # https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
-        "DIRS": [str(APPS_DIR / "templates")],
+        "DIRS": [
+            # use the styles in themes
+            str(ROOT_DIR / "theme" / "templates"),
+            # then fall back to cl8 defaults
+            str(APPS_DIR / "templates"),
+        ],
         "OPTIONS": {
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
             # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
@@ -324,6 +332,7 @@ REST_FRAMEWORK = {
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
+
 MJML_CHECK_CMD_ON_STARTUP = True
 MJML_PATH = str(PROJECT_DIR / "node_modules/.bin/mjml")
 MJML_EXEC_CMD = [MJML_PATH, "--config.validationLevel", "skip"]
@@ -341,3 +350,7 @@ SLACK_SIGNIN_AUTHORIZE_URL = env.str(
     "DJANGO_SLACK_SIGNIN_AUTHORIZE_URL",
     default="https://slack.com/openid/connect/authorize",
 )
+
+
+TAILWIND_APP_NAME = 'theme'
+
