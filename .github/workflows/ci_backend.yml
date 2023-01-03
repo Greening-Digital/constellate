@@ -2,10 +2,6 @@ name: Django CI
 
 on: [push]
 
-defaults:
-  run:
-    working-directory: ./backend
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,14 +31,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pipenv
-          pipenv install --dev
+          python -m pip install pipenv
+          python -m pipenv install --dev
+
       - name: Install node dependencies (mjml etc)
         run: npm install
-        working-directory: ./
+
       - name: Run tests
         run: |
-          pipenv run "pytest -x"
+          just test
         env:
           CI: true
           DATABASE_URL: "postgres://postgres:postgres@localhost:5432/backend"
