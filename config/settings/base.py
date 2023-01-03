@@ -214,7 +214,7 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
-                "backend.utils.context_processors.settings_context",
+                "cl8.utils.context_processors.settings_context",
             ],
         },
     }

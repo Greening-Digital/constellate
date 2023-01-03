@@ -42,13 +42,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class VueTemplateView(TemplateView):
+class HomepageView(TemplateView):
     """
     A template view that exposes information about the
     user being logged in
     """
 
-    template_name = "pages/vue.html"
+    template_name = "pages/home.html"
 
     def get_context_data(self, **kwargs):
         """

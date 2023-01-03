@@ -8,11 +8,11 @@ from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib.flatpages.views import flatpage
 from cl8.users.admin import constellation_admin as cl8_admin
 from cl8.users.views import sample_csv_template
-from cl8.users.api.views import VueTemplateView
+from cl8.users.api.views import HomepageView
 
 urlpatterns = [
     # serve the vue template instead of the default home
-    path("", VueTemplateView.as_view(), name="home"),
+    path("", HomepageView.as_view(), name="home"),
     # Django Admin, use {% url 'admin:index' %}
     path("admin/", cl8_admin.urls),
     path("advanced-admin/", admin.site.urls),
