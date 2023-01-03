@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "mjml": "^4.13.0",
+    "mjml-migrate": "^4.13.0"
+  }
+}
