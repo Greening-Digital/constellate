@@ -1,28 +1,50 @@
-name: Node.js CI
+name: CI
 
 on: [push]
 
-defaults:
-  run:
-    working-directory: ./frontend
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:12-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: backend
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     strategy:
       matrix:
-        node-version: [10.x]
+        python-version: [3.9]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm install
-    - run: npm run test:unit
-      env:
-        CI: true
-        VUE_APP_SUPPORT_EMAIL: "support@domain.com"
+      - name: install just binary for running commands
+        uses: taiki-e/install-action@just
+
+      - uses: actions/checkout@v2
+
+      - name: Use Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install pipenv
+          python -m pipenv install --dev
+
+      - name: Install node dependencies (mjml etc)
+        run: npm install
+
+      - name: Run tests
+        run: |
+          just test
+        env:
+          CI: true
+          DATABASE_URL: "postgres://postgres:postgres@localhost:5432/backend"
+          VUE_APP_SUPPORT_EMAIL: "support@domain.com"
