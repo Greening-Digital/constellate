@@ -36,6 +36,8 @@ pytest-mock = "*"
 django-upgrade = "*"
 django-browser-reload = "*"
 django-tailwind = "*"
+django-filter = "*"
+django-autocomplete-light = "*"
 
 [dev-packages]
 ipdb = "*"

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 {% include "_nav_menu.html" %}
@@ -6,22 +7,24 @@
 <section class="grid grid-cols-1 prose mb-4">
   <div class="card bg-base-100">
     <div class="card-body">
-      <h1 class="card-title">Showing results for</h1>
-      <form>
-        <div class="form-control w-full max-w-xs">
-          <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
-        </div>
-      </form>
+      <h1 class="card-title">Showing {{ profile_filter.qs.count }} matching results</h1>
+
+      <form method="get">
+        {{ profile_filter.form.as_p }}
+        <input class="btn" type="submit" />
+    </form>
     </div>
   </div>
 
-
+  {% comment %} TODO TIDY THIS UP {% endcomment %}
+  <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+  {{ profile_filter.form.media }}
 </section>
 
 <section class="grid grid-cols-[400px_minmax(900px,_1fr)_100px]">
 
   <section class="sidebar">
-    {% for profile in profiles %}
+    {% for profile in profile_filter.qs %}
 <div class="card w-96 bg-base-100 mb-2">
   <div class="card-body">
     <h4 class="card-title">{{ profile.name }}</h4>

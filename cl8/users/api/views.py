@@ -36,12 +36,14 @@ from django.urls import resolve
 from django.views.generic.base import TemplateView
 from rest_framework.utils.serializer_helpers import ReturnDict
 from django.core.files.images import ImageFile
-
+from dal import autocomplete
 User = get_user_model()
 
 import logging
 
 logger = logging.getLogger(__name__)
+
+from ..filters import ProfileFilter
 
 
 class HomepageView(LoginRequiredMixin, TemplateView):
@@ -70,7 +72,11 @@ class HomepageView(LoginRequiredMixin, TemplateView):
 
             ctx["local_storage_token"] = token.key
 
-        ctx['profiles'] = Profile.objects.all().prefetch_related('tags')
+        filtered_profiles = ProfileFilter(
+            self.request.GET,
+            queryset=Profile.objects.all().prefetch_related('tags')
+        )
+        ctx['profile_filter'] = filtered_profiles
 
         return ctx
 
@@ -248,3 +254,19 @@ class TagViewSet(
 ):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
+
+
+# Select2QuerySetView
+class TagAutoCompleteView(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return Tag.objects.none()
+
+        qs = Tag.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+
+        return qs
+

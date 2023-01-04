@@ -8,7 +8,8 @@ from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib.flatpages.views import flatpage
 from cl8.users.admin import constellation_admin as cl8_admin
 from cl8.users.views import sample_csv_template
-from cl8.users.api.views import HomepageView
+from cl8.users.api.views import HomepageView, TagAutoCompleteView
+
 
 urlpatterns = [
     # serve the vue template instead of the default home
@@ -40,6 +41,7 @@ urlpatterns += [
     # DRF auth token
     path("auth-token/", obtain_auth_token),
     path("", include("cl8.users.api.passwordless_urls")),
+    path("api/autocomplete/tags/", TagAutoCompleteView.as_view(), name="tag-autocomplete"),
 ]
 
 if settings.DEBUG:

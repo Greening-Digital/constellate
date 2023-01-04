@@ -82,6 +82,8 @@ THIRD_PARTY_APPS = [
     "drfpasswordless",
     "taggit",
     "taggit_labels",
+    'dal',
+    'dal_select2',
     "corsheaders",
     "mjml",
     "sorl.thumbnail",
