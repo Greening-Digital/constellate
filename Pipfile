@@ -39,6 +39,7 @@ django-tailwind = "*"
 django-filter = "*"
 django-autocomplete-light = "*"
 django-htmx = "*"
+django-gravatar2 = "*"
 
 [dev-packages]
 ipdb = "*"

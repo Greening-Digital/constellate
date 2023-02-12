@@ -80,6 +80,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "drfpasswordless",
+    'django_gravatar',
     "taggit",
     "taggit_labels",
     'dal',

@@ -1,5 +1,8 @@
+{% load gravatar %}
 <div class="card-body">
   <h1 class="mb-0">{{ profile.name}}</h1>
+
+  {% gravatar profile.user.email 150 %}
 
   <p>
     {% for tag in profile.tags.all %}

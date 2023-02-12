@@ -115,9 +115,10 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         """
         is_authenticated = self.request.user.is_authenticated
 
-        ctx = {
-            "is_authenticated": self.request.user.is_authenticated,
-        }
+        current_site = get_current_site(self.request)
+        logger.info(f"{current_site=}")
+
+        ctx = {"is_authenticated": self.request.user.is_authenticated, "site": current_site}
 
         if is_authenticated:
             # We make sure we have a token available to put into local storage
