@@ -19,7 +19,7 @@
     "lodash": "^4.17.20",
     "marked": "^1.1.0",
     "mjml": "^4.6.3",
-    "mjml-migrate": "^4.6.3",
+    "mjml-migrate": "^4.13.0",
     "regenerator-runtime": "^0.13.7",
     "sanitize-html": "^2.0.0",
     "tachyons": "4.12.0",
