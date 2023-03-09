@@ -27,7 +27,6 @@ class ProfileAdminForm(ModelForm):
 @admin.register(User)
 @admin.register(User, site=constellation_admin)
 class UserAdmin(auth_admin.UserAdmin):
-
     form = UserChangeForm
     add_form = UserCreationForm
     fieldsets = (("User", {"fields": ("name",)}),) + auth_admin.UserAdmin.fieldsets
@@ -36,11 +35,18 @@ class UserAdmin(auth_admin.UserAdmin):
     readonly_fields = ["last_login", "date_joined"]
 
     def get_fieldsets(self, request, *args, **kwargs):
-
         if request.user.is_superuser:
             return (
                 (None, {"fields": ("username", "password")}),
-                ("Personal info", {"fields": ("email",)}),
+                (
+                    "Personal info",
+                    {
+                        "fields": (
+                            "name",
+                            "email",
+                        )
+                    },
+                ),
                 (
                     "Permissions",
                     {
@@ -58,7 +64,15 @@ class UserAdmin(auth_admin.UserAdmin):
 
         return (
             (None, {"fields": ("username", "password")}),
-            ("Personal info", {"fields": ("email",)}),
+            (
+                "Personal info",
+                {
+                    "fields": (
+                        "name",
+                        "email",
+                    )
+                },
+            ),
             ("Important dates", {"fields": ("last_login", "date_joined")}),
         )
 
