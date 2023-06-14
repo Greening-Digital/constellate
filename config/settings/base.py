@@ -348,7 +348,7 @@ MODERATOR_GROUP_NAME = "Constellation Moderators"
 
 THUMBNAIL_DEBUG = False
 
-# slack connection
+# slack connection for the server, not the user
 SLACK_TOKEN = env.str("DJANGO_SLACK_TOKEN", default=None)
 SLACK_CHANNEL_NAME = env.str("DJANGO_SLACK_CHANNEL_NAME", default=None)
 SLACK_SIGNIN_AUTHORIZE_URL = env.str(

@@ -61,6 +61,8 @@ class ProfileImporter:
                 created_users.append(new_user)
             except NoEmailFound:
                 skipped_users.append(row)
+            except Exception:
+                logger.warn(f"Could not import user from row {count}")
 
         logger.debug(f"Added {len(created_users)}")
         logger.debug(f"Skipped {len(created_users)}")
@@ -249,8 +251,10 @@ class SlackImporter:
         new_ids = self.list_new_users()
 
         imported_users = []
+
         for new_user_id in new_ids:
-            imported_user = self.import_slack_user(new_user_id)
+            id_for_slack_api = new_user_id.replace("slack-", "")
+            imported_user = self.import_slack_user(id_for_slack_api)
             imported_users.append(imported_user)
 
         return imported_users
@@ -261,6 +265,20 @@ class CATAirtableImporter(ProfileImporter):
     An importer to take the current data stored in an airtable, and update a user's info
     with the data in the provided CSV file - uses email address as the key to match on.
     """
+
+    expected_rows = [
+        "Slack name",
+        "Bio",
+        "Climate Interests",
+        "Offers",
+        "Asks",
+        "Areas of focus",
+        "Specific skills",
+        "Location",
+        "Twitter",
+        "Email address",
+        "LinkedIn URL",
+    ]
 
     def create_user(self, row):
         """
