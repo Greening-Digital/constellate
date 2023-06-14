@@ -1,22 +1,35 @@
 {% for profile in paginated_profiles %}
   <div class="card w-96 bg-base-100 mb-1">
-    <div class="card-body">
-      <h4 class="card-title">
-        <a 
-        hx-get="{% url 'profile-detail' profile.user.username %}"
-        hx-target="#profile-slot"
-        hx-push-url="true"
-        href="{% url 'profile-detail' profile.user.username %}">
-        {{ profile.name }}
-        </a>
-      </h4>
-      <p>
-        {% for tag in profile.tags.all %}
-          <span class="badge">
-            {{ tag.name }}
-          </span>
-        {% endfor %}
-      </p>
+    <div class="card-body profile">
+      <div class=profile-thumb>
+        <img class="profile-thumb" src="{{ profile.thumbnail_photo }}" />
+      </div>
+      <div>
+        <h4 class="card-title">
+          <a hx-get="{% url 'profile-detail' profile.user.username %}"
+             hx-target="#profile-slot"
+             hx-push-url="true"
+             href="{% url 'profile-detail' profile.user.username %}">{{ profile.name }}</a>
+        </h4>
+        <p>
+          {% for tag in profile.tags.all %}<span class="badge">{{ tag.name }}</span>{% endfor %}
+        </p>
+      </div>
     </div>
   </div>
 {% endfor %}
+<style>
+
+.profile {
+  flex-direction: row;  
+}
+
+.profile-thumb{
+  flex-direction: row;
+}
+
+.profile-thumb img {
+  width:50px;
+}
+
+</style>

@@ -18,7 +18,7 @@
     python -m pipenv run python ./manage.py tailwind start
 
 @tailwind-build:
-    python -m pipenv run python ./manage.py tailwind start
+    python -m pipenv run python ./manage.py tailwind build
 
 @run *options:
     # run gunicorn in production

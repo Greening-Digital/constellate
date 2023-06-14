@@ -1,62 +1,50 @@
-from django.contrib.auth import get_user_model
+import logging
+
+from dal import autocomplete
 from django.conf import settings
-from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import Group
+from django.contrib.sites.shortcuts import get_current_site
 from django.core import paginator
+from django.core.files.images import ImageFile
+from django.shortcuts import render
+from django.urls import resolve
+from django.utils.text import slugify
+from django.views.generic import DetailView, UpdateView
+from markdown_it import MarkdownIt
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import (
+    CreateModelMixin,
     ListModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin,
-    CreateModelMixin,
 )
-from django.shortcuts import render
-
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
 from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.generics import get_object_or_404
-
-from cl8.users.models import User
-from rest_framework.authtoken.models import Token
-
-
-from .serializers import (
-    ProfileSerializer,
-    ProfilePicSerializer,
-    TagSerializer,
-    ClusterSerializer,
-)
-from ..models import Profile, Cluster
+from rest_framework.viewsets import GenericViewSet
 from taggit.models import Tag
 
-from django.utils.text import slugify
-from django.urls import resolve
+from ..filters import ProfileFilter
+from ..forms import ProfileUpdateForm
+from ..models import Cluster, Profile
 
-from django.views.generic.base import TemplateView
-from django.views.generic import DetailView
-from rest_framework.utils.serializer_helpers import ReturnDict
-from django.core.files.images import ImageFile
-from dal import autocomplete
+from .serializers import (
+    ClusterSerializer,
+    ProfilePicSerializer,
+    ProfileSerializer,
+    TagSerializer,
+)
 
 User = get_user_model()
 
-import logging
 
 logger = logging.getLogger(__name__)
-
-from ..filters import ProfileFilter
-from django.contrib.sites.shortcuts import get_current_site
-
-import rich.logging as richlog
-
-console = richlog.RichHandler()
-
-logger.addHandler(console)
-
-from django.contrib.auth.decorators import login_required
 
 
 @login_required
@@ -68,12 +56,12 @@ def homepage(request):
 
     ctx = {"is_authenticated": request.user.is_authenticated, "site": current_site}
 
-    if is_authenticated:
-        # We make sure we have a token available to put into local storage
-        user = User.objects.get(email=request.user.email)
-        token, created = Token.objects.get_or_create(user=user)
+    # if is_authenticated:
+    #     # We make sure we have a token available to put into local storage
+    #     user = User.objects.get(email=request.user.email)
+    #     token, created = Token.objects.get_or_create(user=user)
 
-        ctx["local_storage_token"] = token.key
+    #     ctx["local_storage_token"] = token.key
 
     filtered_profiles = ProfileFilter(
         request.GET, queryset=Profile.objects.all().prefetch_related("tags")
@@ -118,7 +106,10 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         current_site = get_current_site(self.request)
         logger.info(f"{current_site=}")
 
-        ctx = {"is_authenticated": self.request.user.is_authenticated, "site": current_site}
+        ctx = {
+            "is_authenticated": self.request.user.is_authenticated,
+            "site": current_site,
+        }
 
         if is_authenticated:
             # We make sure we have a token available to put into local storage
@@ -132,7 +123,6 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         )
         ctx["profile_filter"] = filtered_profiles
 
-
         pager = paginator.Paginator(filtered_profiles.qs, 10)
         page = self.request.GET.get("page", 1)
 
@@ -143,9 +133,13 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         except paginator.EmptyPage:
             ctx["paginated_profiles"] = pager.page(paginator.num_pages)
 
-
         if self.object is not None:
             ctx["profile"] = self.object
+
+            md = MarkdownIt()
+            if self.object.bio:
+                markdown_bio = md.render(self.object.bio)
+                ctx["profile_rendered_bio"] = markdown_bio
 
         return ctx
 
@@ -158,6 +152,36 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
             return self.render_to_response(context)
 
         return self.render_to_response(context)
+
+
+class ProfileEditView(LoginRequiredMixin, UpdateView):
+    queryset = Profile.objects.all()
+    slug_field = "user__username"
+    template_name = "pages/edit_profile.html"
+    form_class = ProfileUpdateForm
+
+    def form_valid(self, form):
+        """
+        If the form is valid, save the associated model.
+        """
+        self.object = form.save()
+
+        if "photo" in form.cleaned_data:
+            form.instance.update_thumbnail_urls()
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        """
+        Return the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        if hasattr(self, "object"):
+            kwargs.update({"instance": self.object})
+        kwargs["initial"] = {
+            "name": self.object.user.name,
+            "email": self.object.user.email,
+        }
+        return kwargs
 
 
 class ProfileViewSet(
@@ -207,7 +231,10 @@ class ProfileViewSet(
         return Response(status=status.HTTP_200_OK, data=serialized_profile.data)
 
     def create(self, request):
-        """Create a profile for the given user, adding them to the correct admin group, and sending an optional invite"""
+        """
+        Create a profile for the given user, adding them to
+        the correct admin group, and sending an optional invite
+        """
 
         send_invite = request.data.get("sendInvite")
 

@@ -13,7 +13,7 @@ console = logging.StreamHandler()
 
 
 class Command(BaseCommand):
-    help = "Import user profiles into constallte "
+    help = "Import user profiles into this constellation "
 
     def handle(self, *args, **kwargs):
         importer = CATAirtableImporter()
@@ -25,4 +25,3 @@ class Command(BaseCommand):
         logger.debug(f"importing: {first_row}")
         users = importer.create_users(importer.rows)
         logger.debug(f"imported: {users}")
-

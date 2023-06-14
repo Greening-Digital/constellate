@@ -16,17 +16,19 @@ class SlackOpenIdConnectAdapter(OAuth2Adapter):
     flow as opposed to the deprecated auth2, identity-based flow.
     """
 
+    # setting thids idea
     provider_id = SlackProvider.id
 
     access_token_url = "https://slack.com/api/openid.connect.token"
     identity_url = "https://slack.com/api/openid.connect.userInfo"
     authorize_url = "https://slack.com/openid/connect/authorize"
 
-    # we allow for an override here, to set a subdomain
-    if settings.SLACK_SIGNIN_AUTHORIZE_URL:
-        authorize_url = settings.SLACK_SIGNIN_AUTHORIZE_URL
+    # # we allow for an override here, to set a subdomain
+    # if settings.SLACK_SIGNIN_AUTHORIZE_URL:
+    #     authorize_url = settings.SLACK_SIGNIN_AUTHORIZE_URL
 
     def complete_login(self, request, app, token, **kwargs):
+        """"""
         extra_data = self.get_data(token.token)
         return self.get_provider().sociallogin_from_response(request, extra_data)
 
@@ -37,6 +39,7 @@ class SlackOpenIdConnectAdapter(OAuth2Adapter):
 
         if not resp.get("ok"):
             raise OAuth2Error()
+
         return resp
 
 

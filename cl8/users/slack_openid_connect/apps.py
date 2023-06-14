@@ -7,6 +7,6 @@ class SlackOpenIDConnectConfig(AppConfig):
     using allauthn with the newer openid connect sign in methods.
     """
 
-    name = "cl8.users.slack"
+    name = "cl8.users.slack_openid_connect"
     # label = name  # added to avoid clashing with allauth slack label
     verbose_name = "Slack OpenID Connect"

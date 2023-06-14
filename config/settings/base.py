@@ -72,30 +72,28 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
-    "crispy_forms",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "allauth.socialaccount.providers.slack",
     "rest_framework",
     "rest_framework.authtoken",
     "drfpasswordless",
-    'django_gravatar',
+    "django_gravatar",
     "taggit",
     "taggit_labels",
-    'dal',
-    'dal_select2',
+    "dal",
+    "dal_select2",
     "corsheaders",
     "mjml",
     "sorl.thumbnail",
     "tailwind",
     "theme",
-
 ]
 
 LOCAL_APPS = [
     "cl8.users.apps.UsersConfig",
-    # "cl8.users.slacko",
+    # slack auth scheme changed so we need our own version now
+    "cl8.users.slack_openid_connect",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -126,8 +124,11 @@ PASSWORDLESS_AUTH = {
     "PASSWORDLESS_EMAIL_NOREPLY_ADDRESS": "noreply@greening.digital",
     "PASSWORDLESS_REGISTER_NEW_USERS": False,
     "PASSWORDLESS_EMAIL_SUBJECT": "Your Constellation Login Code",
-    "PASSWORDLESS_MOBILE_MESSAGE": "Use this code to log in: %s. This code is valid for the next 15 minutes. You can request a new code at any time.",
-    "PASSWORDLESS_EMAIL_TOKEN_HTML_TEMPLATE_NAME": "passwordless_default_token_email.mjml.html",
+    "PASSWORDLESS_MOBILE_MESSAGE": (
+        "Use this code to log in: %s. This code is valid for the "
+        "next 30 minutes. You can request a new code at any time."
+    ),
+    "PASSWORDLESS_EMAIL_TOKEN_HTML_TEMPLATE_NAME": "passwordless_default_token_email.mjml.html",  # noqa
     "PASSWORDLESS_CONTEXT_PROCESSORS": [
         "cl8.utils.context_processors.support_email",
     ],
@@ -148,7 +149,7 @@ PASSWORD_HASHERS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"  # noqa
     },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
@@ -356,5 +357,4 @@ SLACK_SIGNIN_AUTHORIZE_URL = env.str(
 )
 
 
-TAILWIND_APP_NAME = 'theme'
-
+TAILWIND_APP_NAME = "theme"

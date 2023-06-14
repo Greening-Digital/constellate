@@ -1,6 +1,6 @@
 Dear {{profile.name}},
 
-Welcome to the Icebreaker One constellation.
+Welcome to the {{ site.name }} constellation.
 
 (Copy goes here to mention terms of service and community guidelines)
 

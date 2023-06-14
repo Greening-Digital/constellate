@@ -1,19 +1,20 @@
 {% load gravatar %}
 <div class="card-body">
-  <h1 class="mb-0">{{ profile.name}}</h1>
-
-  {% gravatar profile.user.email 150 %}
-
-  <p>
-    {% for tag in profile.tags.all %}
-      <span class="badge">
-        {{ tag.name }}
-      </span>
-    {% endfor %}
-  </p>
-
-  <div class="prose">
-    <p>{{profile.bio}}</p>
-  <div>
-  
+    <h1 class="mb-0 text-3xl">{{ profile.name }}</h1>
+    {% if profile.user == request.user %}
+        <a href="{% url 'profile-edit' profile.user.username %}"
+           class="btn btn-sm mt-2 mb-2 max-w-xs">Edit</a>
+    {% endif %}
+    {% if profile.photo %}
+        <img src="{{ profile.detail_photo }}"
+             width="250"
+             height="250"
+             alt="profile photo" />
+    {% else %}
+        {% gravatar profile.user.email 150 %}
+    {% endif %}
+    <p>
+        {% for tag in profile.tags.all %}<span class="badge">{{ tag.name }}</span>{% endfor %}
+    </p>
+    <div class="prose">{{ profile_rendered_bio|safe }}</div>
 </div>

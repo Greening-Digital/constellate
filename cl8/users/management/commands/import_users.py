@@ -1,9 +1,7 @@
 import logging
 
-import django.contrib.auth
 from django.core.management import BaseCommand
 from cl8.users.importers import ProfileImporter
-from pathlib import Path
 
 logger = logging.getLogger(__name__)
 console = logging.StreamHandler()
@@ -15,9 +13,15 @@ console = logging.StreamHandler()
 class Command(BaseCommand):
     help = "Import user profiles into constallte "
 
-    def handle(self, *args, **kwargs):
+    def add_arguments(self, parser):
+        parser.add_argument("csv_path", type=str)
+
+    def handle(self, *args, **options):
         importer = ProfileImporter()
-        csv_path = Path() / "cats.csv"
+
+        csv_path = options.get("csv_path")
+
+        # import ipdb; ipdb.set_trace()
 
         importer.load_csv_from_path(csv_path)
         first_row = importer.rows[1]

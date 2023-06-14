@@ -13,6 +13,7 @@ from django.core.files.images import ImageFile
 from django.utils.text import slugify
 
 from .models import Profile, User
+from ..utils.pics import fetch_user_pic
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
@@ -31,7 +32,6 @@ def safe_username(username):
 
 
 class ProfileImporter:
-
     rows = []
 
     def load_csv_from_path(self, import_path: Path = None):
@@ -55,7 +55,6 @@ class ProfileImporter:
         skipped_users = []
 
         for count, row in enumerate(rows):
-
             logger.debug(f"Importing. Rows to run through: {len(rows)}")
             try:
                 new_user = self.create_user(row)
@@ -120,7 +119,7 @@ class ProfileImporter:
         profile.linkedin = row.get("linkedin")
         profile.bio = row.get("bio")
         profile.visible = visible
-        profile.photo = self.fetch_user_pic(row.get("photo"))
+        profile.photo = fetch_user_pic(row.get("photo"))
         self.add_tags_to_profile(profile, row)
         profile.save()
 
@@ -130,17 +129,6 @@ class ProfileImporter:
 
         profile.save()
         return user
-
-    def fetch_user_pic(self, url: str = None):
-        """
-        """
-        if not url:
-            return None
-
-        res = requests.get(url)
-
-        if res.content:
-            return ImageFile(res.content)
 
 
 class SlackImporter:
@@ -243,7 +231,7 @@ class SlackImporter:
         # then add the info we have from the API
         profile.import_id = import_id
         if photo_url:
-            profile.photo = self.fetch_user_pic(photo_url)
+            profile.photo = fetch_user_pic(photo_url)
 
         # default to being visible for directory
         profile.visible = visible
@@ -266,20 +254,6 @@ class SlackImporter:
             imported_users.append(imported_user)
 
         return imported_users
-
-    def fetch_user_pic(self, url: str = None):
-        """
-        """
-        if not url:
-            return None
-        try:
-            res = requests.get(url)
-        except Exception as err:
-            logger.warning(f"Unable to get url: {url}: Error: {err}")
-
-        if res.content:
-            filename = url.split("/")[-1]
-            return ImageFile(io.BytesIO(res.content), name=filename)
 
 
 class CATAirtableImporter(ProfileImporter):

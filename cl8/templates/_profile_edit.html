@@ -1,0 +1,35 @@
+<style>
+
+div > label {
+    margin-top:1rem;
+    min-width: 10rem;
+    display:inline-block;
+}
+
+div > input[type='text'] {
+    min-width: 40rem;
+}
+div > .helptext  {
+    margin-left: 10rem;
+}
+div >input[id='id_tags'] {
+    margin-left: 10rem;
+}
+div >input[type='file'] {
+    margin-left: 10rem;
+}
+
+
+</style>
+<div class="card-body">
+    <form enctype="multipart/form-data"
+          method="post"
+          action="{% url 'profile-edit' profile.user.username %}">
+        {% csrf_token %}
+        {{ form.as_div }}
+        <button class="mt-3 btn btn-primary">Save changes</button>
+        <a class="mt-3 btn btn-secondary"
+           href="{% url 'profile-detail' profile.user.username %}">Back</a>
+    </form>
+</div>
+{{ form.media }}

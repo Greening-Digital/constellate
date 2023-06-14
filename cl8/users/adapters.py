@@ -1,6 +1,6 @@
 from cl8.users.importers import safe_username
 from typing import Any
-
+import io
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.exceptions import ImmediateHttpResponse
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
@@ -9,6 +9,20 @@ from django.contrib.auth import login
 from django.http import HttpRequest
 from django.shortcuts import redirect
 from .models import Profile
+from ..utils.pics import fetch_user_pic
+
+
+import requests
+from django.core.files.images import ImageFile
+
+
+from allauth.account.adapter import get_adapter as get_account_adapter
+from allauth.account.utils import user_email, user_field, user_username
+
+from allauth.socialaccount.signals import social_account_updated, social_account_added
+from allauth.account.signals import user_signed_up
+
+from django.dispatch import receiver
 
 
 class AccountAdapter(DefaultAccountAdapter):
@@ -20,52 +34,60 @@ from .importers import safe_username
 
 
 class SocialAccountAdapter(DefaultSocialAccountAdapter):
-    def pre_social_login(self, request, sociallogin):
-        """
-        A hook to catch a a social sign in, and match it to the corresponding
-        user who has already been imported
-        """
-
-        from cl8.users.models import User
-
-        if "email" not in sociallogin.account.extra_data:
-            return
-
-        try:
-            email = sociallogin.account.extra_data.get("email")
-
-            # we assume we trust the email address coming from slack
-            # TODO: make this a thing you can set in an UI, or an env var
-            # rather than hard coding it
-            try:
-                user = User.objects.get(email__iexact=email.lower())
-            except User.DoesNotExist:
-                user = User(email=email.lower(), username=safe_username(email))
-                user.save()
-
-            # if this is a totally new user, we might not have a profile to populate
-            # create one if so
-            if not user.has_profile():
-                Profile.objects.create(user=user)
-
-        # if it does not, let allauth take care of this new social account
-        except User.DoesNotExist:
-            return
-
-        # short circuit
-        # we log the user in here without finishing the
-        # rest of the allauth flow.
-        # This is bad, but if we continue we get a 500 when an assertion
-        # fails at `self.is_existing` when calling `sociallogin.connect`
-        backend = "django.contrib.auth.backends.ModelBackend"
-        login(request, user, backend=backend)
-
-        # exit the flow to go back to the home page, and let vue
-        # take over
-        raise ImmediateHttpResponse(redirect("home"))
-        #
-        # sociallogin.connect(request, user)
+    """
+    An extension of the DefaultSocialAccountAdapter, where we make explicit
+    how we handle the data returned from slack, and how we persist to the User
+    Profile models in our database
+    """
 
     def is_open_for_signup(self, request: HttpRequest, sociallogin: Any):
         return getattr(settings, "ACCOUNT_ALLOW_REGISTRATION", True)
 
+
+@receiver(user_signed_up)
+def create_profile_for_user(sender, **kwargs):
+    """Called when a user signs in via slack for the first time"""
+    update_profile(sender, **kwargs)
+
+
+@receiver(social_account_updated)
+def update_profile_for_user(sender, **kwargs):
+    """Called when a user signs in via slack for the each subsequent time"""
+    update_profile(sender, **kwargs)
+
+
+def update_profile(sender, **kwargs):
+    """
+    Accept a payload of info from the allauth signal events for
+    creating a user via a social sign in, or signing in using slack.
+
+    """
+    sociallogin = kwargs.get("sociallogin")
+
+    # return early if this isn't a social login event
+    if not sociallogin:
+        return
+
+    # TODO: decide how to map existing sociallogin to an existing user
+    # with a profile matching the the provided email address.
+
+    # add a profile if one does not already exist for a given user
+    if not sociallogin.user.has_profile():
+        # extra the profile
+        slack_user_id = sociallogin.account.extra_data["https://slack.com/user_id"]
+        slack_photo_url = sociallogin.account.extra_data["picture"]
+        user = sociallogin.user
+
+        user.username = f"{user.first_name.lower()}-{slack_user_id}"
+        user.name = f"{user.first_name} {user.last_name}"
+        user.save()
+
+        prof = Profile.objects.create(
+            user=user,
+            name=user.name,
+            import_id=f"slack-{slack_user_id}",
+        )
+
+        photo = fetch_user_pic(slack_photo_url)
+        prof.photo.save(f"{sociallogin.user}_slack_pic", photo)
+        prof.save()

@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 
 class User(AbstractUser):
-
     # First Name and Last Name do not cover name patterns
     # around the globe.
     name = CharField(_("Name of User"), blank=True, max_length=255)
@@ -32,7 +31,9 @@ class User(AbstractUser):
         """
         matching_profiles = Profile.objects.filter(user_id=self.id)
         if matching_profiles:
-            return matching_profiles[0]
+            return True
+
+        return False
 
 
 class Cluster(TagBase):
@@ -45,7 +46,9 @@ class TaggedCluster(TaggedItemBase):
     content_object = models.ForeignKey("Profile", on_delete=models.CASCADE)
 
     tag = models.ForeignKey(
-        Cluster, on_delete=models.CASCADE, related_name="%(app_label)s_%(class)s_items",
+        Cluster,
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)s_items",
     )
 
 
@@ -61,7 +64,9 @@ class Profile(models.Model):
     linkedin = models.CharField(_("linkedin"), max_length=254, blank=True, null=True)
     bio = models.TextField(_("bio"), blank=True, null=True)
     visible = models.BooleanField(_("visible"), default=False)
-    photo = models.ImageField(_("photo"), blank=True, null=True, max_length=200)
+    photo = models.ImageField(
+        _("photo"), blank=True, null=True, max_length=200, upload_to="photos"
+    )
 
     tags = TaggableManager(blank=True)
     clusters = TaggableManager("Clusters", blank=True, through=TaggedCluster)
@@ -84,6 +89,10 @@ class Profile(models.Model):
     @property
     def name(self):
         return self.user.name
+
+    @name.setter
+    def name(self, value):
+        self.user.name = value
 
     @property
     def email(self):
@@ -119,10 +128,13 @@ class Profile(models.Model):
         return get_thumbnail(self.photo, "250x250", crop="center", quality=99).url
 
     def __str__(self):
-        return self.user.name
+        if self.user.name:
+            return f"{self.user.name} - {self.import_id}"
+        else:
+            return f"{self.user.first_name} - {self.import_id}"
 
     def get_absolute_url(self):
-        return reverse("profile_detail", kwargs={"pk": self.pk})
+        return reverse("profile-detail", args=[self.user.username])
 
     def update_thumbnail_urls(self):
         """Generate the thumbnails for a profile"""
@@ -185,4 +197,3 @@ class Constellation(models.Model):
     )
 
     # logo = models.ImageField(_("photo"), blank=True, null=True, max_length=200)
-
