@@ -311,7 +311,8 @@ ACCOUNT_ADAPTER = "cl8.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
-SOCIALACCOUNT_ADAPTER = "cl8.users.adapters.SocialAccountAdapter"
+ACCOUNT_UNIQUE_EMAIL = False
+SOCIALACCOUNT_ADAPTER = "cl8.users.adapters.Cl8SocialAccountAdapter"
 SOCIALACCOUNT_EMAIL_REQUIRED = False
 SOCIALACCOUNT_PROVIDERS = {
     "slack_openid_connect": {

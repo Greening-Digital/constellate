@@ -5,9 +5,9 @@ from allauth.socialaccount.providers.oauth2.views import (
     OAuth2CallbackView,
     OAuth2LoginView,
 )
-from django.conf import settings
 
-from .provider import SlackProvider
+
+from .provider import SlackOpenIdConnectProvider
 
 
 class SlackOpenIdConnectAdapter(OAuth2Adapter):
@@ -17,7 +17,7 @@ class SlackOpenIdConnectAdapter(OAuth2Adapter):
     """
 
     # setting thids idea
-    provider_id = SlackProvider.id
+    provider_id = SlackOpenIdConnectProvider.id
 
     access_token_url = "https://slack.com/api/openid.connect.token"
     identity_url = "https://slack.com/api/openid.connect.userInfo"
@@ -25,14 +25,23 @@ class SlackOpenIdConnectAdapter(OAuth2Adapter):
 
     # # we allow for an override here, to set a subdomain
     # if settings.SLACK_SIGNIN_AUTHORIZE_URL:
-    #     authorize_url = settings.SLACK_SIGNIN_AUTHORIZE_URL
+    # authorize_url = settings.SLACK_SIGNIN_AUTHORIZE_URL
 
     def complete_login(self, request, app, token, **kwargs):
-        """"""
+        """
+        Return a sociallogin from slack, with empty user
+        """
         extra_data = self.get_data(token.token)
-        return self.get_provider().sociallogin_from_response(request, extra_data)
+        sociallogin = self.get_provider().sociallogin_from_response(request, extra_data)
+        return sociallogin
 
     def get_data(self, token):
+        """
+        Overrides the default behaviour to conform to the new spec
+        needed for the slack server.
+        Returns a JSON payload describing the slack user
+
+        """
         hed = {"Authorization": "Bearer " + token}
         resp = requests.get(self.identity_url, headers=hed)
         resp = resp.json()

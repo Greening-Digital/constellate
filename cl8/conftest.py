@@ -1,4 +1,5 @@
 import pytest
+from pytest_factoryboy import register
 
 import factory
 import random
@@ -12,6 +13,9 @@ import shutil
 from pathlib import Path
 from django.contrib.auth.models import Group, Permission
 from django.conf import settings
+
+register(UserFactory)
+register(FakePhotoProfileFactory)
 
 
 @pytest.fixture(autouse=True)

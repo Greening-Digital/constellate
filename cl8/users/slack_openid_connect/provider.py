@@ -3,10 +3,8 @@ from allauth.socialaccount.providers.slack.provider import SlackAccount
 
 from allauth.account.models import EmailAddress
 
-# SlackOpenIdConnectProvider
 
-
-class SlackProvider(OAuth2Provider):
+class SlackOpenIdConnectProvider(OAuth2Provider):
     """
     An updated subclass of the slack provider,
     that uses the the newer OpenID connect flow
@@ -46,11 +44,9 @@ class SlackProvider(OAuth2Provider):
                 primary=True,
             )
         ]
-        # breakpoint()
-        # return []
 
     def get_default_scope(self):
         return ["openid", "email", "profile"]
 
 
-provider_classes = [SlackProvider]
+provider_classes = [SlackOpenIdConnectProvider]

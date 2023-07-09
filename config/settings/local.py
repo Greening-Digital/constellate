@@ -11,7 +11,9 @@ SECRET_KEY = env(
     default="RKQJk9Bq11Unmlwe9H5qRGek98kAYxX6GoARcG5j6Ho0wVKto8ox8lA0o0FeMvSc",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "*"]
+ALLOWED_HOSTS = [".localhost", "0.0.0.0", "127.0.0.1", "*"]
+
+CSRF_TRUSTED_ORIGINS = ["https://*.localhost"]
 
 # CACHES
 # ------------------------------------------------------------------------------
@@ -91,5 +93,21 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:8081",
     "http://localhost:8080",
     "http://127.0.0.1:8080",
+    "https://cat.cl8.localhost",
 ]
 CORS_ALLOW_CREDENTIALS = True
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {"rich": {"datefmt": "[%X]"}},
+    "handlers": {
+        "console": {
+            "class": "rich.logging.RichHandler",
+            "formatter": "rich",
+            "level": "DEBUG",
+        }
+    },
+    "loggers": {"django": {"handlers": ["console"]}},
+}

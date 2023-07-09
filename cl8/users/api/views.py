@@ -68,7 +68,7 @@ def homepage(request):
     )
     ctx["profile_filter"] = filtered_profiles
 
-    pager = paginator.Paginator(filtered_profiles.qs, 10)
+    pager = paginator.Paginator(filtered_profiles.qs, 100)
     page = request.GET.get("page", 1)
 
     try:
@@ -113,7 +113,7 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
 
         if is_authenticated:
             # We make sure we have a token available to put into local storage
-            user = User.objects.get(email=self.request.user.email)
+            user = User.objects.filter(email=self.request.user.email).first()
             token, created = Token.objects.get_or_create(user=user)
 
             ctx["local_storage_token"] = token.key
