@@ -13,6 +13,9 @@ from taggit.models import TagBase, TaggedItemBase
 
 import logging
 
+from django.contrib.postgres import search
+from django.contrib.postgres import indexes
+
 logger = logging.getLogger(__name__)
 
 
@@ -197,3 +200,34 @@ class Constellation(models.Model):
     )
 
     # logo = models.ImageField(_("photo"), blank=True, null=True, max_length=200)
+
+
+class CATJoinRequest(models.Model):
+    joined_at = models.DateTimeField()
+    email = models.EmailField(unique=False)
+    city_country = models.CharField(blank=True, max_length=256)
+    # Why are you interested in joining?
+    why_join = models.TextField(blank=True)
+    # What's the main thing you'd like to offer as a part of the community?
+    main_offer = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.joined_at.strftime('%Y-%m-%d')} - {self.email}"
+
+    def bio_text_from_join_request(self):
+        """
+        Return a markdown version of the responses given when joining. Used to fill
+        out a member's profile.
+        """
+        return f"""
+### Why are you interested in joining?
+
+{self.why_join}
+
+
+### What's the main thing you'd like to offer as a part of the community?
+{self.main_offer}
+"""
+
+    class Meta:
+        indexes = [models.Index(fields=["email", "joined_at"])]
