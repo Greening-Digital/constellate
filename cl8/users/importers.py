@@ -1,19 +1,20 @@
 import csv
-import io
 import logging
 from collections import OrderedDict
 from datetime import datetime
 from pathlib import Path
 from typing import List
 
-import requests
+import gspread
 import slack
 from django.conf import settings
-from django.core.files.images import ImageFile
+from django.utils import timezone
 from django.utils.text import slugify
 
-from .models import Profile, User
+from cl8.users.models import CATJoinRequest
+
 from ..utils.pics import fetch_user_pic
+from .models import Profile, User
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
@@ -216,7 +217,9 @@ class SlackImporter:
         email = user_from_api["profile"]["email"]
         username = safe_username(email)
         real_name = user_from_api["profile"]["real_name_normalized"]
-        photo_url = user_from_api["profile"].get("image_original")
+
+        photo_url = user_from_api["profile"].get("image_512")
+        # photo_url = user_from_api["profile"].get("image_original")
         import_id = f"slack-{user_from_api['id']}"
         visible = True
 
@@ -308,6 +311,7 @@ class CATAirtableImporter(ProfileImporter):
 
         self.add_tags_to_profile(profile, row)
         profile.save()
+        profile.update_thumbnail_urls()
         return user
 
     def add_tags_to_profile(
@@ -337,3 +341,98 @@ class CATAirtableImporter(ProfileImporter):
                 profile.tags.add(f"{colname}:{tag.strip()}")
 
         return profile
+
+
+class NoMatchingCAT(Exception):
+    """
+    Used when matching CAT could be found for the provided email address.
+    """
+
+    pass
+
+
+class EmptyJoinRequestCAT(Exception):
+    """
+    Used when a join request has no timestmap, or other usable info.
+    """
+
+    pass
+
+
+class DuplicateJoinRequest(Exception):
+    """
+    Used when a join request is using an email we have already seen
+    """
+
+    pass
+
+
+CAT_RESPONSES_WORKSHEET = "Form Responses 1"
+
+
+def fetch_profile_info_from_gsheet(email: str):
+    """
+    Accept an email address, and based on the email associated with it, fetch the
+    matching information to add to a given user, like their responses to the
+    initial signup questions
+    """
+
+    gc = gspread.service_account(filename=settings.GSPREAD_SERVICE_ACCOUNT)
+    gsheet = gc.open_by_key(settings.GSPREAD_KEY)
+    responses_worksheet = gsheet.worksheet(CAT_RESPONSES_WORKSHEET)
+
+    matching_cell_for_email = responses_worksheet.find(email)
+
+    if not matching_cell_for_email:
+        raise NoMatchingCAT
+
+    response_values = responses_worksheet.row_values(matching_cell_for_email.row)
+
+    return response_values
+
+
+def fetch_full_data_from_gsheet() -> List[List[str]]:
+    gc = gspread.service_account(filename=settings.GSPREAD_SERVICE_ACCOUNT)
+    gsheet = gc.open_by_key(settings.GSPREAD_KEY)
+    responses_worksheet = gsheet.worksheet(CAT_RESPONSES_WORKSHEET)
+    return responses_worksheet.get_values()
+
+
+def create_join_request_from_row(row: List[str]) -> CATJoinRequest:
+    """
+    Accept a list of strings representing a row from a gsheet
+    and return a matching CATJoinRequest with the values entered
+    """
+
+    # return early, this looks like a blank row
+    if not row[0]:
+        raise EmptyJoinRequestCAT
+
+    reformatted_time = timezone.make_aware(
+        datetime.strptime(row[0], "%m/%d/%Y %H:%M:%S")
+    )
+
+    try:
+        return CATJoinRequest.objects.create(
+            joined_at=reformatted_time,
+            email=row[1],
+            city_country=row[2],
+            why_join=row[3],
+            main_offer=row[4],
+        )
+    except Exception as ex:
+        logger.warn(ex)
+        # breakpoint()
+
+
+def add_cat_responses_to_profiles():
+    """
+    Fill out the existing CAT profiles with responses from their
+    joining forms
+    """
+    for prof in Profile.objects.all():
+        join_req = CATJoinRequest.objects.filter(email=prof.email).last()
+
+        if join_req:
+            prof.bio = join_req.bio_text_from_join_request()
+            prof.save()

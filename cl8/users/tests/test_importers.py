@@ -1,11 +1,13 @@
-import pytest
-
+import json
+import pathlib
 from collections import OrderedDict
 
-from pathlib import Path
-
+import pytest
+import rich
 
 from cl8.users.importers import ProfileImporter, User
+
+from .. import importers
 
 pytestmark = pytest.mark.django_db
 
@@ -17,7 +19,7 @@ def generated_users():
 
 @pytest.fixture
 def csv_path():
-    return Path(__file__).parent / "generated-sample-data.csv"
+    return pathlib.Path(__file__).parent / "generated-sample-data.csv"
 
 
 class TestImporter:
@@ -49,7 +51,6 @@ class TestImporter:
         assert User.objects.count() == len(importer.rows)
 
     def test_create_user(self, csv_path):
-
         importer = ProfileImporter()
         importer.load_csv_from_path(csv_path)
 
@@ -65,7 +66,6 @@ class TestImporter:
         ),
     )
     def test_add_tags_to_user(self, profile, tag_string, tag_list, col_names):
-
         # arrange
         importer = ProfileImporter()
         row = OrderedDict()
@@ -79,7 +79,6 @@ class TestImporter:
             assert tag in tagged_profile.tags.names()
 
     def test_add_multiple_kinds_of_tags_to_user(self, profile):
-
         # arrange
         first_tag_string = "tag1, tag2, tag3"
         second_tag_string = "tag4, tag5, tag6"
@@ -99,3 +98,51 @@ class TestImporter:
 
         for tag in second_tag_string.split(","):
             assert tag.strip() in tagged_profile.tags.names()
+
+
+@pytest.fixture
+def join_request_row():
+    return [
+        "7/15/2019 16:02:11",
+        "some.person@gmail.com",
+        "Sure, sign me up",
+        "",
+        "I'm building a social reforestation app",
+        "I can offer feedback, suggestions, tips at the moment. I'm an engineer.",
+        "Yes I have read the code of conduct, and agree to follow it.",
+        "",
+    ]
+
+
+@pytest.fixture
+def join_requests_data():
+    json_path = pathlib.Path().cwd() / "local.responses.json"
+
+    parsed_data = json.loads(json_path.read_text())
+    return parsed_data[1:]
+
+
+def test_create_join_request(join_request_row):
+    res = importers.create_join_request_from_row(join_request_row)
+
+    assert res.id
+
+
+def test_create_join_request_for_all(join_requests_data):
+    created = []
+    errors = []
+
+    for row in join_requests_data:
+        try:
+            res = importers.create_join_request_from_row(row)
+            created.append(res)
+        except importers.NoMatchingCAT as ex:
+            errors.append(ex)
+        except importers.EmptyJoinRequestCAT as ex:
+            errors.append(ex)
+
+    rich.print(
+        f"total_imported: {len(created)} from a possible {len(join_requests_data)}"
+    )
+    rich.print(len(errors))
+    assert len(created) > 8

@@ -1,63 +1,46 @@
 {% extends "base.html" %}
 {% load static %}
-
 {% block content %}
-{% include "_nav_menu.html" %}
-
-<section class="grid grid-cols-[400px_minmax(900px,_1fr)_100px] mb-4">
-  <div class="card border">
-    <div class="card-body">
-      <h1 class="card-title">Showing {{ paginated_profiles | length }} matching results</h1>
-
-      <form method="get">
-        <p>
-          <label 
-          class="inline-block w-40"
-          for="{{ profile_filter.form.bio.id_for_label }}">
-            Bio text containing
-          </label>
-        
-        {{ profile_filter.form.bio.as_widget }}
-        </p>
-
-        <p class="mt-2">
-        <label 
-          class="inline-block w-40"
-          for="{{ profile_filter.form.tags.id_for_label }}">
-            Tagged with
-          </label>
-        {{ profile_filter.form.tags.as_widget }}
-        </p>
-        <input class="btn mt-4" type="submit" />
-    </form>
-    </div>
-  </div>
-
-  {% comment %} TODO TIDY THIS UP {% endcomment %}
-  <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-  {{ profile_filter.form.media }}
-
-  <script src="{% static 'js/htmx.min.js' %}" defer></script>
-</section>
-
-<section class="grid grid-cols-[400px_minmax(900px,_1fr)_100px]">
-
-  <section class="sidebar">
-    {% include "pages/_paginated_profiles.html" %}
-  </section>
-
-  <section>
-    <div id="profile-slot" class="card bg-base-100">
-      {% if profile %}
-        {% include '_profile.html' %}
-      {% else %}
-      <div class="card-body prose">
-        <h1>Enter profile here</h1>
+  {% include "_nav_menu.html" %}
+  <section class="grid grid-cols-[400px_minmax(900px,_1fr)_100px] mb-4">
+    <div class="card border">
+      <div class="card-body">
+        <h1 class="card-title">Showing {{ paginated_profiles | length }} matching results</h1>
+        <form method="get">
+          <p>
+            <label class="inline-block w-40"
+                   for="{{ profile_filter.form.bio.id_for_label }}">Bio text containing</label>
+            {{ profile_filter.form.bio.as_widget }}
+          </p>
+          <p class="mt-2">
+            <label class="inline-block w-40"
+                   for="{{ profile_filter.form.tags.id_for_label }}">Tagged with</label>
+            {{ profile_filter.form.tags.as_widget }}
+          </p>
+          <input class="btn mt-4" type="submit" />
+        </form>
       </div>
-      {% endif %}
     </div>
+    {% comment %} TODO TIDY THIS UP {% endcomment %}
+    <script type="text/javascript"
+            src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+    {{ profile_filter.form.media }}
+    <script src="{% static 'js/htmx.min.js' %}" defer></script>
   </section>
-
-</section>
-
+  <section class="grid grid-cols-[400px_minmax(900px,_1fr)_100px]">
+    <section class="sidebar" style="height:50vh; overflow:auto;">
+      {% include "pages/_paginated_profiles.html" %}
+    </section>
+    <section>
+      <div id="profile-slot" class="card bg-base-100">
+        {% if profile %}
+          {% include '_profile.html' %}
+        {% else %}
+          <div class="card-body prose">
+            <h1>Enter profile here</h1>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+  </section>
 {% endblock content %}
