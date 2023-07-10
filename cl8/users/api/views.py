@@ -45,6 +45,7 @@ User = get_user_model()
 
 
 logger = logging.getLogger(__name__)
+NO_PROFILES_PER_PAGE = 100
 
 
 @login_required
@@ -68,7 +69,7 @@ def homepage(request):
     )
     ctx["profile_filter"] = filtered_profiles
 
-    pager = paginator.Paginator(filtered_profiles.qs, 100)
+    pager = paginator.Paginator(filtered_profiles.qs, NO_PROFILES_PER_PAGE)
     page = request.GET.get("page", 1)
 
     try:
@@ -123,7 +124,7 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         )
         ctx["profile_filter"] = filtered_profiles
 
-        pager = paginator.Paginator(filtered_profiles.qs, 10)
+        pager = paginator.Paginator(filtered_profiles.qs, NO_PROFILES_PER_PAGE)
         page = self.request.GET.get("page", 1)
 
         try:
