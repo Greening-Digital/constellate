@@ -23,7 +23,7 @@ urlpatterns = [
     path("profiles/<slug>", ProfileDetailView.as_view(), name="profile-detail"),
     path("profiles/<slug>/edit", ProfileEditView.as_view(), name="profile-edit"),
     # Django Admin, use {% url 'admin:index' %}
-    path("advanced-admin/", admin.site.urls),
+    path("admin/", admin.site.urls),
     path(
         "admin/import-csv/sample.csv", sample_csv_template, name="sample-csv-template"
     ),
