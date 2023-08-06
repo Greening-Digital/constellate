@@ -136,7 +136,7 @@ Constellate assumes that uploaded media is stored on an object store like an AWS
 
 # MEDIA
 # ------------------------------------------------------------------------------
-DEFAULT_FILE_STORAGE = "backend.utils.storages.MediaRootS3Boto3Storage"
+DEFAULT_FILE_STORAGE = "cl8.utils.storages.MediaRootS3Boto3Storage"
 MEDIA_URL = f"https://{aws_s3_domain}/media/"
 ```
 

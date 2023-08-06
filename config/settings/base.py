@@ -88,6 +88,7 @@ THIRD_PARTY_APPS = [
     "sorl.thumbnail",
     "tailwind",
     "theme",
+    "django_extensions",
 ]
 
 LOCAL_APPS = [
@@ -359,3 +360,10 @@ SLACK_SIGNIN_AUTHORIZE_URL = env.str(
 
 
 TAILWIND_APP_NAME = "theme"
+
+
+# the identufying key for the google spreadsheet we pull data from
+GSPREAD_KEY = env.str("DJANGO_GSPREAD_SPREADSHEET_KEY", default=None)
+GSPREAD_SERVICE_ACCOUNT = env.str(
+    "DJANGO_GSPREAD_SERVICE_ACCOUNT_FILE_PATH", default=None
+)
