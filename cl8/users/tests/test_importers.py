@@ -116,18 +116,22 @@ def join_request_row():
 
 @pytest.fixture
 def join_requests_data():
-    json_path = pathlib.Path().cwd() / "local.responses.json"
+    json_path = pathlib.Path().cwd() / "data" / "local.responses.json"
 
     parsed_data = json.loads(json_path.read_text())
     return parsed_data[1:]
 
 
+@pytest.mark.skip(
+    reason="Was only used to sanity check the importer against a local data snapshot"
+)
 def test_create_join_request(join_request_row):
     res = importers.create_join_request_from_row(join_request_row)
 
     assert res.id
 
 
+@pytest.mark.skip(reason="Waiting for new dummy test data to be created")
 def test_create_join_request_for_all(join_requests_data):
     created = []
     errors = []
