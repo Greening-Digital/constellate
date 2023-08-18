@@ -33,6 +33,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install front end dependencies from front end directory
+        run: |
+          cd theme/static_src
+          npm i
+          cd ../../
+
       - name: Install dependencies
         run: |
           python -m pip install pipenv
