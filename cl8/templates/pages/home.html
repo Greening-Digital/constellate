@@ -8,8 +8,8 @@
         <form method="get">
           <p>
             <label class="inline-block w-100 mr-8"
-                   for="{{ profile_filter.form.bio.id_for_label }}">Show profile results matching:</label>
-            {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:1s" hx-target=".sidebar" %}
+                   for="{{ profile_filter.form.bio.id_for_label }}">Showing profile results matching:</label>
+            {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:1s" hx-target=".sidebar" class=" text-xl min-w-[50%]" %}
             <input class="btn mt-4 ml-4" type="submit" />
           </p>
         </form>

@@ -17,7 +17,7 @@
         <ul class="menu menu-horizontal px-1">
           {% if request.user.is_authenticated %}
             <li tabindex="0">
-              <a>
+              <a class="text-white">
                 {% if request.user.name %}
                   Hi {{ request.user.name }}
                 {% else %}
@@ -31,7 +31,7 @@
                   <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                 </svg>
               </a>
-              <ul class="p-2 bg-base-100">
+              <ul class="p-2 bg-base-100 border" style="z-index:99999;">
                 <li>
                   <a href="{% url 'profile-detail' request.user.username %}">Profile</a>
                 </li>

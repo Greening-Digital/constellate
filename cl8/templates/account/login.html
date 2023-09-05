@@ -5,8 +5,7 @@
   {% trans "Sign In" %}
 {% endblock %}
 {% block inner %}
-  <div>
-    <h1></h1>
+  <div class="bg-white-100">
     {% get_providers as socialaccount_providers %}
     {% if socialaccount_providers %}
       <div class="prose">
