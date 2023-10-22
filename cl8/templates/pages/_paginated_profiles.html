@@ -41,12 +41,6 @@
           </a>
         </h4>
         <p>
-          {% comment %}
-            TODO: this is a source of n+1 queries, because run this once for each user
-            and our prefetch query to fetch tags for a user doesn't work here.
-            I think it's down to when we call flat_tag_list, as it triggers entirely 
-            new queries on the profile object - Chris
-          {% endcomment %}
           {% for tag in profile.tags_with_no_grouping|slice:":4" %}
             <span class="badge mx-1" data-tag-name="{{ tag.tag.name }}">{{ tag.name }}</span>
           {% endfor %}
