@@ -15,8 +15,11 @@ class ProfileFilter(django_filters.FilterSet):
         field_name="tags",
         label="Tags",
         queryset=taggit_models.Tag.objects.all(),
-        widget=autocomplete.ModelSelect2Multiple(url="tag-autocomplete"),
-        conjoined=True,
+        # comment these out, and remove the hidden class
+        # on the profile filter template to use the select2 autocomplete
+        # widget
+        # widget=autocomplete.ModelSelect2Multiple(url="tag-autocomplete"),
+        # conjoined=True,
     )
 
     def search_fulltext(self, queryset, field_name, value):
