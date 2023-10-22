@@ -36,6 +36,8 @@ class ProfileFilter(django_filters.FilterSet):
             "user__name",
             # along with all the text of their bio
             "bio",
+            # and location
+            "location",
             # and the text of all the tags associated with the profile
             "tags__name",
         )
