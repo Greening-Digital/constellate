@@ -21,6 +21,7 @@
     <div class="card-body flex-row hover:bg-yellow-100 hover:shadow-lg hover:cursor-pointer"
          hx-get="{% url 'profile-detail' profile.short_id %}"
          hx-target="#profile-slot"
+         hx-include="#filter-form"
          hx-push-url="true">
       <div class="profile-thumb w-1/5">
         {% if profile.photo %}
