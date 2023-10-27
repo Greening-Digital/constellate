@@ -16,7 +16,7 @@
                    for="{{ profile_filter.form.bio.id_for_label }}">Showing profile results matching:</label>
           </p>
           <p>
-            {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.2s," hx-target=".sidebar" class="text-xl min-w-[50%]" hx-sync="closest form:abort" %}
+            {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.1s," hx-target=".sidebar" class="text-xl min-w-[50%]" hx-sync="closest form:abort" %}
           </p>
           <p class="hidden">{% render_field profile_filter.form.tags %}</p>
           {% comment %} <input class="btn mt-4 ml-4" type="submit" /> {% endcomment %}
@@ -39,13 +39,13 @@
   TODO: revisit this layout. It's not great on mobile, and it doesn't
   make use of any of css-grid's capabilities
   {% endcomment %}
-  <section class="grid grid-cols-[400px_minmax(900px,_1fr)]">
+  <section class="grid ">
     {% comment %}
       We do not want the sidebar to unmanageably long, so we limit it to 65vh
       and allow it to scroll. Ideally, this would always match the length of
       div#profile-slot - how do we do that with css?
     {% endcomment %}
-    <section class="sidebar max-h-[65vh] overflow-y-auto">
+    <section class="sidebar ">
       {% comment %} list the active tags {% endcomment %}
       {% include "pages/_paginated_profiles.html" %}
     </section>
@@ -82,6 +82,6 @@
         }
       }
     });
-  </script>
+</script>
   {% endcomment %}
 {% endblock content %}
