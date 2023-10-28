@@ -1,76 +1,66 @@
 {% extends "base.html" %}
 {% load static widget_tweaks %}
 {% block content %}
-  {% include "_nav_menu.html" %}
-  <section class="mb-4 border">
-    <div class="card search-block">
-      <div class="card-body">
-        <form id="filter-form"
-              method="get"
-              hx-get="/"
-              hx-trigger="submit, htmx:confirm from:#id_tags, htmx:confirm from:#id_bio, toggle-tag from:body"
-              hx-target=".sidebar"
-              hx-push-url="true">
-          <p>
-            <label class="inline-block w-100 mr-8 text-xl"
-                   for="{{ profile_filter.form.bio.id_for_label }}">Showing profile results matching:</label>
-          </p>
-          <p>
-            {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.1s," hx-target=".sidebar" class="text-xl min-w-[50%]" hx-sync="closest form:abort" %}
-          </p>
-          <p class="hidden">{% render_field profile_filter.form.tags %}</p>
-          {% comment %} <input class="btn mt-4 ml-4" type="submit" /> {% endcomment %}
-          <button class="btn mt-4 ml-4" type="submit">Search</button>
-        </form>
-      </div>
-    </div>
-    {% comment %}
-    TODO: check if we still need jQuery. We only were using it for the select2 
-    based filtering, and that's now only used on the profile editing pages.
-    {% endcomment %}
-    <script type="text/javascript"
-            src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-    {{ profile_filter.form.media }}
-    <script src="{% static 'js/htmx.js' %}" defer></script>
-  </section>
-  {% comment %}
-  Have one column up 400px with, then another that is at least 
-  900x and a maximum of 1fr wide.
-  TODO: revisit this layout. It's not great on mobile, and it doesn't
-  make use of any of css-grid's capabilities
-  {% endcomment %}
-  <section class="grid ">
-    {% comment %}
-      We do not want the sidebar to unmanageably long, so we limit it to 65vh
-      and allow it to scroll. Ideally, this would always match the length of
-      div#profile-slot - how do we do that with css?
-    {% endcomment %}
-    <section class="sidebar ">
-      {% comment %} list the active tags {% endcomment %}
-      {% include "pages/_paginated_profiles.html" %}
-    </section>
-    <section>
-      <div id="profile-slot" class="card bg-base-100">
-        {% if profile %}
-          {% include '_profile.html' %}
-        {% else %}
-          <div class="card-body prose pt-8 mt-[5rem]">
-            <h2 class="text-xl font-normal">
-              Find people in the climateAction.tech community based on what they do, where they live, what they're asking for help with, and what they're offering to other members.
-            </h2>
-            <h2 class="text-xl font-normal">
-              Either search for people using the search bar above, or click on a profile to the left.
-            </h2>
-            <h2 class="text-xl font-normal">
-              Want to see what people see for your profile?
-              <a href="{% url 'profile-detail' request.user.profile.short_id %}">Go to your profile</a> where you can make changes.
-            </h2>
+  <main class="">
+    {% comment %} add our search component spanning the full width {% endcomment %}
+    <section class="search-component grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
+      <div></div>
+      <section>
+        <div class="card search-block border">
+          <div class="card-body">
+            <form id="filter-form"
+                  method="get"
+                  hx-get="/"
+                  hx-trigger="submit, htmx:confirm from:#id_tags, htmx:confirm from:#id_bio, toggle-tag from:body"
+                  hx-target=".sidebar"
+                  hx-push-url="true">
+              <p>
+                <label class="inline-block w-100 mr-8 text-xl"
+                       for="{{ profile_filter.form.bio.id_for_label }}">Showing profile results matching:</label>
+              </p>
+              <p>
+                {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.1s," hx-target=".sidebar" class="text-xl min-w-[50%]" hx-sync="closest form:abort" %}
+                <button class="btn mt-4 ml-4" type="submit">Search</button>
+              </p>
+              <p class="hidden">{% render_field profile_filter.form.tags %}</p>
+              {% comment %} <input class="btn mt-4 ml-4" type="submit" /> {% endcomment %}
+            </form>
           </div>
-        {% endif %}
-      </div>
+        </div>
+      </section>
+      <div></div>
+      {% comment %} close search component {% endcomment %}
     </section>
-  </section>
-  {% comment %}
+    {% comment %} main content  {% endcomment %}
+    <section class="grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
+      <div></div>
+      {% comment %} add our two columns for the sidebar and profile {% endcomment %}
+      <section class="column-wrapper border grid grid-cols-[1fr_2fr]">
+        {% comment %} list the active tags
+        {% endcomment %}
+        <div class="sidebar " style="max-height: 100vh">{% include "pages/_paginated_profiles.html" %}</div>
+        <div id="profile-slot" class="card bg-base-100">
+          {% if profile %}
+            {% include '_profile.html' %}
+          {% else %}
+            <div class="card-body prose pt-8 mt-[5rem]">
+              <h2 class="text-xl font-normal">
+                Find people in the climateAction.tech community based on what they do, where they live, what they're asking for help with, and what they're offering to other members.
+              </h2>
+              <h2 class="text-xl font-normal">
+                Either search for people using the search bar above, or click on a profile to the left.
+              </h2>
+              <h2 class="text-xl font-normal">
+                Want to see what people see for your profile?
+                <a href="{% url 'profile-detail' request.user.profile.short_id %}">Go to your profile</a> where you can make changes.
+              </h2>
+            </div>
+          {% endif %}
+        </div>
+      </section>
+      <div></div>
+    </section>
+    {% comment %}
   Uncomment this to see all the events being logged by htmx
 
   <script>
@@ -83,5 +73,13 @@
       }
     });
 </script>
-  {% endcomment %}
+    {% endcomment %}
+  </main>
 {% endblock content %}
+{% block scripts %}
+  {{ block.super }}
+  <script type="text/javascript"
+          src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+  {{ profile_filter.form.media }}
+  <script src="{% static 'js/htmx.js' %}" defer></script>
+{% endblock scripts %}

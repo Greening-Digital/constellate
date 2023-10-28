@@ -8,20 +8,30 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         {% tailwind_css %}
     </head>
-    <body class="bg-white-100 leading-normal tracking-normal">
-        {% block content %}
-            <section class="flex items-center justify-center h-screen">
-                <h1 class="text-5xl">Django + Tailwind = ❤️</h1>
-            </section>
-        {% endblock content %}
-    </div>
-    <footer class="footer p-10 bg-neutral text-neutral-content">
+    <body class="grid grid-rows-[auto_1fr] h-screen">
         <div>
-            <span class="footer-title">Legal</span>
-            <a class="link link-hover">Terms of use</a>
-            <a class="link link-hover">Privacy policy</a>
-            <a class="link link-hover">Cookie policy</a>
+            {% block nav %}
+                {% include "_nav_menu.html" %}
+            {% endblock nav %}
         </div>
-    </footer>
-</body>
+        <div class="grid grid-rows-[1fr_auto] border">
+            {% block content %}
+                <section class="flex items-center justify-center h-screen">
+                    <h1 class="text-5xl">Django + Tailwind = ❤️</h1>
+                </section>
+            {% endblock content %}
+            <footer class="grid grid-cols-[1fr_minmax(auto,70rem)_1fr] border bg-neutral">
+                <div></div>
+                <div class="footer p-10 text-neutral-content">
+                    <span class="footer-title">Legal</span>
+                    <a class="link link-hover">Terms of use</a>
+                    <a class="link link-hover">Privacy policy</a>
+                    <a class="link link-hover">Cookie policy</a>
+                </div>
+                <div></div>
+            </footer>
+        </div>
+        {% block scripts %}
+        {% endblock scripts %}
+    </body>
 </html>
