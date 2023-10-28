@@ -12,7 +12,7 @@
     {% endif %}
     <li>
         <a title="{{ provider.name }}"
-           class="socialaccount_provider {{ provider.id }}"
+           class="socialaccount_provider {{ provider.id }} btn"
            href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">
             Sign in with your CAT slack account
         </a>

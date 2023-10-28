@@ -16,8 +16,14 @@
         </div>
         <div class="grid grid-rows-[1fr_auto] border">
             {% block content %}
-                <section class="flex items-center justify-center h-screen">
-                    <h1 class="text-5xl">Django + Tailwind = ❤️</h1>
+                <section class="grid grid-cols-[1fr_minmax(auto,70rem)_1fr] border">
+                    <div></div>
+                    <div>
+                        {% block inner %}
+                            <h1 class="text-5xl">Django + Tailwind = ❤️</h1>
+                        {% endblock inner %}
+                    </div>
+                    <div></div>
                 </section>
             {% endblock content %}
             <footer class="grid grid-cols-[1fr_minmax(auto,70rem)_1fr] border bg-neutral">

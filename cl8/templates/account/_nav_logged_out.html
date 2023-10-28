@@ -1,19 +1,21 @@
 {% load static %}
 {% load account socialaccount %}
 <style>
-  .navbar-container {
+  .cat-navy-blue {
     background-color: #004884;
   }
 </style>
-<div class="navbar-container">
-    <div class="navbar">
-        <div class="container mx-auto">
-            <div class="flex-1">
+<header class="cat-navy-blue grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
+    <div></div>
+    <div>
+        <div class="flex justify-between items-center">
+            <div class="justify-self-start">
                 <a class="btn btn-ghost normal-case text-xl max-w-xs">
                     <img src="{% static 'img/CAT-logo.png' %}" />
                 </a>
             </div>
-            <div class="flex-none"></div>
+            <div class="justify-self-end"></div>
         </div>
     </div>
-</div>
+    <div></div>
+</header>
