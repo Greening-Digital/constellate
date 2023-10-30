@@ -1,20 +1,7 @@
 {% load gravatar %}
-<div class="active-tags ">
-  {% if active_tags %}
-    <h3>Active tags</h3>
-    {% for active_tag in active_tags %}
-      <span class="badge my-2 mx-1 p-4 hover:bg-red-900 hover:shadow-lg hover:cursor-pointer"
-            data-tag-name="{{ active_tag.name }}"
-            data-tag-id="{{ active_tag.tag.id }}">{{ active_tag.name }}</span>
-    {% endfor %}
-  {% endif %}
-</div>
-<div class="ml-4 pa-4 text-center">
-  <p class="text-xl inline-block ">Showing {{ paginated_profiles|length }} profile{{ paginated_profiles|pluralize }}</p>
-</div>
 <div class="overflow-y-auto overflow-x-hidden max-h-[70vh]">
   {% for profile in paginated_profiles %}
-    <div class="card w-96 bg-base-100 mb-1">
+    <div class="profile card w-96 bg-base-100 mb-1">
       {% comment %}
       We want our whole div to be clickable, hence the htmx-get, and cursor-pointer
       We use flex box row to have the image and text blocks side by side
@@ -33,7 +20,12 @@
         </div>
         <div class="w-4/5">
           <h4 class="card-title">
-            <a href="{% url 'profile-detail' profile.short_id %}">{{ profile.name }}
+            <a href="{% url 'profile-detail' profile.short_id %}"
+               hx-get="{% url 'profile-detail' profile.short_id %}"
+               hx-target="#profile-slot"
+               hx-include="#filter-form"
+               hx-push-url="true">
+              {{ profile.name }}
               {% comment %}
             Rank refers to the search rank scoring in Django postgres. 
             {{ profile.rank }} 
@@ -52,16 +44,3 @@
     </div>
   {% endfor %}
 </div>
-<script>
-  document.querySelectorAll('.active-tags .badge').forEach(item => {
-    item.addEventListener('click', event => {
-      const selectorString = `#id_tags option[value="${event.target.dataset.tagId}"]`
-      const chosenTagOption = document.querySelector(selectorString)
-      // toggle the selected status of the tag
-      chosenTagOption.selected = !chosenTagOption.selected
-      // announce the toggle event the profile list can listen for it 
-      //and update accordingly
-      document.body.dispatchEvent(new Event("toggle-tag"))
-    })
-  })
-</script>

@@ -1,5 +1,16 @@
 {% load gravatar %}
 <div class="card-body">
+    <button class="btn btn-square btn-outline absolute right-0 top-0 mr-4 mt-4"
+            type="button"
+            id="clear-profile">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             class="h-6 w-6"
+             fill="none"
+             viewBox="0 0 24 24"
+             stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
     <h1 class="mb-0 text-3xl">{{ profile.name }}</h1>
     {% if can_edit %}
         <a href="{% url 'profile-edit' profile.short_id %}"
@@ -22,10 +33,11 @@
             <h3>{{ tag_group }}</h3>
             <p>
                 {% for tag_dict in tags %}
-                    <span class="badge my-2 mx-1 p-4"
-                          data-tag-name="{{ tag_dict.name }}"
-                          data-tag-group="{{ tag_group }}"
-                          data-tag-id="{{ tag_dict.tag.id }}">{{ tag_dict.name }}</span>
+                    <button type="button"
+                            class="badge my-2 mx-1 p-4 {% if tag_dict.tag.id in active_tag_ids %}bg-blue-500{% endif %}"
+                            data-tag-name="{{ tag_dict.name }}"
+                            data-tag-group="{{ tag_group }}"
+                            data-tag-id="{{ tag_dict.tag.id }}">{{ tag_dict.name }}</button>
                 {% endfor %}
             </p>
         {% endfor %}
@@ -34,10 +46,11 @@
         <h3>Other Tags</h3>
         <p>
             {% for tag_dict in ungrouped_tags %}
-                <span class="badge my-2 mx-1 p-4"
-                      data-tag-name="{{ tag_dict.name }}"
-                      data-tag-group="{{ tag_group }}"
-                      data-tag-id="{{ tag_dict.tag.id }}">{{ tag_dict.name }}</span>
+                <button type="button"
+                        class="badge my-2 mx-1 p-4 {% if tag_dict.tag.id in active_tag_ids %}bg-blue-500{% endif %}"
+                        data-tag-name="{{ tag_dict.name }}"
+                        data-tag-group="{{ tag_group }}"
+                        data-tag-id="{{ tag_dict.tag.id }}">{{ tag_dict.name }}</button>
             {% endfor %}
         </p>
     {% endif %}
@@ -45,7 +58,7 @@
         // when a user clicks on a tag, emit an event listing the nane of the tag being clicked
         // this is picked up by the parent component and used to filter the list of profiles
         // shown    
-        document.querySelectorAll('.card-body .badge').forEach(item => {
+        document.querySelectorAll('#profile-slot .card-body .badge').forEach(item => {
             item.addEventListener('click', event => {
                 // we can't just bubble up a 'click' event to the parent elements
                 // and use that to update the list of profiles shown, because
@@ -64,7 +77,8 @@
                 // once we have updated the option list, we trigger
                 // an DOM event our filter component to listen for,
                 // and update the list of profiles shown
-                document.body.dispatchEvent(new Event("toggle-tag"))
+                
+                document.body.dispatchEvent(new CustomEvent("toggle-tag", { detail: event.target.dataset }))
 
                 // toggle the button active state 
                 // TODO: figure out how to persist GET params in the 
@@ -73,5 +87,26 @@
                 event.target.classList.toggle('bg-blue-500')
             })
         })
+
+        /**
+        * Clear the profile slot and set the path in the url back to "/", 
+        * adding the GET params, then the url to the history
+        */
+        function clearProfile() {
+            console.log('clearing profile')
+
+            // set the path in the url back to "/", adding the GET params
+            // from the current URL
+            const currentUrl = new URL(window.location.href)
+            const newUrl = new URL('/', window.location.origin)
+            newUrl.search = currentUrl.search
+            window.history.pushState({}, '', newUrl)
+
+            // then set the profile slot to the empty profile
+            const emptyProfile = document.querySelector('#empty-profile .card-body').innerHTML
+            document.querySelector('#profile-slot .card-body').innerHTML = emptyProfile
+
+        }
+        document.querySelector('#clear-profile').addEventListener('click', clearProfile)
     </script>
 </div>

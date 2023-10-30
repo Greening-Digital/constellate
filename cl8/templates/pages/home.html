@@ -13,6 +13,7 @@
                   hx-get="/"
                   hx-trigger="submit, htmx:confirm from:#id_tags, htmx:confirm from:#id_bio, toggle-tag from:body"
                   hx-target=".sidebar"
+                  hx-indicator=".sidebar"
                   hx-push-url="true">
               <p>
                 <label class="inline-block w-100 mr-8 text-xl"
@@ -20,11 +21,20 @@
               </p>
               <p>
                 {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.1s," hx-target=".sidebar" class="text-xl min-w-[50%]" hx-sync="closest form:abort" %}
-                <button class="btn mt-4 ml-4" type="submit">Search</button>
+                <button class="btn mt-4 ml-4" type="submit">
+                  <span class="loading loading-spinner loading-md"></span>
+                  Search
+                </button>
               </p>
               <p class="hidden">{% render_field profile_filter.form.tags %}</p>
               {% comment %} <input class="btn mt-4 ml-4" type="submit" /> {% endcomment %}
             </form>
+            <div class="active-tags">{% include '_active_tags_list.html' %}</div>
+            <div class="">
+              <p class="text-xl inline-block ">
+                <span data-profile-count="{{ paginated_profiles|length }}">{{ paginated_profiles|length }}</span> matching profile{{ paginated_profiles|pluralize }} found
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -35,45 +45,29 @@
     <section class="grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
       <div></div>
       {% comment %} add our two columns for the sidebar and profile {% endcomment %}
-      <section class="column-wrapper border grid grid-cols-[1fr_2fr]">
+      {% comment %} <section class="column-wrapper border grid grid-cols-[1fr_2fr]"> {% endcomment %}
+      <section class="column-wrapper border grid grid-cols-1 lg:grid-cols-3">
         {% comment %} list the active tags
         {% endcomment %}
-        <div class="sidebar " style="max-height: 100vh">{% include "pages/_paginated_profiles.html" %}</div>
-        <div id="profile-slot" class="card bg-base-100">
+        <div class="sidebar transition-all border hidden lg:inline"
+             style="max-height: 100vh">{% include "pages/_paginated_profiles.html" %}</div>
+        <div id="profile-slot" class="card bg-base-100 lg:col-span-2 border">
           {% if profile %}
+            {% comment %} show the profile with all the tags, and details {% endcomment %}
             {% include '_profile.html' %}
           {% else %}
-            <div class="card-body prose pt-8 mt-[5rem]">
-              <h2 class="text-xl font-normal">
-                Find people in the climateAction.tech community based on what they do, where they live, what they're asking for help with, and what they're offering to other members.
-              </h2>
-              <h2 class="text-xl font-normal">
-                Either search for people using the search bar above, or click on a profile to the left.
-              </h2>
-              <h2 class="text-xl font-normal">
-                Want to see what people see for your profile?
-                <a href="{% url 'profile-detail' request.user.profile.short_id %}">Go to your profile</a> where you can make changes.
-              </h2>
-            </div>
+            {% comment %} otherwise show a blank "start" view with instructions {% endcomment %}
+            {% include "_profile_empty.html" %}
           {% endif %}
         </div>
       </section>
       <div></div>
     </section>
     {% comment %}
-  Uncomment this to see all the events being logged by htmx
-
-  <script>
-    document.addEventListener("DOMContentLoaded", (event) => {
-      console.log("DOM fully loaded and parsed");
-      htmx.logger = function(elt, event, data) {
-        if(console) {
-            console.log(event, elt, data);
-        }
-      }
-    });
-</script>
+      Add hidden version of empty  profile content, used when clearing a select 
+      profile
     {% endcomment %}
+    <div id="empty-profile" class="hidden">{% include "_profile_empty.html" %}</div>
   </main>
 {% endblock content %}
 {% block scripts %}
@@ -82,4 +76,59 @@
           src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
   {{ profile_filter.form.media }}
   <script src="{% static 'js/htmx.js' %}" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", (event) => {
+      console.log("DOM fully loaded and parsed");
+      htmx.logger = function(elt, event, data) {
+        if(console) {
+            console.log(event);
+            if (event == "htmx:afterSettle") {
+              console.log(elt, event, data)
+              // check if it's the sidebar reloading
+              const sidebarUpdated = elt.classList.contains("sidebar");
+            
+              // update the count if so
+              if (sidebarUpdated) {
+                const profileCount = document.querySelectorAll(".sidebar .profile").length;
+              const profileCountElement = document.querySelector("[data-profile-count]").innerText = profileCount;
+              }
+              
+              
+            }
+        }
+      }
+    });
+    function addlistenersForActiveTags() {
+      document.querySelectorAll('.search-block .active-tags .badge').forEach(item => {
+    item.addEventListener('click', event => {
+      const selectorString = `#id_tags option[value="${event.target.dataset.tagId}"]`
+      const chosenTagOption = document.querySelector(selectorString)
+      // toggle the selected status of the tag
+      chosenTagOption.selected = !chosenTagOption.selected
+      // announce the toggle event the profile list can listen for it 
+      //and update accordingly
+      document.body.dispatchEvent(new Event("toggle-tag"))
+      })
+    })
+    }
+    addlistenersForActiveTags()
+
+  
+
+  document.body.addEventListener('active-tags-changed', (event) => {
+    console.log("event.detail")
+    console.log(event.detail)
+    const activeTagsList = document.querySelector('.search-block .active-tags .tag_list')
+    if (event.detail.rendered_html) {
+      activeTagsList.innerHTML = event.detail.rendered_html
+    }
+    // we need to add listeners again because the DOM has changed, 
+    // and the event listeners will have been removed along with 
+    // the DOM elements
+    addlistenersForActiveTags()
+  })
+
+  
+
+  </script>
 {% endblock scripts %}

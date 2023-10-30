@@ -1,5 +1,6 @@
 import logging
-
+from django_htmx.http import trigger_client_event
+from django.template.loader import render_to_string
 from dal import autocomplete
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -118,6 +119,7 @@ def fetch_profile_list(request: HttpRequest, ctx: dict):
     return ctx
 
 
+
 @login_required
 def homepage(request):
     current_site = get_current_site(request)
@@ -129,6 +131,17 @@ def homepage(request):
 
     if request.htmx:
         template_name = "pages/_home_partial.html"
+
+        response = render(request, template_name, ctx)        
+        rendered_active_tags = render_to_string(
+            "_active_tags_list.html", ctx, request
+        )
+
+        return trigger_client_event(response,
+            "active-tags-changed",
+            {"rendered_html": rendered_active_tags},
+        )
+
     else:
         template_name = "pages/home.html"
 
@@ -161,6 +174,7 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
 
         if self.object is not None:
             ctx["profile"] = self.object
+            active_tag_ids = self.request.GET.getlist('tags')
 
             md = MarkdownIt()
             if self.object.bio:
@@ -171,6 +185,7 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
 
             ctx["grouped_tags"] = grouped_tags
             ctx["ungrouped_tags"] = ungrouped_tags
+            ctx["active_tag_ids"] = [int(tag_id) for tag_id in active_tag_ids]
 
         if (
             self.object.user == self.request.user or 
@@ -188,7 +203,17 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
 
         if request.htmx:
             self.template_name = "_profile.html"
-            return self.render_to_response(context)
+            response = self.render_to_response(context)
+
+            rendered_active_tags = render_to_string(
+                "_active_tags_list.html", context, request
+            )
+
+            return trigger_client_event(response,
+                "active-tags-changed",
+                {"rendered_html": rendered_active_tags}
+            )
+
 
         return self.render_to_response(context)
 
