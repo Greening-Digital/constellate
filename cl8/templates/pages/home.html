@@ -13,7 +13,6 @@
                   hx-get="/"
                   hx-trigger="submit, htmx:confirm from:#id_tags, htmx:confirm from:#id_bio, toggle-tag from:body"
                   hx-target=".sidebar"
-                  hx-indicator=".sidebar"
                   hx-push-url="true">
               <p>
                 <label class="inline-block w-100 mr-8 text-xl"
@@ -21,10 +20,7 @@
               </p>
               <p>
                 {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.1s," hx-target=".sidebar" class="text-xl min-w-[50%]" hx-sync="closest form:abort" %}
-                <button class="btn mt-4 ml-4" type="submit">
-                  <span class="loading loading-spinner loading-md"></span>
-                  Search
-                </button>
+                <button class="btn mt-4 ml-4" type="submit">Search</button>
               </p>
               <p class="hidden">{% render_field profile_filter.form.tags %}</p>
               {% comment %} <input class="btn mt-4 ml-4" type="submit" /> {% endcomment %}
@@ -98,6 +94,11 @@
         }
       }
     });
+    /**
+    * Add a set of event listeners to the active tag list, so that clicking on
+    * updates the selected options, and triggers a toggle-tag event, for our
+    * form to listen for and request an uploaded list of tags
+    */
     function addlistenersForActiveTags() {
       document.querySelectorAll('.search-block .active-tags .badge').forEach(item => {
     item.addEventListener('click', event => {
@@ -114,6 +115,7 @@
     addlistenersForActiveTags()
 
   
+
 
   document.body.addEventListener('active-tags-changed', (event) => {
     console.log("event.detail")
