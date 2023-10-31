@@ -134,6 +134,85 @@ class ProfileImporter:
         return user
 
 
+class FireBaseImporter:
+    """
+    An importer for fetching a list of users from a firebase set up
+    for the original, first version of constellate database, with 
+    tags, bio, email and so on.
+    """
+
+    def create_user(self, user_json):
+        """
+        Accepts a row, and returns the corresponding user generated based
+        on the info passed in
+        """
+
+        fields = user_json.get("fields")
+
+
+        if not fields["email"]:
+            raise (NoEmailFound)
+
+        # create django user
+        safer_name = safe_username()
+
+        user, created = User.objects.get_or_create(email=fields["email"])
+
+        logger.debug(user)
+        user.name = fields["name"]
+        user.username = safer_name
+        user.save()
+        logger.debug(user.id)
+
+        visible = True if fields.get("visible") == "yes" else False
+
+        profile, created = Profile.objects.get_or_create(user=user)
+        profile.import_id = user_json.get("id")
+        profile.phone = fields.get("phone")
+        profile.website = fields.get("website")
+        profile.twitter = fields.get("twitter")
+        profile.facebook = fields.get("facebook")
+        profile.linkedin = fields.get("linkedin")
+        profile.bio = fields.get("blurb")
+        profile.visible = visible
+        # if photo := fields.get("photo"):
+        #     profile.photo = fetch_user_pic(photo[0].get("url"))
+        if fields.get("tags"):
+            tag_names = [tag['name'] for tag in fields["tags"]]
+            self.add_tags_to_profile(profile, tag_names)
+        profile.save()
+
+        logger.debug(f"profile: {profile}")
+        logger.debug(f"user: {user}")
+        logger.debug(profile.user.id)
+
+        profile.save()
+        return user
+
+    def add_tags_to_profile(self, profile, tags):
+        """
+        Take a profile object, and add all the relevant tags,
+        in the properties from the CSV listed `columns`.
+        """
+
+        for tag in tags:
+            profile.tags.add(tag.strip())
+
+        return profile
+
+    def add_users_from_json(self, json_data):
+        """
+        Accepts a json object, and creates users from it
+        """
+
+        
+
+        for user in json_data:
+            self.create_user(user)
+
+
+    
+
 class SlackImporter:
     """
     An importer for fetching a list of users from a given channel in
