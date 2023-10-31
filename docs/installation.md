@@ -1,48 +1,63 @@
 # Installation
 
-Constellate is made of two parts - a django API in `backend`, and a VueJS front end in `frontend`.
+Constellate is a Django application, that connects to a Postgres database.
+It also relies on a front end toolchain, Tailwind for generating minimal CSS, and on MJML generating the markup for sent emails.
 
-You need them both running to develop the site.
+While you can run commands directly, it's also easier to use just for running commands, to avoid needing to remember 
+each invocation. Download it from - https://just.systems
 
+### Setting up your server 
 
-### Setting up the django backend
-
-While you almost definitely should be using postgres in development and production to avoid surprises during deployment.
-
-But you CAN use sqlite to spin up an instance and try it out. Pass in a database url string like the one below:
-
-```python
-# backend/config/local.py
-DATABASE_URL="sqlite:///backend_db"
-```
-
-Once this is updated ou can run `heroku local web` to run gunicorn, or for an auto-reloading dev server, run `python ./manage.py runserver`.
-
-For the `runserver`, you will need to load the environment variables listed in `.env` into your shell.
-
-
-### Set up the front end
-
-The front end is a VueJS application, that talks to the backend. Like a lot of VueJS apps you can install using npm or yarn.
-
-The examples below use npm for brevity.
+#### Create or connect to an existing a database
 
 ```
-
-npm install
+createdb yourdatabase_cl8
 ```
 
-Once you have that, for development call `npm run serve` - this sets up hot reloading, and development server:
+Once you have the database set up, you'll need to list it in your .env file. You should consult .env.sample 
+for explanations of all the settings listed, for now, add the database name into your database connection string like below.
 
 ```
-npm run serve
+# .env
+DATABASE_URL=postgres://localhost:5432/your_database_cl8
 ```
 
-To create a build for production with `npm run build`. This creates an optimised version to deploy onto your choice of static hosting.
+### Set up front end toolchains
 
-You can see the changes made to the config in the `vue.config.js` to get the vue app working as a single deployable unit with Django.
-
+Constellate uses a toolchain based around Tailwind for generating CSS files for the front end, and MJML to make 
+html emails easier to maintain. Assuming you have a recent version of nodejs installed (18+), you can run the following command
 
 ```
-npm run build
+just install
 ```
+
+### Run any migrations 
+
+You will need to run migrations to set up your blank database
+
+```
+just manage migrate
+```
+
+### Run a local server
+
+You can now run a local server. If you're running locally you will want to generate the css needed for your site
+using tailwind 
+
+```
+just tailwind-build
+```
+
+Or if you want to generate css files continuously, open a second terminal window and run the following command:
+
+```
+@tailwind-server
+```
+
+Finally, run the django server itself:
+
+```
+just serve
+```
+
+
