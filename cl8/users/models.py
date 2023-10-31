@@ -167,11 +167,14 @@ class Profile(models.Model):
         ungrouped_tags = []
         # group tags in a dict based on the name of the tag, once it is split at the ":" in the name
         for tag in self.tags.filter(name__icontains=":"):
-            tag_group, tag_name = tag.name.split(":")
-            tag_name = tag.name.split(":")[1]
-            if tag_group not in grouped_tags:
-                grouped_tags[tag_group] = []
-            grouped_tags[tag_group].append({"name": tag_name, "tag": tag})
+            try:
+                tag_group, tag_name = tag.name.split(":")
+                tag_name = tag.name.split(":")[1]
+                if tag_group not in grouped_tags:
+                    grouped_tags[tag_group] = []
+                grouped_tags[tag_group].append({"name": tag_name, "tag": tag})
+            except ValueError:
+                logger.warning(f"Unable to split tag name: {tag.name}. Not showing.")
 
         for ungrouped_tag in self.tags.exclude(name__icontains=":"):
 
@@ -265,7 +268,17 @@ class Constellation(models.Model):
         verbose_name="site",
     )
 
-    # logo = models.ImageField(_("photo"), blank=True, null=True, max_length=200)
+    logo = models.ImageField(_("logo"), blank=True, null=True, max_length=200, upload_to="logos",)
+    background_color = models.CharField(
+        blank=True, 
+        max_length=256,
+        help_text="A hex code colour to use for the header background colour")
+    
+    signin_via_slack = models.BooleanField(default=False)
+    signin_via_email = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.site.name}"
 
 
 class CATJoinRequest(models.Model):

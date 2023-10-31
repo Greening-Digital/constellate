@@ -9,7 +9,7 @@ from taggit.models import Tag
 
 # from .site_admin import constellation_admin
 from cl8.users.forms import UserChangeForm, UserCreationForm
-from cl8.users.models import Profile, Cluster
+from cl8.users.models import Profile, Cluster, Constellation
 from django.utils.safestring import mark_safe
 
 User = get_user_model()
@@ -83,10 +83,10 @@ class ProfileAdmin(admin.ModelAdmin):
     form = ProfileAdminForm
 
 
-# @admin.register(Cluster)
-# @admin.register(Cluster, site=constellation_admin)
-# class ClusterAdmin(admin.ModelAdmin):
-# pass
+@admin.register(Constellation)
+class ConstellationAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Constellation
 
 
 # make the default Tag model available to admins to change

@@ -7,7 +7,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Group
-from django.contrib.sites.shortcuts import get_current_site
 from django.core import paginator
 from django.core.files.images import ImageFile
 from django.db.models import Case, When
@@ -41,6 +40,7 @@ from .serializers import (
     ProfileSerializer,
     TagSerializer,
 )
+from ..models import Constellation
 
 User = get_user_model()
 
@@ -122,10 +122,9 @@ def fetch_profile_list(request: HttpRequest, ctx: dict):
 
 @login_required
 def homepage(request):
-    current_site = get_current_site(request)
-    logger.info(f"{current_site=}")
-
-    ctx = {"is_authenticated": request.user.is_authenticated, "site": current_site}
+    
+    
+    ctx = {"is_authenticated": request.user.is_authenticated}
 
     ctx = fetch_profile_list(request, ctx)
 
@@ -161,13 +160,10 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         """ """
         is_authenticated = self.request.user.is_authenticated
-        current_site = get_current_site(self.request)
-
-        logger.info(f"{current_site=}")
 
         ctx = {
             "is_authenticated": is_authenticated,
-            "site": current_site,
+
         }
 
         ctx = fetch_profile_list(self.request, ctx)

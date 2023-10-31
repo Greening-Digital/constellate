@@ -2,8 +2,13 @@
 {% load account socialaccount %}
 <style>
   .cat-navy-blue {
+    {% if request.constellation.background_color %}
+      background-color: {{ request.constellation.background_color}};
+    {% else %}
     background-color: #004884;
+    {% endif %}
   }
+  
 </style>
 <header class="cat-navy-blue grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
     <div></div>
@@ -11,7 +16,11 @@
         <div class="flex justify-between items-center">
             <div class="justify-self-start">
                 <a class="btn btn-ghost normal-case text-xl max-w-xs">
-                    <img src="{% static 'img/CAT-logo.png' %}" />
+                    {% if request.constellation.logo %}
+                        <img src="{{ request.constellation.logo.url }}" />
+                    {% else %}
+                        <span class="text-white">{{ site.name }}</span>
+                    {% endif %}
                 </a>
             </div>
             <div class="justify-self-end"></div>
