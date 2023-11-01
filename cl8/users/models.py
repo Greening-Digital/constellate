@@ -166,7 +166,7 @@ class Profile(models.Model):
         grouped_tags = {}
         ungrouped_tags = []
         # group tags in a dict based on the name of the tag, once it is split at the ":" in the name
-        for tag in self.tags.filter(name__icontains=":"):
+        for tag in self.tags.filter(name__icontains=":").order_by("name"):
             try:
                 tag_group, tag_name = tag.name.split(":")
                 tag_name = tag.name.split(":")[1]
@@ -176,7 +176,7 @@ class Profile(models.Model):
             except ValueError:
                 logger.warning(f"Unable to split tag name: {tag.name}. Not showing.")
 
-        for ungrouped_tag in self.tags.exclude(name__icontains=":"):
+        for ungrouped_tag in self.tags.exclude(name__icontains=":").order_by("name"):
 
             ungrouped_tags.append({"name": ungrouped_tag.name, "tag": ungrouped_tag})
 
