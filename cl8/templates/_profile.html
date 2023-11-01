@@ -11,19 +11,53 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
     </button>
-    <h1 class="mb-0 text-3xl">{{ profile.name }}</h1>
     {% if can_edit %}
         <a href="{% url 'profile-edit' profile.short_id %}"
            class="btn btn-sm mt-2 mb-2 max-w-xs">Edit</a>
     {% endif %}
-    {% if profile.photo %}
-        <img src="{{ profile.detail_photo }}"
-             width="250"
-             height="250"
-             alt="profile photo" />
-    {% else %}
-        {% gravatar profile.user.email 150 %}
-    {% endif %}
+    <div class="grid lg:grid-cols-2">
+        <div>
+            {% if profile.photo %}
+                <img src="{{ profile.detail_photo }}"
+                     width="250"
+                     height="250"
+                     alt="profile photo" />
+            {% else %}
+                {% gravatar profile.user.email 150 %}
+            {% endif %}
+        </div>
+        <div>
+            <p class="mb-0 text-3xl">{{ profile.name }}</p>
+            {% if profile.email %}
+                <p class="mb-0 text-lg">
+                    <a href="mailto:{{ profile.email }}" class="text-blue-700">{{ profile.email }}</a>
+                </p>
+            {% endif %}
+            {% if profile.phone %}<p class="mb-0 text-lg">{{ profile.phone }}</p>{% endif %}
+            {% if profile.website %}
+                <p class="mb-0 text-lg">
+                    <a class="text-blue-700" href="https://{{ profile.website }}">{{ profile.website }}</a>
+                </p>
+            {% endif %}
+            {% if profile.location %}<p class="mb-0 text-lg">{{ profile.location }}</p>{% endif %}
+            <p class="mb-0 text-lg">
+                {% if profile.twitter %}
+                    <a class="text-blue-700"
+                       href="https://twitter.com/@{{ profile.twitter }}">Twitter</a> |
+                {% endif %}
+                {% if profile.facebook %}
+                    <a class="text-blue-700"
+                       href="https://facebook.com/@{{ profile.facebook }}">Facebook</a> |
+                {% endif %}
+                {% if profile.linkedin %}
+                    <a class="text-blue-700"
+                       href="https://linkedin.com/in/{{ profile.linkedin }}">LinkedIn</a>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+<div class="px-8">
     {% if profile_rendered_bio %}
         <h3>Bio</h3>
         <div class="prose">{{ profile_rendered_bio|safe }}</div>
@@ -34,7 +68,7 @@
             <p>
                 {% for tag_dict in tags %}
                     <button type="button"
-                            class="badge my-2 mx-1 p-4 {% if tag_dict.tag.id in active_tag_ids %}bg-blue-500{% endif %}"
+                            class="badge text-sm my-2 mx-1 p-3 {% if tag_dict.tag.id in active_tag_ids %}bg-blue-500{% endif %}"
                             data-tag-name="{{ tag_dict.name }}"
                             data-tag-group="{{ tag_group }}"
                             data-tag-id="{{ tag_dict.tag.id }}">{{ tag_dict.name }}</button>
@@ -43,22 +77,23 @@
         {% endfor %}
     {% endif %}
     {% if ungrouped_tags %}
-        <h3>Other Tags</h3>
+        <h3>Tags</h3>
         <p>
             {% for tag_dict in ungrouped_tags %}
                 <button type="button"
-                        class="badge my-2 mx-1 p-4 {% if tag_dict.tag.id in active_tag_ids %}bg-blue-500{% endif %}"
+                        class="badge text-xs my-2 mx-1 p-3 {% if tag_dict.tag.id in active_tag_ids %}bg-blue-500{% endif %}"
                         data-tag-name="{{ tag_dict.name }}"
                         data-tag-group="{{ tag_group }}"
                         data-tag-id="{{ tag_dict.tag.id }}">{{ tag_dict.name }}</button>
             {% endfor %}
         </p>
     {% endif %}
-    <script>
+</div>
+<script>
         // when a user clicks on a tag, emit an event listing the nane of the tag being clicked
         // this is picked up by the parent component and used to filter the list of profiles
         // shown    
-        document.querySelectorAll('#profile-slot .card-body .badge').forEach(item => {
+        document.querySelectorAll('#profile-slot .badge').forEach(item => {
             item.addEventListener('click', event => {
                 // we can't just bubble up a 'click' event to the parent elements
                 // and use that to update the list of profiles shown, because
@@ -108,5 +143,5 @@
 
         }
         document.querySelector('#clear-profile').addEventListener('click', clearProfile)
-    </script>
+</script>
 </div>
