@@ -56,7 +56,7 @@ div >input[type='file'] {
                     <input type="text"
                            placeholder="Type here"
                            name="{{ form.organisation.html_name }}"
-                           value="{{ form.organisation.value }}"
+                           value="{{ form.organisation.value|default_if_none:'' }}"
                            class="input input-bordered w-full max-w-xs" />
                 </div>
                 <div class="form-control w-full max-w-xs">
@@ -66,7 +66,7 @@ div >input[type='file'] {
                     <input type="text"
                            placeholder="Type here"
                            name="{{ form.location.html_name }}"
-                           value="{{ form.location.value }}"
+                           value="{{ form.location.value|default_if_none:'' }}"
                            class="input input-bordered w-full max-w-xs" />
                 </div>
                 <div class="form-control w-full max-w-xs">
@@ -76,7 +76,7 @@ div >input[type='file'] {
                     <input type="text"
                            placeholder="Type here"
                            name="{{ form.linkedin.html_name }}"
-                           value="{{ form.linkedin.value }}"
+                           value="{{ form.linkedin.value|default_if_none:'' }}"
                            class="input input-bordered w-full max-w-xs" />
                 </div>
                 <div class="form-control w-full max-w-xs">
@@ -86,7 +86,7 @@ div >input[type='file'] {
                     <input type="text"
                            placeholder="Type here"
                            name="{{ form.twitter.html_name }}"
-                           value="{{ form.twitter.value }}"
+                           value="{{ form.twitter.value|default_if_none:'' }}"
                            class="input input-bordered w-full max-w-xs" />
                 </div>
                 <div class="form-control w-full max-w-xs">
@@ -96,7 +96,7 @@ div >input[type='file'] {
                     <input type="text"
                            placeholder="Type here"
                            name="{{ form.facebook.html_name }}"
-                           value="{{ form.facebook.value }}"
+                           value="{{ form.facebook.value|default_if_none:'' }}"
                            class="input input-bordered w-full max-w-xs" />
                 </div>
                 <div class="form-control">
