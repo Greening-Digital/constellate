@@ -36,7 +36,11 @@ div >input[type='file'] {
                 {% endif %}
                 {% comment %} {{ form.photo }} {% endcomment %}
                 <p class="text-sm my-4">{{ form.photo }}</p>
-                <p class="my-4">{% render_field form.visible class="toggle" %}</p>
+                <p class="my-4 w-2/3 p-2 rounded-md {% if form.instance.visible %} bg-red-400 {% else %} bg-green-400 {% endif %}">
+                    {% render_field form.visible class="checkbox" %}
+                    <label class="label inline mr-4" for="{{ form.visible.id_for_label }}">{{ form.visible.label }}</label>
+                </p>
+                <p class="text-xs w-2/3 px-3">When 'visible' is checked, your profile will show up in searches</p>
             </div>
             <div class=" col-span-2 prose">
                 <div class="form-control w-full max-w-xs">
@@ -103,11 +107,14 @@ div >input[type='file'] {
                     <label class="label">
                         <span class="label-text">{{ form.bio.label }}</span>
                     </label>
-                    <textarea class="textarea textarea-bordered" name="{{ form.bio.html_name }}" placeholder="Type here" rows="3" cols="40">
-                        {{ form.bio.value }}
-                    </textarea>
+                    {% render_field form.bio class="textarea textarea-bordered w-full" placeholder="Type here" rows="5" cols="40" %}
                 </div>
-                <div class="w-full mt-4">{% render_field form.tags class="form-control w-full" %}</div>
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">{{ form.tags.label }}</span>
+                    </label>
+                    {% render_field form.tags class="w-full mt-4" %}
+                </div>
             </div>
         </div>
         <button class="mt-3 btn btn-primary">Save changes</button>
