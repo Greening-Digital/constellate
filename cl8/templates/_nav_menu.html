@@ -24,7 +24,7 @@
             {% if request.constellation.logo %}
               <img src="{{ request.constellation.logo.url }}" />
             {% else %}
-              <span class="text-white">{{ site.name }}</span>
+              <span class="text-white ml-4">{{ request.site.name }}</span>
             {% endif %}
           </a>
         </div>
