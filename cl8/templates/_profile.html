@@ -56,38 +56,40 @@
             {% endif %}
         </div>
     </div>
-</div>
-<div class="px-8">
-    {% if profile_rendered_bio %}
-        <h3>Bio</h3>
-        <div class="prose">{{ profile_rendered_bio|safe }}</div>
-    {% endif %}
-    {% if grouped_tags %}
-        {% for tag_group, tags in grouped_tags.items %}
-            <h3>{{ tag_group }}</h3>
-            <p>
-                {% for tag_dict in tags %}
-                    <button type="button"
-                            class="badge text-sm my-2 mx-1 p-3 {% if tag_dict.tag.id in active_tag_ids %}bg-blue-500{% endif %}"
-                            data-tag-name="{{ tag_dict.name }}"
-                            data-tag-group="{{ tag_group }}"
-                            data-tag-id="{{ tag_dict.tag.id }}">{{ tag_dict.name }}</button>
+    <div class="px-8">
+        {% if profile_rendered_bio %}
+            {% comment %} <h3>Bio</h3> {% endcomment %}
+            <div class="prose">{{ profile_rendered_bio|safe }}</div>
+        {% endif %}
+        <div class="tag-listings mt-4">
+            {% if grouped_tags %}
+                {% for tag_group, tags in grouped_tags.items %}
+                    <h3>{{ tag_group }}</h3>
+                    <p>
+                        {% for tag_dict in tags %}
+                            <button type="button"
+                                    class="badge text-sm my-2 mx-1 p-3 {% if tag_dict.tag.id in active_tag_ids %}bg-blue-500{% endif %}"
+                                    data-tag-name="{{ tag_dict.name }}"
+                                    data-tag-group="{{ tag_group }}"
+                                    data-tag-id="{{ tag_dict.tag.id }}">{{ tag_dict.name }}</button>
+                        {% endfor %}
+                    </p>
                 {% endfor %}
-            </p>
-        {% endfor %}
-    {% endif %}
-    {% if ungrouped_tags %}
-        <h3>Tags</h3>
-        <p>
-            {% for tag_dict in ungrouped_tags %}
-                <button type="button"
-                        class="badge text-xs my-2 mx-1 p-3 {% if tag_dict.tag.id in active_tag_ids %}bg-blue-500{% endif %}"
-                        data-tag-name="{{ tag_dict.name }}"
-                        data-tag-group="{{ tag_group }}"
-                        data-tag-id="{{ tag_dict.tag.id }}">{{ tag_dict.name }}</button>
-            {% endfor %}
-        </p>
-    {% endif %}
+            {% endif %}
+            {% if ungrouped_tags %}
+                {% comment %} <h3>Tags</h3> {% endcomment %}
+                <p>
+                    {% for tag_dict in ungrouped_tags %}
+                        <button type="button"
+                                class="badge text-xs my-2 mx-1 p-3 {% if tag_dict.tag.id in active_tag_ids %}bg-blue-500{% endif %}"
+                                data-tag-name="{{ tag_dict.name }}"
+                                data-tag-group="{{ tag_group }}"
+                                data-tag-id="{{ tag_dict.tag.id }}">{{ tag_dict.name }}</button>
+                    {% endfor %}
+                </p>
+            {% endif %}
+        </div>
+    </div>
 </div>
 <script>
         // when a user clicks on a tag, emit an event listing the nane of the tag being clicked
@@ -138,10 +140,9 @@
             window.history.pushState({}, '', newUrl)
 
             // then set the profile slot to the empty profile
-            const emptyProfile = document.querySelector('#empty-profile .profile').innerHTML
+            const emptyProfile = document.querySelector('#empty-profile').innerHTML
             document.querySelector('#profile-slot .profile').innerHTML = emptyProfile
 
         }
         document.querySelector('#clear-profile').addEventListener('click', clearProfile)
 </script>
-</div>
