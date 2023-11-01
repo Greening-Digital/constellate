@@ -6,7 +6,7 @@
     <section class="search-component grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
       <div></div>
       <section>
-        <div class="card search-block border">
+        <div class="card search-block border rounded-none">
           <div class="card-body">
             <form id="filter-form"
                   method="get"
@@ -42,12 +42,13 @@
       <div></div>
       {% comment %} add our two columns for the sidebar and profile {% endcomment %}
       {% comment %} <section class="column-wrapper border grid grid-cols-[1fr_2fr]"> {% endcomment %}
-      <section class="column-wrapper border grid grid-cols-1 lg:grid-cols-3">
+      <section class="column-wrapper  grid grid-cols-1 lg:grid-cols-3">
         {% comment %} list the active tags
         {% endcomment %}
         <div class="sidebar transition-all border hidden lg:inline"
              style="max-height: 100vh">{% include "pages/_paginated_profiles.html" %}</div>
-        <div id="profile-slot" class="card bg-base-100 lg:col-span-2 border">
+        <div id="profile-slot"
+             class="card bg-base-100 lg:col-span-2 border rounded-none">
           {% if profile %}
             {% comment %} show the profile with all the tags, and details {% endcomment %}
             {% include '_profile.html' %}

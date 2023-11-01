@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-    <section class="grid grid-cols-[900px_minmax(900px,_1fr)_100px]">
-        <section class="mb-4">
+    <section class="search-component grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
+        <div></div>
+        <section class="mb-4 grid">
             <div id="profile-slot" class="card bg-base-100">{% include "_profile_edit.html" %}</div>
         </section>
     </section>
+    <div></div>
 {% endblock content %}
