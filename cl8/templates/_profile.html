@@ -1,5 +1,5 @@
 {% load gravatar %}
-<div class="card-body">
+<div class="p-4 profile">
     <button class="btn btn-square btn-outline absolute right-0 top-0 mr-4 mt-4"
             type="button"
             id="clear-profile">
@@ -11,12 +11,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
     </button>
-    {% if can_edit %}
-        <a href="{% url 'profile-edit' profile.short_id %}"
-           class="btn btn-sm mt-2 mb-2 max-w-xs">Edit</a>
-    {% endif %}
     <div class="grid lg:grid-cols-2">
-        <div>
+        <div class="ml-4">
             {% if profile.photo %}
                 <img src="{{ profile.detail_photo }}"
                      width="250"
@@ -54,6 +50,10 @@
                        href="https://linkedin.com/in/{{ profile.linkedin }}">LinkedIn</a>
                 {% endif %}
             </p>
+            {% if can_edit %}
+                <a href="{% url 'profile-edit' profile.short_id %}"
+                   class="btn btn-sm mt-2 mb-2 max-w-xs">Edit</a>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -138,8 +138,8 @@
             window.history.pushState({}, '', newUrl)
 
             // then set the profile slot to the empty profile
-            const emptyProfile = document.querySelector('#empty-profile .card-body').innerHTML
-            document.querySelector('#profile-slot .card-body').innerHTML = emptyProfile
+            const emptyProfile = document.querySelector('#empty-profile .profile').innerHTML
+            document.querySelector('#profile-slot .profile').innerHTML = emptyProfile
 
         }
         document.querySelector('#clear-profile').addEventListener('click', clearProfile)
