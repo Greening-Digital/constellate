@@ -309,7 +309,7 @@ LOGGING = {
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_AUTHENTICATION_METHOD = "username"
+ACCOUNT_AUTHENTICATION_METHOD = "email"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
@@ -319,7 +319,7 @@ ACCOUNT_ADAPTER = "cl8.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
-ACCOUNT_UNIQUE_EMAIL = False
+ACCOUNT_UNIQUE_EMAIL = True
 SOCIALACCOUNT_ADAPTER = "cl8.users.adapters.Cl8SocialAccountAdapter"
 SOCIALACCOUNT_EMAIL_REQUIRED = False
 SOCIALACCOUNT_PROVIDERS = {
