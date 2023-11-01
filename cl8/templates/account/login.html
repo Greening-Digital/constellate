@@ -5,7 +5,8 @@
   {% trans "Sign In" %}
 {% endblock %}
 {% block inner %}
-  <div class="bg-white-100 mt-4 ">
+  <div class="bg-white-100 mt-4 px-4">
+    <h1 class="text-2xl">{% trans "Sign in" %}</h1>
     {% get_providers as socialaccount_providers %}
     {% if request.constellation.signin_via_slack %}
       {% if socialaccount_providers %}
@@ -27,43 +28,47 @@
       {% if request.constellation.signin_via_email %}
         {% comment %} normal sign in flow {% endcomment %}
         <div class="card">
-          <form class="login m-4 p-4 border"
-                method="POST"
-                action="{% url 'account_login' %}">
-            {% csrf_token %}
-            {% comment %} {{ form.as_div }} {% endcomment %}
-            <div class="form-control w-full max-w-xs">
-              <label class="label" for="{{ form.login.id_for_label }}">
-                <span class="label-text">{{ form.login.label }}</span>
-              </label>
-              <input type="text"
-                     placeholder="Type here"
-                     name="{{ form.login.html_name }}"
-                     class="input input-bordered w-full max-w-xs" />
-            </div>
-            <div class="form-control w-full max-w-xs">
-              <label class="label" for="{{ form.password.id_for_label }}">
-                <span class="label-text">{{ form.password.label }}</span>
-              </label>
-              <input type="text"
-                     placeholder="Type here"
-                     name="{{ form.password.html_name }}"
-                     class="input input-bordered w-full max-w-xs" />
-            </div>
-            <div class="mt-4 text-sm mr-3">{{ form.remember.label }} {{ form.remember }}</div>
-            {% if redirect_field_value %}
-              <input type="hidden"
-                     name="{{ redirect_field_name }}"
-                     value="{{ redirect_field_value }}" />
-            {% endif %}
-            <div class="card-actions items-center mt-4 border-t-indigo-500 content-center">
-              <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
-              <a class="inline-block text-sm"
-                 href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-            </div>
-          </form>
-        </div>
-      {% endif %}
+          <h2>
+            <form class="login my-4 py-4"
+                  method="POST"
+                  action="{% url 'account_login' %}">
+              {% csrf_token %}
+              {% comment %} {{ form.as_div }} {% endcomment %}
+              <div class="form-control w-full max-w-xs">
+                <label class="label" for="{{ form.login.id_for_label }}">
+                  <span class="label-text">{{ form.login.label }}</span>
+                </label>
+                <input type="text"
+                       placeholder="Type here"
+                       name="{{ form.login.html_name }}"
+                       class="input input-bordered w-full max-w-xs" />
+              </div>
+              <div class="form-control w-full max-w-xs">
+                <label class="label" for="{{ form.password.id_for_label }}">
+                  <span class="label-text">{{ form.password.label }}</span>
+                </label>
+                <input type="text"
+                       placeholder="Type here"
+                       name="{{ form.password.html_name }}"
+                       class="input input-bordered w-full max-w-xs" />
+              </div>
+              <div class="mt-4 text-sm mr-3">
+                <label class="label inline mr-4" for="{{ form.password.id_for_label }}">{{ form.remember.label }}</label>
+                {{ form.remember }}
+              </div>
+              {% if redirect_field_value %}
+                <input type="hidden"
+                       name="{{ redirect_field_name }}"
+                       value="{{ redirect_field_value }}" />
+              {% endif %}
+              <div class="card-actions items-center mt-4 border-t-indigo-500 content-center">
+                <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+                <a class="inline-block text-sm ml-4"
+                   href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+              </div>
+            </form>
+          </div>
+        {% endif %}
+      </div>
     </div>
-  </div>
-{% endblock %}
+  {% endblock %}
