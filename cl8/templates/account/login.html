@@ -34,10 +34,14 @@
                   action="{% url 'account_login' %}">
               {% csrf_token %}
               {% comment %} {{ form.as_div }} {% endcomment %}
+              {% if form.errors %}
+                <div class="border-red-500 text-red-500 border rounded-lg pa-2">{{ form.non_field_errors }}</div>
+              {% endif %}
               <div class="form-control w-full max-w-xs">
                 <label class="label" for="{{ form.login.id_for_label }}">
                   <span class="label-text">{{ form.login.label }}</span>
                 </label>
+                <span class="label-text text-red-500 px-1">{{ form.login.errors }}</span>
                 <input type="text"
                        placeholder="Type here"
                        name="{{ form.login.html_name }}"
@@ -47,7 +51,8 @@
                 <label class="label" for="{{ form.password.id_for_label }}">
                   <span class="label-text">{{ form.password.label }}</span>
                 </label>
-                <input type="text"
+                <span class="label-text text-red-500 px-1">{{ form.password.errors }}</span>
+                <input type="password"
                        placeholder="Type here"
                        name="{{ form.password.html_name }}"
                        class="input input-bordered w-full max-w-xs" />

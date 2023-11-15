@@ -53,7 +53,7 @@
                   {% comment %} <li>
                     <a>Settings</a>
                   </li> {% endcomment %}
-                  {% if request.user.is_staff %}
+                  {% if request.user.is_staff or request.user.is_admin %}
                     <li>
                       <a href="{% url 'admin:index' %}">Admin</a>
                     </li>

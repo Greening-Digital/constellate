@@ -35,7 +35,16 @@ class User(AbstractUser):
         if matching_profiles:
             return True
 
+    def is_in_group(self, group_name: str) -> bool:
+        """ """
+        if self.groups.filter(name=group_name).exists():
+            return True
+
         return False
+
+    def is_admin(self) -> bool:
+        """ """
+        return self.is_in_group("admins")
 
 
 class Cluster(TagBase):

@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView, RedirectView
 from rest_framework.authtoken.views import obtain_auth_token
@@ -51,8 +51,7 @@ urlpatterns += [
     path("", include("cl8.users.api.passwordless_urls")),
     path(
         "api/autocomplete/tags-read-only/",
-        TagAutoCompleteView.as_view(
-        ),
+        TagAutoCompleteView.as_view(),
         name="tag-autocomplete",
     ),
     # we have a second autocomplete view that allows users to create new tags
@@ -63,8 +62,7 @@ urlpatterns += [
             create_field="name",
         ),
         name="tag-autocomplete-with-create",
-    )
-    
+    ),
 ]
 
 if settings.DEBUG:
@@ -97,3 +95,10 @@ if settings.DEBUG:
         urlpatterns = [
             path("__reload__/", include("django_browser_reload.urls"))
         ] + urlpatterns
+
+# Finally add the catch-all route for flat pages.
+# The "(?!static/)" means that we don't want to match any url that
+# starts with "static/", which is where our static files are served from.
+urlpatterns += [
+    re_path(r"^(?!static/)(?P<url>.*/)$", flatpage),
+]
