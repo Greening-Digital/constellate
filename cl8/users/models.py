@@ -17,6 +17,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# this is the string we use to identify an admin group
+ADMIN_NAME = "admin"
+
 
 class User(AbstractUser):
     # First Name and Last Name do not cover name patterns
@@ -44,7 +47,7 @@ class User(AbstractUser):
 
     def is_admin(self) -> bool:
         """ """
-        return self.is_in_group("admins")
+        return self.is_in_group("admin")
 
 
 class Cluster(TagBase):
