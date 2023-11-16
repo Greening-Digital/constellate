@@ -4,33 +4,34 @@
 
 
 @test *options:
-    python -m pipenv run pytest {{options}}
+    pipenv run pytest {{options}}
 
 @install:
     #!/usr/bin/env sh
-    python -m pipenv sync 
-    cd theme/static_src
-    npm install --loglevel error
+    pipenv install --dev 
+    pipenv run ./manage.py tailwind install
+    pipenv run ./manage.py migrate
+    pipenv run ./manage.py collectstatic --no-input
 
 @ci:
-    python -m pipenv run pytest
+    pipenv run pytest
 
 @serve *options:
-    python -m pipenv run python ./manage.py runserver {{options}}
+    pipenv run ./manage.py runserver {{options}}
 
 @manage *options:
-    python -m pipenv run python ./manage.py {{options}}
+    pipenv run ./manage.py {{options}}
 
 @tailwind-dev:
-    python -m pipenv run python ./manage.py tailwind start
+    pipenv run ./manage.py tailwind start
 
 @tailwind-build:
-    python -m pipenv run python ./manage.py tailwind build
+    pipenv run ./manage.py tailwind build
 
 @run *options:
     # run gunicorn in production
-    python -m pipenv run gunicorn config.wsgi --bind :8000 --workers 2 {{options}}
-    # python -m pipenv run gunicorn config.wsgi -b :9000 --timeout 300 {{options}}
+    pipenv run gunicorn config.wsgi --bind :8000 --workers 2 {{options}}
+    # pipenv run gunicorn config.wsgi -b :9000 --timeout 300 {{options}}
 
 @docker-build:
     # create a docker image, tagged as cl8

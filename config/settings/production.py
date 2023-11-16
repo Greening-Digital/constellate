@@ -66,7 +66,7 @@ AWS_S3_REGION_NAME = env("DJANGO_AWS_S3_REGION_NAME", default=None)
 AWS_S3_ENDPOINT_URL = env("DJANGO_AWS_S3_ENDPOINT_URL", default=None)
 
 AWS_S3_CUSTOM_DOMAIN = env("DJANGO_AWS_S3_CUSTOM_DOMAIN", default=None)
-aws_s3_domain = AWS_S3_CUSTOM_DOMAIN or f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+# aws_s3_domain = AWS_S3_CUSTOM_DOMAIN or f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 
 # To be able to access s3 objects in all regions through 
 # presigned urls, explicitly set this to s3v4.
@@ -87,7 +87,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # ------------------------------------------------------------------------------
 # Overriding the media storage lets us set a default ACL, and prefix
 DEFAULT_FILE_STORAGE = "cl8.utils.storages.MediaRootS3Boto3Storage"
-MEDIA_URL = f"https://{aws_s3_domain}/media/"
+# MEDIA_URL = f"https://{aws_s3_domain}/media/"
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
@@ -180,20 +180,21 @@ LOGGING = {
 
 SENTRY_DSN = env("SENTRY_DSN")
 
-SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
+if SENTRY_DSN:
+    SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
 
-sentry_logging = LoggingIntegration(
-    level=SENTRY_LOG_LEVEL,  # Capture info and above as breadcrumbs
-    event_level=logging.ERROR,  # Send errors as events
+    sentry_logging = LoggingIntegration(
+        level=SENTRY_LOG_LEVEL,  # Capture info and above as breadcrumbs
+        event_level=logging.ERROR,  # Send errors as events
 
 
-)
-sentry_sdk.init(
-    dsn=SENTRY_DSN, 
-    # add tracing to see slow loading
-    traces_sample_rate=float(1.0),
-    # list error logs as exception events for sentry
-    integrations=[sentry_logging, DjangoIntegration()])
+    )
+    sentry_sdk.init(
+        dsn=SENTRY_DSN, 
+        # add tracing to see slow loading
+        traces_sample_rate=float(1.0),
+        # list error logs as exception events for sentry
+        integrations=[sentry_logging, DjangoIntegration()])
 
 # Your stuff...
 # ------------------------------------------------------------------------------
