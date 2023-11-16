@@ -35,11 +35,18 @@ class ProfileFilter(django_filters.FilterSet):
             # we want the user's name to be searchable
             "user__name",
             # along with all the text of their bio
+            "user__email",
             "bio",
             # and location
             "location",
             # and the text of all the tags associated with the profile
             "tags__name",
+            # and any social media handles
+            "twitter",
+            "linkedin",
+            "facebook",
+            "website",
+            "organisation",
         )
 
         return (

@@ -11,15 +11,16 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
     </button>
-    <div class="grid lg:grid-cols-2">
-        <div class="ml-4 pl-4">
+    <div class="grid lg:grid-cols-[175px_1fr]">
+        <div class="">
             {% if profile.photo %}
                 <img src="{{ profile.detail_photo }}"
-                     width="250"
-                     height="250"
+                     width="150"
+                     height="150"
+                     class="rounded"
                      alt="profile photo" />
             {% else %}
-                {% gravatar profile.user.email 150 %}
+                {% gravatar profile.user.email 150  "Profile via gravatar.com" "rounded" %}
             {% endif %}
         </div>
         <div>
@@ -56,7 +57,7 @@
             {% endif %}
         </div>
     </div>
-    <div class="px-8">
+    <div class="px-0">
         {% if profile_rendered_bio %}
             {% comment %} <h3>Bio</h3> {% endcomment %}
             <div class="prose">{{ profile_rendered_bio|safe }}</div>
