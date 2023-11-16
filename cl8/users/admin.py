@@ -22,59 +22,58 @@ class ProfileAdminForm(ModelForm):
     #     widget=LabelWidget(model=Cluster),
     #     help_text="Clusters the user wants to be included in",
     # )
-    
+
 
 @admin.register(User)
-# @admin.register(User, site=constellation_admin)
 class UserAdmin(auth_admin.UserAdmin):
     form = UserChangeForm
-    add_form = UserCreationForm
-    fieldsets = (("User", {"fields": ("name",)}),) + auth_admin.UserAdmin.fieldsets
+    # add_form = UserCreationForm
+    # fieldsets = (("User", {"fields": ("name",)}),) + auth_admin.UserAdmin.fieldsets
     list_display = ["username", "name", "is_superuser"]
     search_fields = ["name"]
     readonly_fields = ["last_login", "date_joined"]
 
-    def get_fieldsets(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            return (
-                (None, {"fields": ("username", "password")}),
-                (
-                    "Personal info",
-                    {
-                        "fields": (
-                            "name",
-                            "email",
-                        )
-                    },
-                ),
-                (
-                    "Permissions",
-                    {
-                        "fields": (
-                            "is_active",
-                            "is_staff",
-                            "is_superuser",
-                            "groups",
-                            "user_permissions",
-                        ),
-                    },
-                ),
-                ("Important dates", {"fields": ("last_login", "date_joined")}),
-            )
+    # def get_fieldsets(self, request, *args, **kwargs):
+    #     if request.user.is_superuser:
+    #         return (
+    #             (None, {"fields": ("username", "password")}),
+    #             (
+    #                 "Personal info",
+    #                 {
+    #                     "fields": (
+    #                         "name",
+    #                         "email",
+    #                     )
+    #                 },
+    #             ),
+    #             (
+    #                 "Permissions",
+    #                 {
+    #                     "fields": (
+    #                         "is_active",
+    #                         "is_staff",
+    #                         "is_superuser",
+    #                         "groups",
+    #                         "user_permissions",
+    #                     ),
+    #                 },
+    #             ),
+    #             ("Important dates", {"fields": ("last_login", "date_joined")}),
+    #         )
 
-        return (
-            (None, {"fields": ("username", "password")}),
-            (
-                "Personal info",
-                {
-                    "fields": (
-                        "name",
-                        "email",
-                    )
-                },
-            ),
-            ("Important dates", {"fields": ("last_login", "date_joined")}),
-        )
+    #     return (
+    #         (None, {"fields": ("username", "password")}),
+    #         (
+    #             "Personal info",
+    #             {
+    #                 "fields": (
+    #                     "name",
+    #                     "email",
+    #                 )
+    #             },
+    #         ),
+    #         ("Important dates", {"fields": ("last_login", "date_joined")}),
+    #     )
 
 
 # @admin.register(Profile, site=constellation_admin)
@@ -96,35 +95,39 @@ class ProfileAdmin(admin.ModelAdmin):
         return request.user.has_perm(f"{opts.app_label}.{codename}")
 
     @admin.action(
-        permissions=['set_visibility'],
-        description='Make visible',
+        permissions=["set_visibility"],
+        description="Make visible",
     )
     def make_visible(self, request, queryset):
         queryset.update(visible=True)
 
     @admin.action(
-        permissions=['set_visibility'],
-        description='Make invisible',
+        permissions=["set_visibility"],
+        description="Make invisible",
     )
     def make_invisible(self, request, queryset):
         queryset.update(visible=False)
 
     @admin.action(
-        permissions=['send_invite_mail'],
-        description='Send invite email',
+        permissions=["send_invite_mail"],
+        description="Send invite email",
     )
     def send_invite_mail(self, request, queryset):
         sent_emails = []
         for profile in queryset:
             result = profile.send_invite_mail()
-            sent_emails.append(result)  
-            
-        self.message_user(request, ngettext(
-                '%d invite successfully sent.',
-                '%d invites successfully sent.',
-            len(sent_emails),
-        ) % len(sent_emails), messages.SUCCESS)
+            sent_emails.append(result)
 
+        self.message_user(
+            request,
+            ngettext(
+                "%d invite successfully sent.",
+                "%d invites successfully sent.",
+                len(sent_emails),
+            )
+            % len(sent_emails),
+            messages.SUCCESS,
+        )
 
 
 @admin.register(Constellation)
