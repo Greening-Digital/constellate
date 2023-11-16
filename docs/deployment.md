@@ -25,13 +25,14 @@ Next you'll need to serve the application behind an apache or nginx acting as a 
 
 ### Serve the uploaded media files
 
-Constellate assumes that uploaded media is stored on an object store like an AWS S3 bucket or similar. If you are storing the files on your own server, change these lines in `production.py` to use the storage you want to use, as outlined in [django's own extensive documentation on deployment](https://docs.djangoproject.com/en/3.0/howto/deployment/):
+In production, Constellate assumes that uploaded media is stored on an object store like an AWS S3 bucket or similar. 
 
+If you are storing the files on a local file system, and storing files on the same server as the running application  running comment out the entire `STORAGES` stanza of `production.py` 
+
+For more, see [django's own extensive documentation on deployment](https://docs.djangoproject.com/en/3.0/howto/deployment/).
 ```
 
-# MEDIA
-# ------------------------------------------------------------------------------
-DEFAULT_FILE_STORAGE = "cl8.utils.storages.MediaRootS3Boto3Storage"
-MEDIA_URL = f"https://{aws_s3_domain}/media/"
-```
+
+
+
 

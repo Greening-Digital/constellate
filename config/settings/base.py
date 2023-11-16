@@ -177,10 +177,7 @@ MIDDLEWARE = [
     "django.contrib.sites.middleware.CurrentSiteMiddleware",
     "cl8.users.middleware.ConstellationMiddleware",
     "allauth.account.middleware.AccountMiddleware",
-     
     "django_htmx.middleware.HtmxMiddleware",
-
-
 ]
 
 # STATIC
@@ -379,3 +376,5 @@ GSPREAD_SERVICE_ACCOUNT = env.str(
 AIRTABLE_BEARER_TOKEN = env.str("DJANGO_AIRTABLE_BEARER_TOKEN", default=None)
 AIRTABLE_BASE = env.str("DJANGO_AIRTABLE_BASE", default=None)
 AIRTABLE_TABLE = env.str("DJANGO_AIRTABLE_TABLE", default=None)
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
