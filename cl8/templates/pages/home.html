@@ -14,22 +14,27 @@
                   hx-trigger="submit, htmx:confirm from:#id_tags, htmx:confirm from:#id_bio, toggle-tag from:body"
                   hx-target=".sidebar"
                   hx-push-url="true">
-              <p>
-                <label class="inline-block w-100 mr-8 text-xl"
-                       for="{{ profile_filter.form.bio.id_for_label }}">Showing profile results matching:</label>
-              </p>
-              <p>
-                {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.1s," hx-target=".sidebar" class="text-xl min-w-[50%]" hx-sync="closest form:abort" %}
-                <button class="btn mt-4 ml-4" type="submit">Search</button>
-              </p>
+              <div class="grid grid-cols-1 lg:grid-cols-[1fr_10rem_1fr]">
+                <div>
+                  {% comment %} <p>
+                    <label class="inline-block w-100 mr-8 text-xl" for="{{ profile_filter.form.bio.id_for_label }}">Showing profile results matching:</label>
+                  </p> {% endcomment %}
+                  {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.1s," hx-target=".sidebar" class="text-xl min-w-[0%]" hx-sync="closest form:abort" %}
+                </div>
+                <div>
+                  <button class="btn mt-4 lg:ml-4" type="submit">Search</button>
+                </div>
+              </div>
               <p class="hidden">{% render_field profile_filter.form.tags %}</p>
               {% comment %} <input class="btn mt-4 ml-4" type="submit" /> {% endcomment %}
             </form>
             <div class="active-tags">{% include '_active_tags_list.html' %}</div>
             <div class="">
-              <p class="text-xl inline-block ">
-                <span data-profile-count="{{ paginated_profiles|length }}">{{ paginated_profiles|length }}</span> matching profile{{ paginated_profiles|pluralize }} found
-              </p>
+              {% if active_search %}
+                <p class="text-xl inline-block ">
+                  <span data-profile-count="{{ paginated_profiles|length }}">{{ paginated_profiles|length }}</span> matching profile{{ paginated_profiles|pluralize }} found
+                </p>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -45,7 +50,11 @@
       <section class="column-wrapper  grid grid-cols-1 lg:grid-cols-3">
         {% comment %} list the active tags
         {% endcomment %}
-        <div class="sidebar transition-all border hidden lg:inline"
+        {% comment %}
+          We only want to hide the list of profiles when there is NO filtered search
+          and when a user is not selected.
+        {% endcomment %}
+        <div class="sidebar transition-all border {% if not profile or not active_search %}hidden{% endif %} lg:inline"
              style="max-height: 100vh">{% include "pages/_paginated_profiles.html" %}</div>
         <div id="profile-slot"
              class="card bg-base-100 lg:col-span-2 border rounded-none">
