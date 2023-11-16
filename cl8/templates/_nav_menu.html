@@ -33,11 +33,13 @@
             {% if request.user.is_authenticated %}
               <li tabindex="0">
                 <a class="text-white">
-                  {% if request.user.name %}
-                    Hi {{ request.user.name }}
-                  {% else %}
-                    Hi {{ request.user.username }}
-                  {% endif %}
+                  <span class="hidden lg:inline">
+                    {% if request.user.name %}
+                      Hi {{ request.user.name }}
+                    {% else %}
+                      Hi {{ request.user.username }}
+                    {% endif %}
+                  </span>
                   <svg class="fill-current"
                        xmlns="http://www.w3.org/2000/svg"
                        width="20"
@@ -46,7 +48,8 @@
                     <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                   </svg>
                 </a>
-                <ul class="p-2 bg-base-100 border" style="z-index:99999;">
+                <ul class="p-2 bg-base-100 border right-0 lg:left-0"
+                    style="z-index:99999">
                   <li>
                     <a href="{% url 'profile-detail' request.user.profile.short_id %}">Profile</a>
                   </li>
