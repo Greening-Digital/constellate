@@ -129,6 +129,10 @@ class Profile(models.Model):
         verbose_name = _("Profile")
         verbose_name_plural = _("Profiles")
         ordering = ["user__name"]
+        permissions = [
+            ("set_visibility", "Can set the visibility of a profile"),
+            ("send_invite_email", "Can send profile invite emails"),
+        ]
 
     @property
     def name(self):
