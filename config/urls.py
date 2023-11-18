@@ -13,6 +13,7 @@ from cl8.users.api.views import (
     TagAutoCompleteView,
     ProfileDetailView,
     ProfileEditView,
+    ProfileCreateView,
     homepage,
 )
 
@@ -20,6 +21,7 @@ from cl8.users.api.views import (
 urlpatterns = [
     # serve the vue template instead of the default home
     path("", homepage, name="home"),
+    path("profiles/create/", ProfileCreateView.as_view(), name="profile-create"),
     path("profiles/<slug>", ProfileDetailView.as_view(), name="profile-detail"),
     path("profiles/<slug>/edit", ProfileEditView.as_view(), name="profile-edit"),
     # Django Admin, use {% url 'admin:index' %}

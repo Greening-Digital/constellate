@@ -7,6 +7,8 @@ from dal import autocomplete
 from taggit import models as taggit_models
 from django.forms import ModelMultipleChoiceField
 
+from .importers import safe_username
+
 User = get_user_model()
 
 
@@ -41,7 +43,15 @@ class ProfileUpdateForm(forms.ModelForm):
     tags = ModelMultipleChoiceField(
         queryset=taggit_models.Tag.objects.all(),
         widget=autocomplete.ModelSelect2Multiple(url="tag-autocomplete-with-create"),
+        required=False,
     )
+
+    def save(self, commit=True):
+        """ """
+        self.instance.user.name = self.cleaned_data.get("name")
+        self.instance.user.save()
+
+        return super().save(commit=commit)
 
     class Meta:
         model = Profile
@@ -50,8 +60,66 @@ class ProfileUpdateForm(forms.ModelForm):
             "name",
             "location",
             "organisation",
-            # "user_email",
             "bio",
+            "tags",
+            "twitter",
+            "linkedin",
+            "facebook",
+            "visible",
+        ]
+
+
+class ProfileCreateForm(forms.ModelForm):
+    name = forms.CharField(required=True)
+    email = forms.EmailField(required=True)
+
+    tags = ModelMultipleChoiceField(
+        queryset=taggit_models.Tag.objects.all(),
+        widget=autocomplete.ModelSelect2Multiple(url="tag-autocomplete-with-create"),
+    )
+
+    def save(self, commit=True):
+        """
+        Create a user, then save the corresponding profile object
+        """
+
+        email = self.cleaned_data.get("email")
+        user, created = User.objects.get_or_create(
+            email=email,
+        )
+        user.username = safe_username()
+        user.name = self.cleaned_data.get("name")
+        user.save()
+        profile = Profile.objects.create(user=user)
+
+        profile.phone = self.cleaned_data.get("phone")
+        profile.website = self.cleaned_data.get("website")
+        profile.twitter = self.cleaned_data.get("twitter")
+        profile.facebook = self.cleaned_data.get("facebook")
+        profile.linkedin = self.cleaned_data.get("linkedin")
+        profile.bio = self.cleaned_data.get("bio")
+        profile.visible = self.cleaned_data.get("visible")
+        profile.short_id = safe_username()
+        profile.import_id = "profile-form"
+        profile.photo = self.cleaned_data.get("photo")
+
+        profile.save()
+        profile.update_thumbnail_urls()
+
+        self.instance = profile
+        result = super().save(commit=commit)
+        return result
+
+    class Meta:
+        model = Profile
+        fields = [
+            "photo",
+            "name",
+            "email",
+            "location",
+            "organisation",
+            "bio",
+            "phone",
             "tags",
             "twitter",
             "linkedin",

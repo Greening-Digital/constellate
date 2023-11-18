@@ -15,6 +15,7 @@ from django.shortcuts import render
 from django.urls import resolve
 from django.utils.text import slugify
 from django.views.generic import DetailView, UpdateView
+from django.views.generic.edit import CreateView
 from markdown_it import MarkdownIt
 from rest_framework import status
 from rest_framework.decorators import action
@@ -33,7 +34,7 @@ from rest_framework.viewsets import GenericViewSet
 from taggit.models import Tag
 
 from ..filters import ProfileFilter
-from ..forms import ProfileUpdateForm
+from ..forms import ProfileUpdateForm, ProfileCreateForm
 from ..models import Cluster, Profile
 from .serializers import (
     ClusterSerializer,
@@ -303,6 +304,32 @@ class ProfileEditView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
             "email": self.object.user.email,
         }
         return kwargs
+
+
+class ProfileCreateView(CreateView):
+    template_name = "pages/create_profile.html"
+    form_class = ProfileCreateForm
+    model = Profile
+
+    def has_permission(self):
+        """
+        Users should only be able to edit their own profiles.
+        Admins can edit any profile.
+        """
+
+        if self.request.user == self.get_object().user:
+            return True
+
+        if self.request.user.is_superuser or self.request.user.is_staff:
+            return True
+
+        return False
+
+    def form_valid(self, form):
+        """
+        If the form is valid, save the associated model.
+        """
+        return super().form_valid(form)
 
 
 class ProfileViewSet(
