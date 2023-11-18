@@ -67,23 +67,25 @@ def slack_dummy_user():
         },
     }
 
+
 @pytest.fixture
 def users_from_slack():
     """
-    Return a list of slack user objects as returned by calling 
-    `users_list()` with the official python slack client in 
+    Return a list of slack user objects as returned by calling
+    `users_list()` with the official python slack client in
     a given workspace.
     """
     # assuming you some how fetched some sample local data and written the API
     # response to the path below
-    local_slack_data = settings.PROJECT_DIR / 'data' / 'slack-directory.json'
+    local_slack_data = settings.PROJECT_DIR / "data" / "slack-directory.json"
     users = []
-    
+
     with open(local_slack_data) as slack_json:
         data = slack_json.read()
         users.extend(json.loads(data))
 
     return users
+
 
 class TestSlackImporter:
     @pytest.mark.smoke_test
@@ -103,7 +105,8 @@ class TestSlackImporter:
 
         # first patch the initialise call for the the web client for slack
         mocker.patch(
-            "cl8.users.importers.SlackImporter.__init__", return_value=None,
+            "cl8.users.importers.SlackImporter.__init__",
+            return_value=None,
         )
         # then patch the method we use to fetch a list of users back using the
         # underlying slack API
@@ -132,7 +135,8 @@ class TestSlackImporter:
 
         # first patch the initialise call for the the web client for slack
         mocker.patch(
-            "cl8.users.importers.SlackImporter.__init__", return_value=None,
+            "cl8.users.importers.SlackImporter.__init__",
+            return_value=None,
         )
         # then patch the method we use to fetch a list of users back using the
         # underlying slack API
@@ -172,7 +176,8 @@ class TestSlackImporter:
 
         # first patch the initialise call for the the web client for slack
         mocker.patch(
-            "cl8.users.importers.SlackImporter.__init__", return_value=None,
+            "cl8.users.importers.SlackImporter.__init__",
+            return_value=None,
         )
         # then patch the method we use to fetch a list of users back using the
         # underlying slack API
@@ -224,7 +229,8 @@ class TestSlackImporter:
 
         # first patch the initialise call for the the web client for slack
         mocker.patch(
-            "cl8.users.importers.SlackImporter.__init__", return_value=None,
+            "cl8.users.importers.SlackImporter.__init__",
+            return_value=None,
         )
         # then patch the method we use to fetch a list of users back using the
         # underlying slack API
@@ -256,7 +262,8 @@ class TestSlackImporter:
         """
         # first patch the initialise call for the the web client for slack
         mocker.patch(
-            "cl8.users.importers.SlackImporter.__init__", return_value=None,
+            "cl8.users.importers.SlackImporter.__init__",
+            return_value=None,
         )
         # then patch the method we use to fetch a list of users back using the
         # underlying slack API
@@ -278,16 +285,16 @@ class TestSlackImporter:
         assert len(first_run) > len(second_run)
 
     @pytest.mark.smoke_test
+    @pytest.skip(reason="Was only used for testing an import of local data")
     def test_create_users_from_slack(self, db, users_from_slack):
         """Test against local data, not the API"""
 
         importer = SlackImporter()
 
         valid_members_for_import = [
-            user for user in users_from_slack 
-            if importer.is_valid_for_import(user)
+            user for user in users_from_slack if importer.is_valid_for_import(user)
         ]
-        
+
         for index, member in enumerate(users_from_slack):
             importer.create_user_from_slack(member, add_profile_pic=False)
 
