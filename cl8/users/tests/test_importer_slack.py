@@ -285,7 +285,7 @@ class TestSlackImporter:
         assert len(first_run) > len(second_run)
 
     @pytest.mark.smoke_test
-    @pytest.skip(reason="Was only used for testing an import of local data")
+    @pytest.mark.skip(reason="Was only used for testing an import of local data")
     def test_create_users_from_slack(self, db, users_from_slack):
         """Test against local data, not the API"""
 
