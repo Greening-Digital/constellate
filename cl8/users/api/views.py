@@ -25,6 +25,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
+import rich
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -56,7 +57,8 @@ def fetch_profile_list(request: HttpRequest, ctx: dict):
     populate the provided context dictionary
     """
     filtered_profiles = ProfileFilter(
-        request.GET, queryset=Profile.objects.filter(visible=True).prefetch_related("tags", "user")
+        request.GET,
+        queryset=Profile.objects.filter(visible=True).prefetch_related("tags", "user"),
     )
 
     ctx["profile_filter"] = filtered_profiles
@@ -64,7 +66,7 @@ def fetch_profile_list(request: HttpRequest, ctx: dict):
     # because we're using full text search with postgres, we need to de-dupe the results
     # while preserving their order. We'd normally do this using a distinct() call, but
     # because we have multiple instances of the same profile in the queryset, with different
-    # 'rank' scores. The ORM with Postgres does not let us order by 'rank' if we don't include 
+    # 'rank' scores. The ORM with Postgres does not let us order by 'rank' if we don't include
     # it as a field we are calling distinct on, and doing that would stop us being able to dedupe
     # the results.
     # So instead we need to manually dedupe the results by id, and then order by that.
@@ -72,12 +74,12 @@ def fetch_profile_list(request: HttpRequest, ctx: dict):
     for prof in filtered_profiles.qs:
         if prof.id not in ordered_profile_ids:
             ordered_profile_ids.append(prof.id)
-    # once we have a deduped list of ids, we need to convert it back into a queryset, 
+    # once we have a deduped list of ids, we need to convert it back into a queryset,
     # so code that expects a queryset can still work.
-    # Querysets do not guarantee order so for Postgres we need to Case() to create a 
+    # Querysets do not guarantee order so for Postgres we need to Case() to create a
     # SQL statement that preserves the order defined above, and then order by that.
-    
-    # This is a bit dense, but the code below creates a Case() with a list comprehension that 
+
+    # This is a bit dense, but the code below creates a Case() with a list comprehension that
     # creates a list of When's that look like this:
     # ORDER BY
     # CASE
@@ -88,16 +90,17 @@ def fetch_profile_list(request: HttpRequest, ctx: dict):
     # More below:
     # https://stackoverflow.com/questions/4916851/django-get-a-queryset-from-array-of-ids-in-specific-order
 
-    preserved_order = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(ordered_profile_ids)])
+    preserved_order = Case(
+        *[When(pk=pk, then=pos) for pos, pk in enumerate(ordered_profile_ids)]
+    )
 
     # Finally, we can now create a new deduped Queryset, with the correct ordering, and prefetch
     # the related tags and user objects, to avoid expensive N+1 queries later on. Phew!
-    ordered_deduped_profiles = Profile.objects.filter(
-        id__in=ordered_profile_ids
-    ).order_by(
-        preserved_order
-    ).prefetch_related("tags", "user")
-
+    ordered_deduped_profiles = (
+        Profile.objects.filter(id__in=ordered_profile_ids)
+        .order_by(preserved_order)
+        .prefetch_related("tags", "user")
+    )
 
     pager = paginator.Paginator(ordered_deduped_profiles, NO_PROFILES_PER_PAGE)
     page = request.GET.get("page", 1)
@@ -109,7 +112,7 @@ def fetch_profile_list(request: HttpRequest, ctx: dict):
     except paginator.EmptyPage:
         ctx["paginated_profiles"] = pager.page(paginator.num_pages)
 
-    active_tag_ids = request.GET.getlist('tags')
+    active_tag_ids = request.GET.getlist("tags")
 
     if active_tag_ids:
         from ..models import flat_tag_list
@@ -119,24 +122,67 @@ def fetch_profile_list(request: HttpRequest, ctx: dict):
     return ctx
 
 
+def has_active_search(request: HttpRequest, context: dict):
+    """
+    Check if the request has any active search terms
+    """
+    search = request.GET.get("bio", None)
+    tags = request.GET.get("tags", None)
+    profile = context.get("profile")
+
+    return bool(tags or search or profile)
+
+
+def hide_profile_list(request: HttpRequest, context: dict):
+    """
+    A helper function to determine whether to hide the profile list on mobile sites.
+    TODO: this might make more sense as a template tag. We should decide whether
+    to move into a template tag instead.
+    """
+    search = request.GET.get("bio", None)
+    tags = request.GET.get("tags", None)
+    active_search = bool(tags or search)
+    profile = context.get("profile")
+
+    # if we have a profile, and active search - we show the profile slot, but hide the list
+    if profile:
+        return True
+
+    # otherwise if we have no profile, but an active search, we show
+    # the list to click through to
+    if active_search:
+        return False
+
+    # if we have no profile and no active search -- we show the profile slot,
+    # hiding sidebar on mobile (our profile slot has the instructions)
+    return True
+
 
 @login_required
 def homepage(request):
-    
-    
     ctx = {"is_authenticated": request.user.is_authenticated}
 
     ctx = fetch_profile_list(request, ctx)
 
+    ctx["hide_profile_list"] = hide_profile_list(request, ctx)
+
     if request.htmx:
         template_name = "pages/_home_partial.html"
 
-        response = render(request, template_name, ctx)        
-        rendered_active_tags = render_to_string(
-            "_active_tags_list.html", ctx, request
+        response = render(request, template_name, ctx)
+        rendered_active_tags = render_to_string("_active_tags_list.html", ctx, request)
+
+        # passing this triggers an update of the rendering for touch devices,
+        # to switch between showing a profile or a profile list
+        should_hide_profile_list = hide_profile_list(request, ctx)
+        response = trigger_client_event(
+            response,
+            "update-profile",
+            {"hide_profile_list": should_hide_profile_list},
         )
 
-        return trigger_client_event(response,
+        return trigger_client_event(
+            response,
             "active-tags-changed",
             {"rendered_html": rendered_active_tags},
         )
@@ -163,20 +209,19 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
 
         ctx = {
             "is_authenticated": is_authenticated,
-
         }
 
         ctx = fetch_profile_list(self.request, ctx)
 
         if self.object is not None:
             ctx["profile"] = self.object
-            active_tag_ids = self.request.GET.getlist('tags')
+            active_tag_ids = self.request.GET.getlist("tags")
 
             md = MarkdownIt()
             if self.object.bio:
                 markdown_bio = md.render(self.object.bio)
                 ctx["profile_rendered_bio"] = markdown_bio
-            
+
             grouped_tags, ungrouped_tags = self.object.tags_by_grouping()
 
             ctx["grouped_tags"] = grouped_tags
@@ -184,12 +229,11 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
             ctx["active_tag_ids"] = [int(tag_id) for tag_id in active_tag_ids]
 
         if (
-            self.object.user == self.request.user or 
-            self.request.user.is_superuser or 
-            self.request.user.is_staff
+            self.object.user == self.request.user
+            or self.request.user.is_superuser
+            or self.request.user.is_staff
         ):
             ctx["can_edit"] = True
-        
 
         return ctx
 
@@ -204,12 +248,15 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
             rendered_active_tags = render_to_string(
                 "_active_tags_list.html", context, request
             )
-
-            return trigger_client_event(response,
-                "active-tags-changed",
-                {"rendered_html": rendered_active_tags}
+            should_hide_profile = hide_profile_list(request, context)
+            response = trigger_client_event(
+                response,
+                "update-profile",
+                {"hide_profile_list": should_hide_profile},
             )
-
+            return trigger_client_event(
+                response, "active-tags-changed", {"rendered_html": rendered_active_tags}
+            )
 
         return self.render_to_response(context)
 
@@ -220,21 +267,19 @@ class ProfileEditView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = "pages/edit_profile.html"
     form_class = ProfileUpdateForm
 
-
     def has_permission(self):
         """
         Users should only be able to edit their own profiles.
         Admins can edit any profile.
         """
-        
+
         if self.request.user == self.get_object().user:
             return True
-        
+
         if self.request.user.is_superuser or self.request.user.is_staff:
             return True
-            
-        return False            
 
+        return False
 
     def form_valid(self, form):
         """

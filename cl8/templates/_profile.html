@@ -93,57 +93,62 @@
     </div>
 </div>
 <script>
-        // when a user clicks on a tag, emit an event listing the nane of the tag being clicked
-        // this is picked up by the parent component and used to filter the list of profiles
-        // shown    
-        document.querySelectorAll('#profile-slot .badge').forEach(item => {
-            item.addEventListener('click', event => {
-                // we can't just bubble up a 'click' event to the parent elements
-                // and use that to update the list of profiles shown, because
-                // it won't reflect the updated toggle list of tags yet in the 
-                // filter form.
-                // So, we have to manually update the list of active tags, and THEN
-                // dispatch an event for our filter component to listen for
-                let activeTags = document.querySelector('#id_tags')
+// TODO: loading a script tag in an htmx request causes an error to be logged, but this does not seem to affect
+// the functioning of the script. I don't know why.
 
-                // you set a value on a multiple select by setting the 
-                //'selected' property of a given option to true
-                const selectorString = `#id_tags option[value="${event.target.dataset.tagId}"]`
-                const chosenTagOption = document.querySelector(selectorString)
-                chosenTagOption.selected = !chosenTagOption.selected
+// when a user clicks on a tag, emit an event listing the nane of the tag being clicked
+// this is picked up by the parent component and used to filter the list of profiles
+// shown    
 
-                // once we have updated the option list, we trigger
-                // an DOM event our filter component to listen for,
-                // and update the list of profiles shown
-                
-                document.body.dispatchEvent(new CustomEvent("toggle-tag", { detail: event.target.dataset }))
+document.querySelectorAll('#profile-slot .badge').forEach(item => {
+    item.addEventListener('click', event => {
+        // we can't just bubble up a 'click' event to the parent elements
+        // and use that to update the list of profiles shown, because
+        // it won't reflect the updated toggle list of tags yet in the 
+        // filter form.
+        // So, we have to manually update the list of active tags, and THEN
+        // dispatch an event for our filter component to listen for
+        let activeTags = document.querySelector('#id_tags')
 
-                // toggle the button active state 
-                // TODO: figure out how to persist GET params in the 
-                // URL so that we can use active tags to set the 
-                // colour of the buttons instead
-                event.target.classList.toggle('bg-blue-500')
-            })
-        })
+        // you set a value on a multiple select by setting the 
+        //'selected' property of a given option to true
+        const selectorString = `#id_tags option[value="${event.target.dataset.tagId}"]`
+        const chosenTagOption = document.querySelector(selectorString)
+        chosenTagOption.selected = !chosenTagOption.selected
 
-        /**
-        * Clear the profile slot and set the path in the url back to "/", 
-        * adding the GET params, then the url to the history
-        */
-        function clearProfile() {
-            console.log('clearing profile')
+        // once we have updated the option list, we trigger
+        // an DOM event our filter component to listen for,
+        // and update the list of profiles shown
+        
+        document.body.dispatchEvent(new CustomEvent("toggle-tag", { detail: event.target.dataset }))
 
-            // set the path in the url back to "/", adding the GET params
-            // from the current URL
-            const currentUrl = new URL(window.location.href)
-            const newUrl = new URL('/', window.location.origin)
-            newUrl.search = currentUrl.search
-            window.history.pushState({}, '', newUrl)
+        // toggle the button active state 
+        // TODO: figure out how to persist GET params in the 
+        // URL so that we can use active tags to set the 
+        // colour of the buttons instead
+        event.target.classList.toggle('bg-blue-500')
+    })
+})
 
-            // then set the profile slot to the empty profile
-            const emptyProfile = document.querySelector('#empty-profile').innerHTML
-            document.querySelector('#profile-slot .profile').innerHTML = emptyProfile
+/**
+* Clear the profile slot and set the path in the url back to "/", 
+* adding the GET params, then the url to the history
+*/
+function clearProfile() {
+    console.log('clearing profile')
 
-        }
-        document.querySelector('#clear-profile').addEventListener('click', clearProfile)
+    // set the path in the url back to "/", adding the GET params
+    // from the current URL
+    const currentUrl = new URL(window.location.href)
+    const newUrl = new URL('/', window.location.origin)
+    newUrl.search = currentUrl.search
+    window.history.pushState({}, '', newUrl)
+
+    // then set the profile slot to the empty profile
+    const emptyProfile = document.querySelector('#empty-profile').innerHTML
+    document.querySelector('#profile-slot .profile').innerHTML = emptyProfile
+    htmx.trigger("body", "update-profile")
+
+}
+document.querySelector('#clear-profile').addEventListener('click', clearProfile)
 </script>

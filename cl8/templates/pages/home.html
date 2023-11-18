@@ -14,22 +14,21 @@
                   hx-trigger="submit, htmx:confirm from:#id_tags, htmx:confirm from:#id_bio, toggle-tag from:body"
                   hx-target=".sidebar"
                   hx-push-url="true">
-              <div class="grid grid-cols-1 lg:grid-cols-[1fr_10rem_1fr]">
+              <div class="grid grid-cols-1 lg:grid-cols-[1fr_10rem]">
                 <div>
                   {% comment %} <p>
                     <label class="inline-block w-100 mr-8 text-xl" for="{{ profile_filter.form.bio.id_for_label }}">Showing profile results matching:</label>
                   </p> {% endcomment %}
-                  {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.1s," hx-target=".sidebar" class="text-xl min-w-[0%]" hx-sync="closest form:abort" %}
+                  {% render_field profile_filter.form.bio hx-get="/" hx-trigger="keyup changed delay:0.1s," hx-target=".sidebar" class="text-xl min-w-[100%]" hx-sync="closest form:abort" %}
                 </div>
                 <div>
-                  <button class="btn mt-4 lg:ml-4" type="submit">Search</button>
+                  <button class="btn mt-4 lg:mt-0 lg:ml-4" type="submit">Search</button>
                 </div>
               </div>
-              <p class="hidden">{% render_field profile_filter.form.tags %}</p>
-              {% comment %} <input class="btn mt-4 ml-4" type="submit" /> {% endcomment %}
+              <span class="hidden">{% render_field profile_filter.form.tags %}</span>
             </form>
             <div class="active-tags">{% include '_active_tags_list.html' %}</div>
-            <div class="">
+            <div class="profile-count">
               {% if active_search %}
                 <p class="text-xl inline-block ">
                   <span data-profile-count="{{ paginated_profiles|length }}">{{ paginated_profiles|length }}</span> matching profile{{ paginated_profiles|pluralize }} found
@@ -54,10 +53,10 @@
           We only want to hide the list of profiles when there is NO filtered search
           and when a user is not selected.
         {% endcomment %}
-        <div class="sidebar transition-all border {% if not profile or not active_search %}hidden{% endif %} lg:inline"
+        <div class="sidebar transition-all border {% if hide_profile_list %}hidden{% endif %} lg:inline"
              style="max-height: 100vh">{% include "pages/_paginated_profiles.html" %}</div>
         <div id="profile-slot"
-             class="card bg-base-100 lg:col-span-2 border rounded-none">
+             class="card bg-base-100 lg:col-span-2 border rounded-none {% if not hide_profile_list %}hidden{% endif %} lg:inline">
           {% if profile %}
             {% comment %} show the profile with all the tags, and details {% endcomment %}
             {% include '_profile.html' %}
@@ -84,26 +83,43 @@
   <script src="{% static 'js/htmx.js' %}" defer></script>
   <script>
     document.addEventListener("DOMContentLoaded", (event) => {
-      console.log("DOM fully loaded and parsed");
-      htmx.logger = function(elt, event, data) {
-        if(console) {
-            console.log(event);
-            if (event == "htmx:afterSettle") {
-              console.log(elt, event, data)
-              // check if it's the sidebar reloading
-              const sidebarUpdated = elt.classList.contains("sidebar");
-            
-              // update the count if so
-              if (sidebarUpdated) {
-                const profileCount = document.querySelectorAll(".sidebar .profile").length;
-              const profileCountElement = document.querySelector("[data-profile-count]").innerText = profileCount;
-              }
-              
-              
-            }
+      // console.log("DOM fully loaded and parsed");
+      // htmx.logAll();
+
+      htmx.on("htmx:load", function(evt) {
+        // console.log(evt);
+        const elt = evt.detail.elt
+        elt.classList.contains("sidebar");
+        const sidebarUpdated = elt.classList.contains("sidebar");
+        
+        // update the count 
+        if (sidebarUpdated) {
+          const profileCount = document.querySelectorAll(".sidebar .profile").length;
+          const profileCountElement = document.querySelector("[data-profile-count]")
+          if (profileCountElement) {
+            profileCountElement.innerText = profileCount;
+          }
+          
         }
-      }
+      });
+      
+      htmx.on("update-profile", function(evt) {
+        const profileSlot = htmx.find("#profile-slot")
+        const profileList = htmx.find("#profile-slot")
+
+        if (evt.detail.hide_profile_list) {
+          console.log("showing profile, hiding profile list")
+          profileSlot.classList.remove("hidden")
+          profileList.classList.add("hidden")
+        } else {
+          console.log("hiding profile, showing profile list")
+          profileSlot.classList.add("hidden")
+          profileList.classList.remove("hidden")
+        }
+      })
+      
     });
+  
     /**
     * Add a set of event listeners to the active tag list, so that clicking on
     * updates the selected options, and triggers a toggle-tag event, for our
@@ -132,7 +148,10 @@
     console.log(event.detail)
     const activeTagsList = document.querySelector('.search-block .active-tags .tag_list')
     if (event.detail.rendered_html) {
-      activeTagsList.innerHTML = event.detail.rendered_html
+      if (activeTagsList) {
+        activeTagsList.innerHTML = event.detail.rendered_html
+      }
+      
     }
     // we need to add listeners again because the DOM has changed, 
     // and the event listeners will have been removed along with 
@@ -140,7 +159,6 @@
     addlistenersForActiveTags()
   })
 
-  
 
   </script>
 {% endblock scripts %}
