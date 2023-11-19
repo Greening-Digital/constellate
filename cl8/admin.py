@@ -228,7 +228,30 @@ class ConstellationAdminSite(AdminSite):
             "site": current_site,
         }
 
-        return render(request, "invite_new_profile.mjml.html", context)
+        email_templates = {
+            "new_invite": "invite_new_profile.mjml.html",
+            "passwordless_email": "passwordless_default_token_email.mjml.html",
+        }
+
+        template_key = request.GET.get("template_key")
+        logger.warn("template_key")
+        logger.warn(template_key)
+
+        from django.template.loader import render_to_string
+
+        template = "invite_new_profile.mjml.html"
+        if template_key is not None:
+            try:
+                # TODO: why does firefox render generated MJML as a blank screen?
+                template = email_templates.get(template_key)
+                rendered_template = render_to_string(template, context)
+                return django.http.response.HttpResponse(rendered_template)
+            except Exception as ex:
+                logger.error(ex)
+                logger.warn(f"template not found for key {template_key}")
+
+        rendered_template = render_to_string(template, context)
+        return django.http.response.HttpResponse(rendered_template)
 
 
 site = ConstellationAdminSite()
