@@ -1,7 +1,6 @@
 import csv
 import json
 from io import StringIO
-from django.core.exceptions import PermissionDenied
 
 import allauth
 import django
@@ -10,14 +9,15 @@ import taggit
 from django import forms
 from django.contrib import messages
 from django.contrib.admin.sites import AdminSite
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
-from django.contrib.auth.decorators import permission_required
+
 from cl8.users.importers import CSVImporter, FireBaseImporter
 from cl8.users.models import Constellation, Profile, User
 
-from django.contrib.auth.decorators import user_passes_test
+from .users.admin import ConstellationAdmin, ProfileAdmin, UserAdmin
 
 
 class CsvImportForm(forms.Form):
@@ -32,7 +32,7 @@ class CsvImportForm(forms.Form):
         csv_file = self.cleaned_data["import_file"]
 
         importer.load_csv(csv_file)
-        importer.create_users(import_photos=self.cleaned_data["import_photos"])
+        return importer.create_users(import_photos=self.cleaned_data["import_photos"])
 
 
 class FirebaseImportForm(forms.Form):
@@ -47,7 +47,7 @@ class FirebaseImportForm(forms.Form):
         json_content = self.cleaned_data["firebase_json"].read().decode("utf-8")
         parsed_data = json.loads(json_content)
         profiles = [prof for prof in parsed_data["userlist"].values()]
-        importer.add_users_from_json(
+        return importer.add_users_from_json(
             profiles, import_photos=self.cleaned_data["import_photos"]
         )
 
@@ -120,21 +120,14 @@ class ConstellationAdminSite(AdminSite):
             raise PermissionDenied
 
         if request.method == "POST":
-            csv_file = request.FILES["import_file"]
-
-            # the uploaded file is bytestream,
-            # but we need a string
-            csv_text_file = StringIO(csv_file.read().decode("utf-8"))
-
-            importer = FireBaseImporter()
-            importer.load_csv(csv_text_file)
-            created_users = importer.create_users()
+            form = FirebaseImportForm(request.POST, request.FILES)
+            created_users = form.save()
 
             messages.add_message(
                 request,
                 messages.INFO,
                 (
-                    "Your csv file with users has been imported. "
+                    "Your json file with users has been imported. "
                     f"{len(created_users)} new profiles were imported.",
                 ),
             )
@@ -150,15 +143,8 @@ class ConstellationAdminSite(AdminSite):
             raise PermissionDenied
 
         if request.method == "POST":
-            csv_file = request.FILES["csv_file"]
-
-            # the uploaded file is bytestream,
-            # but we need a string
-            csv_text_file = StringIO(csv_file.read().decode("utf-8"))
-
-            importer = CSVImporter()
-            importer.load_csv(csv_text_file)
-            created_users = importer.create_users()
+            form = CsvImportForm(request.POST, request.FILES)
+            created_users = form.save()
 
             messages.add_message(
                 request,
@@ -246,7 +232,6 @@ site.register(
 # Used for tags
 site.register(taggit.models.Tag, taggit.admin.TagAdmin)
 
-from .users.admin import ProfileAdmin, UserAdmin, ConstellationAdmin
 
 site.register(Constellation, ConstellationAdmin)
 site.register(Profile, ProfileAdmin)

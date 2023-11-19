@@ -143,6 +143,9 @@ class FireBaseImporter:
     tags, bio, email and so on.
     """
 
+    created_users: list = []
+    skipped_users: list = []
+
     def create_user(self, user_json, import_photos=False):
         """
         Accepts a row, and returns the corresponding user generated based
@@ -202,13 +205,26 @@ class FireBaseImporter:
 
         return profile
 
+    def list_of_user_data(parsed_json: dict) -> list[dict]:
+        return [prof for prof in parsed_json["userlist"].values()]
+
     def add_users_from_json(self, json_data, import_photos=False):
         """
-        Accepts a json object, and creates users from it
+        Accepts a list of dicts objects, and creates users from it
         """
 
+        self.created_users = []
+        self.skipped_users = []
+
         for user in json_data:
-            self.create_user(user, import_photos=import_photos)
+            try:
+                profile = self.create_user(user, import_photos=import_photos)
+                self.created_users.append(profile)
+            except Exception as ex:
+                logger.warn(f"Could not import user {user}, exception was {ex}")
+                self.skipped_users.append(user)
+
+        return self.created_users
 
 
 class SlackImporter:
