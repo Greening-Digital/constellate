@@ -72,7 +72,9 @@ class TestProfile:
         # is this pointing to the correct directory where our media is stored?
         assert settings.MEDIA_URL in pic_url
 
-    def test_send_invite_for_profile(self, profile: Profile, mailoutbox):
+    def test_send_invite_for_profile(
+        self, profile: Profile, mailoutbox, test_constellation
+    ):
         profile.send_invite_mail()
         assert len(mailoutbox) == 1
 

@@ -17,11 +17,16 @@ pytestmark = pytest.mark.django_db
 
 
 class TestProfileViewSet:
-    @pytest.mark.parametrize("visible,profile_count", [(True, 1), (False, 0),])
+    @pytest.mark.parametrize(
+        "visible,profile_count",
+        [
+            (True, 1),
+            (False, 0),
+        ],
+    )
     def test_get_queryset(
         self, profile: Profile, rf: RequestFactory, visible, profile_count
     ):
-
         profile.visible = visible
         profile.save()
         view = ProfileViewSet()
@@ -140,7 +145,7 @@ class TestProfileViewSet:
         assert response.status_code == 201
 
     def test_create_profile_and_notify(
-        self, profile: Profile, rf: RequestFactory, mailoutbox
+        self, profile: Profile, rf: RequestFactory, mailoutbox, test_constellation
     ):
         view = ProfileViewSet()
         request = rf.get("/fake-url/")
@@ -192,7 +197,7 @@ class TestProfileViewSet:
         assert response.status_code == 200
 
     def test_resend_invite_sends_an_email(
-        self, profile: Profile, rf: RequestFactory, mailoutbox
+        self, profile: Profile, rf: RequestFactory, mailoutbox, test_constellation
     ):
         view = ProfileViewSet()
         request = rf.post(f"/profiles/{profile.id}/resend_invite/")
