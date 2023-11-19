@@ -16,6 +16,7 @@ from cl8.users.api.views import (
     homepage,
 )
 
+
 urlpatterns = [
     #
     # main profile functionality
@@ -25,6 +26,10 @@ urlpatterns = [
     path("profiles/<slug>/edit", ProfileEditView.as_view(), name="profile-edit"),
     #
     # Django Admin, use {% url 'admin:index' %}
+    # use this to sanity check differences between the default
+    # and our custom one with the extra links
+    # from django.contrib import admin
+    # path("admin/", admin.site.urls),
     path("admin/", cl8_admin_site.urls),
     #
     # default allauth User management

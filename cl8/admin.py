@@ -1,6 +1,7 @@
 import csv
 import json
 from io import StringIO
+from django.core.exceptions import PermissionDenied
 
 import allauth
 import django
@@ -12,9 +13,11 @@ from django.contrib.admin.sites import AdminSite
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
-
+from django.contrib.auth.decorators import permission_required
 from cl8.users.importers import CSVImporter, FireBaseImporter
 from cl8.users.models import Constellation, Profile, User
+
+from django.contrib.auth.decorators import user_passes_test
 
 
 class CsvImportForm(forms.Form):
@@ -113,6 +116,9 @@ class ConstellationAdminSite(AdminSite):
         return app_list + patterns
 
     def import_from_firebase(self, request):
+        if not request.user.has_perm("profiles.import_profiles"):
+            raise PermissionDenied
+
         if request.method == "POST":
             csv_file = request.FILES["import_file"]
 
@@ -140,6 +146,9 @@ class ConstellationAdminSite(AdminSite):
         return render(request, "profile_firebase_import.html", context)
 
     def import_csv(self, request):
+        if not request.user.has_perm("profiles.import_profiles"):
+            raise PermissionDenied
+
         if request.method == "POST":
             csv_file = request.FILES["csv_file"]
 
@@ -205,22 +214,40 @@ site = ConstellationAdminSite()
 # allauth
 # used for tracking email addresses
 # and for social logins via slack
-site.register(allauth.socialaccount.models.SocialAccount)
-site.register(allauth.socialaccount.models.SocialApp)
-site.register(allauth.socialaccount.models.SocialToken)
-site.register(allauth.socialaccount.models.EmailAddress)
+site.register(
+    allauth.socialaccount.models.SocialAccount,
+    allauth.socialaccount.admin.SocialAccountAdmin,
+)
+site.register(
+    allauth.socialaccount.models.SocialApp, allauth.socialaccount.admin.SocialAppAdmin
+)
+site.register(
+    allauth.socialaccount.models.SocialToken,
+    allauth.socialaccount.admin.SocialTokenAdmin,
+)
+site.register(
+    allauth.account.models.EmailAddress,
+    allauth.account.admin.EmailAddressAdmin,
+)
 
 # Used by DRF for token access when hitting the API
 # TODO: given we no longer use Vue and the APIs it consumes should
 # we remove all the API stuff?
-site.register(rest_framework.authtoken.models.Token)
-site.register(django.contrib.sites.models.Site)
-site.register(django.contrib.auth.models.Group)
-site.register(django.contrib.flatpages.models.FlatPage)
+site.register(
+    rest_framework.authtoken.models.Token, rest_framework.authtoken.admin.TokenAdmin
+)
+site.register(django.contrib.sites.models.Site, django.contrib.sites.admin.SiteAdmin)
+site.register(django.contrib.auth.models.Group, django.contrib.auth.admin.GroupAdmin)
+site.register(
+    django.contrib.flatpages.models.FlatPage,
+    django.contrib.flatpages.admin.FlatPageAdmin,
+)
 
 # Used for tags
-site.register(taggit.models.Tag)
+site.register(taggit.models.Tag, taggit.admin.TagAdmin)
 
-site.register(Constellation)
-site.register(Profile)
-site.register(User)
+from .users.admin import ProfileAdmin, UserAdmin, ConstellationAdmin
+
+site.register(Constellation, ConstellationAdmin)
+site.register(Profile, ProfileAdmin)
+site.register(User, UserAdmin)

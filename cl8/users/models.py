@@ -56,7 +56,6 @@ class Cluster(TagBase):
         verbose_name_plural = _("Clusters")
 
 
-
 class TaggedCluster(TaggedItemBase):
     content_object = models.ForeignKey("Profile", on_delete=models.CASCADE)
 
@@ -78,18 +77,17 @@ def flat_tag_list(tag_queryset) -> list[dict]:
     tag_list = []
 
     for tag in tag_queryset.all():
-            split_name = tag.name.split(":") 
-            if len(split_name) == 1:
-                # there was no colon to split on use the full tag name
-                tag_list.append({"name": split_name[0], "tag": tag})
-            if len(split_name) > 1:
-                # we DO have a colon to split on - use the full tag name
-                # and add the group, so we can use it for show the kinds
-                # of tags as well
-                tag_list.append({"group": split_name[0], "name": split_name[1], "tag": tag})
+        split_name = tag.name.split(":")
+        if len(split_name) == 1:
+            # there was no colon to split on use the full tag name
+            tag_list.append({"name": split_name[0], "tag": tag})
+        if len(split_name) > 1:
+            # we DO have a colon to split on - use the full tag name
+            # and add the group, so we can use it for show the kinds
+            # of tags as well
+            tag_list.append({"group": split_name[0], "name": split_name[1], "tag": tag})
 
     return tag_list
-
 
 
 class Profile(models.Model):
@@ -132,6 +130,10 @@ class Profile(models.Model):
         permissions = [
             ("set_visibility", "Can set the visibility of a profile"),
             ("send_invite_email", "Can send profile invite emails"),
+            (
+                "import_profiles",
+                "Can import profiles from a CSV file, or from a Firebase export JSON file",
+            ),
         ]
 
     @property
@@ -193,11 +195,10 @@ class Profile(models.Model):
                 logger.warning(f"Unable to split tag name: {tag.name}. Not showing.")
 
         for ungrouped_tag in self.tags.exclude(name__icontains=":").order_by("name"):
-
             ungrouped_tags.append({"name": ungrouped_tag.name, "tag": ungrouped_tag})
 
         return [grouped_tags, ungrouped_tags]
-    
+
     def tags_with_no_grouping(self):
         """
         Return a list of tags, flattened into a single list
@@ -213,7 +214,6 @@ class Profile(models.Model):
         #     tag_list.append({"name": ungrouped_tag.name, "tag": ungrouped_tag})
 
         # return tag_list
-
 
     def __str__(self):
         if self.user.name:
@@ -284,12 +284,19 @@ class Constellation(models.Model):
         verbose_name="site",
     )
 
-    logo = models.ImageField(_("logo"), blank=True, null=True, max_length=200, upload_to="logos",)
+    logo = models.ImageField(
+        _("logo"),
+        blank=True,
+        null=True,
+        max_length=200,
+        upload_to="logos",
+    )
     background_color = models.CharField(
-        blank=True, 
+        blank=True,
         max_length=256,
-        help_text="A hex code colour to use for the header background colour")
-    
+        help_text="A hex code colour to use for the header background colour",
+    )
+
     signin_via_slack = models.BooleanField(default=False)
     signin_via_email = models.BooleanField(default=True)
 
