@@ -19,6 +19,10 @@ from cl8.users.models import Constellation, Profile, User
 
 from .users.admin import ConstellationAdmin, ProfileAdmin, UserAdmin
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class CsvImportForm(forms.Form):
     import_file = forms.FileField()
@@ -29,7 +33,9 @@ class CsvImportForm(forms.Form):
 
     def save(self):
         importer = CSVImporter()
-        csv_file = self.cleaned_data["import_file"]
+
+        # we need to decode the uploaded file from bytes to string
+        csv_file = StringIO(self.cleaned_data["import_file"].read().decode("utf-8"))
 
         importer.load_csv(csv_file)
         return importer.create_users(import_photos=self.cleaned_data["import_photos"])
@@ -43,13 +49,20 @@ class FirebaseImportForm(forms.Form):
     )
 
     def save(self):
-        importer = FireBaseImporter()
-        json_content = self.cleaned_data["firebase_json"].read().decode("utf-8")
-        parsed_data = json.loads(json_content)
-        profiles = [prof for prof in parsed_data["userlist"].values()]
-        return importer.add_users_from_json(
-            profiles, import_photos=self.cleaned_data["import_photos"]
-        )
+        try:
+            importer = FireBaseImporter()
+            json_content = self.cleaned_data["firebase_json"].read().decode("utf-8")
+            parsed_data = json.loads(json_content)
+            profiles = [prof for prof in parsed_data["userlist"].values()]
+            return importer.add_users_from_json(
+                profiles, import_photos=self.cleaned_data["import_photos"]
+            )
+        except Exception as ex:
+            raise forms.ValidationError(
+                "There was a problem importing your file. "
+                "Please check it is a valid json file."
+            )
+            logger.exception(ex)
 
 
 class ConstellationAdminSite(AdminSite):
@@ -144,18 +157,19 @@ class ConstellationAdminSite(AdminSite):
 
         if request.method == "POST":
             form = CsvImportForm(request.POST, request.FILES)
-            created_users = form.save()
+            if form.is_valid():
+                created_users = form.save()
 
-            messages.add_message(
-                request,
-                messages.INFO,
-                (
-                    "Your csv file with users has been imported. "
-                    f"{len(created_users)} new profiles were imported.",
-                ),
-            )
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    (
+                        "Your csv file with users has been imported. "
+                        f"{len(created_users)} new profiles were imported.",
+                    ),
+                )
 
-            return redirect("/admin/users/profile/")
+                return redirect("/admin/users/profile/")
 
         form = CsvImportForm()
 

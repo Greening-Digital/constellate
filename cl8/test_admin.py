@@ -103,8 +103,11 @@ class TestCSVProfileImportForm:
     def test_csv_import_via_form_checks_validity(self, sample_csv_path):
         logger.info(sample_csv_path)
 
+        text = sample_csv_path.read_text()
+        # breakpoint()
+
         import_file = ContentFile(
-            sample_csv_path.read_text().encode(), name=sample_csv_path.name
+            sample_csv_path.read_text(), name=sample_csv_path.name
         )
 
         test_data = {}
@@ -123,8 +126,9 @@ class TestCSVProfileImportForm:
     def test_csv_import_via_form_creates_profiles(self, sample_csv_path):
         logger.info(sample_csv_path)
 
+        # we encode our file to bytes because this matches what is sent by the browser
         import_file = ContentFile(
-            sample_csv_path.read_text(), name=sample_csv_path.name
+            sample_csv_path.read_text().encode(), name=sample_csv_path.name
         )
 
         test_data = {}

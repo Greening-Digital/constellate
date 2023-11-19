@@ -1,7 +1,14 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
     <div>
-        <form action="." method="POST" enctype="multipart/form-data">
+        <form action="{% url 'admin:import-profiles-from-csv' %}"
+              method="POST"
+              enctype="multipart/form-data">
+            {% if form.non_field_errors %}
+                <div class="w-full max-w-xs border-red-500 text-red-500 border rounded-lg p-2 text-sm">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
             <p>If you have a set of users in a spreadsheet or csv file, you can import them in bulk.</p>
             Download the <a href="{% url 'admin:profile-import-csv-template' %}">sample csv file</a>, fill in the columns, then upload the file with the widget below.
             {{ form.as_p }}
