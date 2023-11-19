@@ -97,6 +97,6 @@ media/
 .envs/*
 envs/
 
-data/*.csv
+data/
 
 cruft
