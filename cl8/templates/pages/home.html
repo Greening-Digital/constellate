@@ -77,10 +77,11 @@
 {% endblock content %}
 {% block scripts %}
   {{ block.super }}
+  {% comment %} TODO - can we drop jquery here? we only use it on the edit forms now {% endcomment %}
   <script type="text/javascript"
           src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
   {{ profile_filter.form.media }}
-  <script src="{% static 'js/htmx.js' %}" defer></script>
+  <script src="{% static 'js/htmx.v1.9.8.min.js' %}" defer></script>
   <script>
     document.addEventListener("DOMContentLoaded", (event) => {
       // console.log("DOM fully loaded and parsed");
