@@ -55,7 +55,6 @@ class TestProfile:
         assert profile.email == profile.user.email
 
     def test_check_for_admin_status(self, profile: Profile):
-
         profile.user.is_staff = True
         profile.save()
 
@@ -65,8 +64,10 @@ class TestProfile:
     def test_profile_photo_thumbs(
         self, fake_photo_profile: Profile, settings, photo_size
     ):
-
-        pic_url = getattr(fake_photo_profile, photo_size,)
+        pic_url = getattr(
+            fake_photo_profile,
+            photo_size,
+        )
 
         # is this pointing to the correct directory where our media is stored?
         assert settings.MEDIA_URL in pic_url
@@ -75,12 +76,15 @@ class TestProfile:
         profile.send_invite_mail()
         assert len(mailoutbox) == 1
 
-    def test_generate_invite_for_profile(self, profile: Profile, mailoutbox):
+    def test_generate_invite_for_profile(
+        self, profile: Profile, mailoutbox, test_constellation
+    ):
         rendered_templates = profile.generate_invite_mail()
+
         # uncomment this to view the rendered mjml/html template
-        # view_rendered_html_in_browser(rendered_templates['html'])
+        # view_rendered_html_in_browser(rendered_templates["html"])
         # uncomment this to view the rendered text template
-        # view_rendered_html_in_browser(rendered_templates['text'])
+        # view_rendered_html_in_browser(rendered_templates["text"])
 
         assert "html" in rendered_templates
         assert "text" in rendered_templates

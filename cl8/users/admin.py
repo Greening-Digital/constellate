@@ -134,7 +134,3 @@ class ProfileAdmin(admin.ModelAdmin):
 class ConstellationAdmin(admin.ModelAdmin):
     class Meta:
         model = Constellation
-
-
-# make the default Tag model available to admins to change
-# constellation_admin.register(Tag)

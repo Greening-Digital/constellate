@@ -1,18 +1,19 @@
-import pytest
-from pytest_factoryboy import register
-
-import factory
 import random
-from cl8.users.models import User, Profile
-from cl8.users.tests.factories import (
-    UserFactory,
-    ProfileFactory,
-    FakePhotoProfileFactory,
-)
 import shutil
 from pathlib import Path
-from django.contrib.auth.models import Group, Permission
+
+import pytest
 from django.conf import settings
+from django.contrib.auth.models import Group, Permission
+from django.contrib.sites.models import Site
+from pytest_factoryboy import register
+
+from cl8.users.models import Constellation, Profile, User
+from cl8.users.tests.factories import (
+    FakePhotoProfileFactory,
+    ProfileFactory,
+    UserFactory,
+)
 
 register(UserFactory)
 register(FakePhotoProfileFactory)
@@ -83,3 +84,13 @@ def moderator_group():
         grp.permissions.set(perm_records)
 
     return grp
+
+
+@pytest.fixture
+def test_constellation():
+    """
+    Simulates the creation of a site, and a linked
+    constellation
+    """
+    current_site = Site.objects.get_current()
+    return Constellation.create(site=current_site)

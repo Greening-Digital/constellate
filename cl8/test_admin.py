@@ -104,7 +104,6 @@ class TestCSVProfileImportForm:
         logger.info(sample_csv_path)
 
         text = sample_csv_path.read_text()
-        # breakpoint()
 
         import_file = ContentFile(
             sample_csv_path.read_text(), name=sample_csv_path.name

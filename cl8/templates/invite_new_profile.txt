@@ -1,6 +1,6 @@
 Dear {{profile.name}},
 
-Welcome to the {{ site.name }} constellation.
+Welcome to the {{ site.name }}.
 
 (Copy goes here to mention terms of service and community guidelines)
 

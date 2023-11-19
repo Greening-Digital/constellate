@@ -10,7 +10,7 @@ from django.contrib.sites.models import Site
 from sorl.thumbnail import get_thumbnail
 from taggit.managers import TaggableManager
 from taggit.models import TagBase, TaggedItemBase
-
+from django.contrib.sites.models import Site
 from shortuuid.django_fields import ShortUUIDField
 import logging
 
@@ -243,29 +243,44 @@ class Profile(models.Model):
                 ]
             )
 
-    def send_invite_mail(self):
+    def get_context_for_emails(self) -> dict:
+        current_site = Site.objects.get_current()
+        constellation = Constellation.objects.get(site=current_site)
         support_email_address = settings.SUPPORT_EMAIL
+
+        return {
+            "profile": self,
+            "support_email_address": support_email_address,
+            "constellation": constellation,
+            "site": current_site,
+        }
+
+    def send_invite_mail(self):
+        context = self.get_context_for_emails()
         rendered_templates = self.generate_invite_mail()
 
         send_mail(
-            "Welcome to the Icebreaker One Constellation",
+            f"Welcome to { context['site'].name }",
             rendered_templates["text"],
-            support_email_address,
+            context.get("support_email_address"),
             [self.user.email],
             html_message=rendered_templates["html"],
         )
 
     def generate_invite_mail(self):
-        support_email_address = settings.SUPPORT_EMAIL
-
+        context = self.get_context_for_emails()
         rendered_invite_txt = render_to_string(
             "invite_new_profile.txt",
-            {"profile": self, "support_email_address": support_email_address},
+            context,
         )
         rendered_invite_html = render_to_string(
             "invite_new_profile.mjml.html",
-            {"profile": self, "support_email_address": support_email_address},
+            context,
         )
+
+        from cl8.utils.templating import view_rendered_html_in_browser
+
+        view_rendered_html_in_browser(rendered_invite_html)
 
         return {"text": rendered_invite_txt, "html": rendered_invite_html}
 

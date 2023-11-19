@@ -1,5 +1,6 @@
 import csv
 import json
+import logging
 from io import StringIO
 
 import allauth
@@ -7,8 +8,10 @@ import django
 import rest_framework
 import taggit
 from django import forms
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.sites import AdminSite
+from django.contrib.sites.models import Site
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -18,8 +21,6 @@ from cl8.users.importers import CSVImporter, FireBaseImporter
 from cl8.users.models import Constellation, Profile, User
 
 from .users.admin import ConstellationAdmin, ProfileAdmin, UserAdmin
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +52,6 @@ class FirebaseImportForm(forms.Form):
     def save(self):
         try:
             importer = FireBaseImporter()
-            breakpoint()
             json_content = self.cleaned_data["firebase_json"].read().decode("utf-8")
 
             parsed_data = json.loads(json_content)
@@ -93,6 +93,11 @@ class ConstellationAdminSite(AdminSite):
                 "import-firebase",
                 self.admin_view(self.import_from_firebase),
                 name="import-profiles-from-firebase",
+            ),
+            path(
+                "email-template",
+                self.admin_view(self.email_template),
+                name="email-template",
             ),
         ]
         # order is important here. the default django admin
@@ -204,6 +209,26 @@ class ConstellationAdminSite(AdminSite):
         writer.writerow(sampleProfile.values())
 
         return response
+
+    def email_template(self, request):
+        """
+        A convenience page for viewing the email templates we send out.
+        """
+        if not request.user.has_perm("profiles.import_profiles"):
+            raise PermissionDenied
+
+        current_site = Site.objects.get_current()
+        constellation = Constellation.objects.get(site=current_site)
+        support_email_address = settings.SUPPORT_EMAIL
+
+        context = {
+            "profile": self,
+            "support_email_address": support_email_address,
+            "constellation": constellation,
+            "site": current_site,
+        }
+
+        return render(request, "invite_new_profile.mjml.html", context)
 
 
 site = ConstellationAdminSite()

@@ -21,8 +21,8 @@ def view_rendered_html_in_browser(string_template):
 class TestTemplateEmail:
     def test_render_email(self, profile):
         """
-        Test that the tempalte renders with based on what we're passing into context.
-        This doesn't test how we add varaibles into the context though.
+        Test that the template renders with based on what we're passing into context.
+        This doesn't test how we add variables into the context though.
         """
 
         ctx = {
@@ -45,9 +45,7 @@ class TestTemplateEmail:
 
     @pytest.mark.django_db
     def test_add_context(self, profile, mailoutbox):
-        """
-
-        """
+        """ """
 
         # post to the new token send point
         assert len(mailoutbox) == 0
