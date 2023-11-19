@@ -51,7 +51,9 @@ class FirebaseImportForm(forms.Form):
     def save(self):
         try:
             importer = FireBaseImporter()
+            breakpoint()
             json_content = self.cleaned_data["firebase_json"].read().decode("utf-8")
+
             parsed_data = json.loads(json_content)
             profiles = [prof for prof in parsed_data["userlist"].values()]
             return importer.add_users_from_json(
@@ -134,18 +136,19 @@ class ConstellationAdminSite(AdminSite):
 
         if request.method == "POST":
             form = FirebaseImportForm(request.POST, request.FILES)
-            created_users = form.save()
+            if form.is_valid():
+                created_users = form.save()
 
-            messages.add_message(
-                request,
-                messages.INFO,
-                (
-                    "Your json file with users has been imported. "
-                    f"{len(created_users)} new profiles were imported.",
-                ),
-            )
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    (
+                        "Your json file with users has been imported. "
+                        f"{len(created_users)} new profiles were imported.",
+                    ),
+                )
 
-            return redirect("/admin/users/profile/")
+                return redirect("/admin/users/profile/")
 
         form = FirebaseImportForm()
         context = {**self.each_context(request), "form": form}
