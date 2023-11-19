@@ -68,7 +68,7 @@ DJANGO_APPS = [
     "django.contrib.flatpages",
     "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags
-    "django.contrib.admin",
+    # "django.contrib.admin",
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
@@ -94,6 +94,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "cl8.users.apps.UsersConfig",
+    "cl8.apps.AdminConfig",
     # slack auth scheme changed so we need our own version now
     "cl8.users.slack_openid_connect",
     # Your stuff: custom apps go here

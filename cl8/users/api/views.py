@@ -26,7 +26,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-import rich
+
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -42,7 +42,6 @@ from .serializers import (
     ProfileSerializer,
     TagSerializer,
 )
-from ..models import Constellation
 
 User = get_user_model()
 

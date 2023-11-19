@@ -1,0 +1,50 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+    <div>
+        <form action="." method="POST" enctype="multipart/form-data">
+            <p>Upload the JSON export file from a legacy firebase constellation.</p>
+            <p>The json data is expected to look like this sample snippet</p>
+            <p>
+                Every profile is expected to have a corresponding key from firebase like <code>-L5zIhS_QRqoblu55nGI</code>
+            </p>
+            <pre>
+            </code>
+{
+    "userlist": {
+        "-L5zIhS_QRqoblu55nGI": {
+            "id": "rec0CSbkZBm1wWluF",
+            "fields": {
+                "name": "A name of multiple words",
+                "phone": "00 34 12345 67890",
+                "blurb": "Long form content\n with line breaks. Will be formatted as markdown.",
+                "admin": "false",
+                "email": "name@domain.com",
+                "facebook": "facebook-handle",
+                "linkedin": "linkedin-vanity-name"
+                "twitter": "twitter-handle",
+                "website": "just-a-naked-domain.com",
+                "tags": [
+                    {"id": "rec7BPWAthDqPSOeY", "name": "policy"},
+                    {"id": "recoHNloW0Nk9M9JK", "name": "Leadership"},
+                    {"id": "recvyDsYcNdJx91is", "name": "tech"},
+                ],
+                "visible": "no",
+                "photo": [
+                    {
+                        "url": "https://link.to/photo.jpg",
+                    }
+                ],
+            },
+            
+        },
+    }
+}
+            </code>
+            </pre>
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit">Upload CSV</button>
+        </form>
+    </div>
+    <br />
+{% endblock %}

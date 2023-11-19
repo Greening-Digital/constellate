@@ -1,35 +1,33 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib import admin
+from django.contrib.flatpages.views import flatpage
 from django.urls import include, path, re_path
 from django.views import defaults as default_views
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import RedirectView
 from rest_framework.authtoken.views import obtain_auth_token
-from django.contrib.flatpages.views import flatpage
 
-# from cl8.users.admin import constellation_admin as cl8_admin
-from cl8.users.views import sample_csv_template
+from cl8.admin import site as cl8_admin_site
+
 from cl8.users.api.views import (
-    TagAutoCompleteView,
+    ProfileCreateView,
     ProfileDetailView,
     ProfileEditView,
-    ProfileCreateView,
+    TagAutoCompleteView,
     homepage,
 )
 
-
 urlpatterns = [
-    # serve the vue template instead of the default home
+    #
+    # main profile functionality
     path("", homepage, name="home"),
     path("profiles/create/", ProfileCreateView.as_view(), name="profile-create"),
     path("profiles/<slug>", ProfileDetailView.as_view(), name="profile-detail"),
     path("profiles/<slug>/edit", ProfileEditView.as_view(), name="profile-edit"),
+    #
     # Django Admin, use {% url 'admin:index' %}
-    path("admin/", admin.site.urls),
-    path(
-        "admin/import-csv/sample.csv", sample_csv_template, name="sample-csv-template"
-    ),
-    # User management
+    path("admin/", cl8_admin_site.urls),
+    #
+    # default allauth User management
     path("users/", include("cl8.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # add our extra custom providers and views for sign-in with slack
@@ -41,7 +39,6 @@ urlpatterns = [
     path(
         "favicon.ico", RedirectView.as_view(url="/static/images/favicons/favicon.ico")
     ),
-    # path("admin/", cl8_admin.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS

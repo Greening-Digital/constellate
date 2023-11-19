@@ -2,8 +2,10 @@ import pytest
 
 from cl8.users.forms import UserCreationForm
 from cl8.users.forms import ProfileCreateForm
+from cl8.admin import CsvImportForm
 from cl8.users.tests.factories import UserFactory
 from taggit.models import Tag
+
 
 pytestmark = pytest.mark.django_db
 

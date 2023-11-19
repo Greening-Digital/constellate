@@ -5,7 +5,7 @@ from collections import OrderedDict
 import pytest
 import rich
 
-from cl8.users.importers import ProfileImporter, User
+from cl8.users.importers import CSVImporter, User
 
 from .. import importers
 
@@ -34,7 +34,7 @@ class TestImporter:
         """
         Load a CSV into memory, so we can manipulate it easily.
         """
-        importer = ProfileImporter()
+        importer = CSVImporter()
         importer.load_csv_from_path(csv_path)
         assert len(importer.rows) > 0
         assert len(importer.rows) < 400
@@ -43,7 +43,7 @@ class TestImporter:
         """
         Create a user with the provided email address
         """
-        importer = ProfileImporter()
+        importer = CSVImporter()
         importer.load_csv_from_path(csv_path)
         assert User.objects.count() == 0
         importer.create_users()
@@ -51,7 +51,7 @@ class TestImporter:
         assert User.objects.count() == len(importer.rows)
 
     def test_create_user(self, csv_path):
-        importer = ProfileImporter()
+        importer = CSVImporter()
         importer.load_csv_from_path(csv_path)
 
         user = importer.create_user(importer.rows[0])
@@ -67,7 +67,7 @@ class TestImporter:
     )
     def test_add_tags_to_user(self, profile, tag_string, tag_list, col_names):
         # arrange
-        importer = ProfileImporter()
+        importer = CSVImporter()
         row = OrderedDict()
         row["tags"] = tag_string
 
@@ -82,7 +82,7 @@ class TestImporter:
         # arrange
         first_tag_string = "tag1, tag2, tag3"
         second_tag_string = "tag4, tag5, tag6"
-        importer = ProfileImporter()
+        importer = CSVImporter()
         row = OrderedDict()
         row["tags"] = first_tag_string
         row["some_other_name"] = second_tag_string

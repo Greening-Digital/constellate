@@ -5,7 +5,7 @@ from collections import OrderedDict
 import pytest
 import rich
 
-from cl8.users.importers import ProfileImporter, User, FireBaseImporter
+from cl8.users.importers import FireBaseImporter
 
 
 pytestmark = pytest.mark.django_db
