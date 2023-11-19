@@ -25,3 +25,12 @@ tasks:
     command: |
       gp sync-await installed
       just tailwind-dev
+
+  - name: mailhog
+    command: >
+      docker run
+      --rm
+      --name mailhog
+      -p 8025:8025
+      -p 1025:1025
+      mailhog/mailhog
