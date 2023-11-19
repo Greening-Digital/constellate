@@ -93,4 +93,4 @@ def test_constellation():
     constellation
     """
     current_site = Site.objects.get_current()
-    return Constellation.create(site=current_site)
+    return Constellation.objects.create(site=current_site)
