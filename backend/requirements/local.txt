@@ -2,7 +2,7 @@
 
 Werkzeug==1.0.1 # https://github.com/pallets/werkzeug
 ipdb==0.13.3  # https://github.com/gotcha/ipdb
-Sphinx==3.1.1  # https://github.com/sphinx-doc/sphinx
+Sphinx==3.3.0  # https://github.com/sphinx-doc/sphinx
 psycopg2-binary==2.8.5  # https://github.com/psycopg/psycopg2
 
 # Testing
@@ -25,7 +25,8 @@ pre-commit==2.5.1  # https://github.com/pre-commit/pre-commit
 # ------------------------------------------------------------------------------
 factory-boy==2.12.0  # https://github.com/FactoryBoy/factory_boy
 
-django-debug-toolbar==2.2  # https://github.com/jazzband/django-debug-toolbar
+django-debug-toolbar==2.2.1  # https://github.com/jazzband/django-debug-toolbar
 django-extensions==2.2.9  # https://github.com/django-extensions/django-extensions
 django-coverage-plugin==1.8.0  # https://github.com/nedbat/django_coverage_plugin
 pytest-django==3.9.0  # https://github.com/pytest-dev/pytest-django
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
