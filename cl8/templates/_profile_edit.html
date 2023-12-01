@@ -75,6 +75,16 @@ div >input[type='file'] {
                            class="input input-bordered w-full max-w-xs" />
                 </div>
                 <div class="form-control w-full max-w-xs">
+                    <label class="label" for="{{ form.phone.id_for_label }}">
+                        <span class="label-text">{{ form.phone.label }}</span>
+                    </label>
+                    <input type="text"
+                           placeholder="Type here"
+                           name="{{ form.phone.html_name }}"
+                           value="{{ form.phone.value|default_if_none:'' }}"
+                           class="input input-bordered w-full max-w-xs" />
+                </div>
+                <div class="form-control w-full max-w-xs">
                     <label class="label" for="{{ form.linkedin.id_for_label }}">
                         <span class="label-text">{{ form.linkedin.label }}</span>
                     </label>

@@ -58,6 +58,7 @@ class ProfileUpdateForm(forms.ModelForm):
         fields = [
             "photo",
             "name",
+            "phone",
             "location",
             "organisation",
             "bio",
