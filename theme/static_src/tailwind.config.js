@@ -57,4 +57,13 @@ module.exports = {
         require("daisyui"),
 
     ],
+    daisyui: {
+        // when we have  browser requesting a 
+        // dark theme via the `prefers-color-scheme` feature
+        // we will still use  'light' theme
+        // For more, see
+        // https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme
+        // https://daisyui.com/docs/config/#darktheme
+        darkTheme: "light"
+    },
 }
