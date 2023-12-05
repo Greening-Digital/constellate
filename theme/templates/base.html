@@ -8,6 +8,15 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         {% tailwind_css %}
     </head>
+    {% if request.constellation.favicon %}
+        <link rel="shortcut icon"
+              type="image/png"
+              href="{{ request.constellation.favicon.url }}">
+    {% else %}
+        <link rel="shortcut icon"
+              type="image/png"
+              href="{% static 'images/favicons/favicon.ico' %}">
+    {% endif %}
     {% comment %}
     <p class="p-2 text-xs">
         Breakpoint:

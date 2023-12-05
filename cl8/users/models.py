@@ -316,6 +316,13 @@ class Constellation(models.Model):
         max_length=256,
         help_text="A hex code colour to use for the header text colour",
     )
+    favicon = models.ImageField(
+        _("favicon"),
+        blank=True,
+        null=True,
+        max_length=200,
+        upload_to="favicons",
+    )
 
     signin_via_slack = models.BooleanField(default=False)
     signin_via_email = models.BooleanField(default=True)
