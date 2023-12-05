@@ -1,16 +1,24 @@
 {% load static %}
 {% load account socialaccount %}
 <style>
-  .cat-navy-blue {
+  .header-color-override {
     {% if request.constellation.background_color %}
-      background-color: {{ current_constellation.background_color}};
+    background-color: {{ request.constellation.background_color}};
     {% else %}
     background-color: #004884;
     {% endif %}
   }
+  {% if request.constellation.text_color %}
+    .header-color-override .site-name {
+      color: {{ request.constellation.text_color}};
+    }
+    .header-color-override .menu .nav-toggle  {
+      color: {{ request.constellation.text_color}};
+    }
+  {% endif %}
   
 </style>
-<header class="cat-navy-blue grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
+<header class="header-color-override grid grid-cols-[1fr_minmax(auto,70rem)_1fr]">
   {% comment %}
   empty div here and at the end gives us our mx-auto style spacing 
   using css grid
@@ -24,7 +32,7 @@
             {% if request.constellation.logo %}
               <img src="{{ request.constellation.logo.url }}" />
             {% else %}
-              <span class="text-white ml-4">{{ request.site.name }}</span>
+              <span class="site-name text-white ml-4">{{ request.site.name }}</span>
             {% endif %}
           </a>
         </div>
@@ -32,7 +40,7 @@
           <ul class="menu menu-horizontal px-1">
             {% if request.user.is_authenticated %}
               <li tabindex="0">
-                <a class="text-white">
+                <a class="nav-toggle text-white">
                   <span class="hidden lg:inline">
                     {% if request.user.name %}
                       Hi {{ request.user.name }}

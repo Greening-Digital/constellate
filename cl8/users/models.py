@@ -311,6 +311,11 @@ class Constellation(models.Model):
         max_length=256,
         help_text="A hex code colour to use for the header background colour",
     )
+    text_color = models.CharField(
+        blank=True,
+        max_length=256,
+        help_text="A hex code colour to use for the header text colour",
+    )
 
     signin_via_slack = models.BooleanField(default=False)
     signin_via_email = models.BooleanField(default=True)

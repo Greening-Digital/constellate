@@ -60,11 +60,11 @@ class FirebaseImportForm(forms.Form):
                 profiles, import_photos=self.cleaned_data["import_photos"]
             )
         except Exception as ex:
+            logger.exception(ex)
             raise forms.ValidationError(
                 "There was a problem importing your file. "
                 "Please check it is a valid json file."
             )
-            logger.exception(ex)
 
 
 class ConstellationAdminSite(AdminSite):
@@ -106,7 +106,7 @@ class ConstellationAdminSite(AdminSite):
         # matched first, and any extra urls will not be matched.
         return extra_urls + urls
 
-    def get_app_list(self, request):
+    def get_app_list(self, request, app_label=None):
         """
         Add the links to the extra screens on the admin index
         page, for importers and so on.

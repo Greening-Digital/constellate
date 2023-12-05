@@ -1,13 +1,15 @@
-from django.contrib.auth import forms as auth_forms, get_user_model
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
-from .models import Profile
-from django import forms
 from dal import autocomplete
-from taggit import models as taggit_models
+from django import forms
+from django.contrib.auth import forms as auth_forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
 from django.forms import ModelMultipleChoiceField
+from django.utils.translation import gettext_lazy as _
+from taggit import models as taggit_models
 
 from .importers import safe_username
+from .models import Profile
 
 User = get_user_model()
 
@@ -109,6 +111,12 @@ class ProfileCreateForm(forms.ModelForm):
 
         self.instance = profile
         result = super().save(commit=commit)
+
+        # add the user to the 'member' group
+        member_group = Group.objects.get(name="member")
+        member_group.user_set.add(user)
+        member_group.save()
+
         return result
 
     class Meta:
