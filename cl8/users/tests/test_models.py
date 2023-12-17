@@ -101,6 +101,15 @@ class TestProfile:
 
         assert "Open Energy" in [tag_name for tag_name in profile.clusters.names()]
 
+    def test_vcard(self, profile: Profile):
+        vcard = profile.vcard()
+
+        assert vcard.fn.value == profile.name
+        assert vcard.email.value == profile.email
+        assert vcard.phone.value == profile.phone
+        assert vcard.url.value == profile.website
+        assert vcard.org.value == profile.organisation
+
 
 class TestSiteProfile:
     def test_site_profile(self):

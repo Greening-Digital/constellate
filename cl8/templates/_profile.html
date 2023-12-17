@@ -51,6 +51,11 @@
                        href="https://linkedin.com/in/{{ profile.linkedin }}">LinkedIn</a>
                 {% endif %}
             </p>
+            <p class="mb-0 text-lg">
+                <a href="{% url 'profile-vcard' profile.short_id %}"
+                   class="text-blue-700"
+                   download>Get contact</a>
+            </p>
             {% if can_edit %}
                 <a href="{% url 'profile-edit' profile.short_id %}"
                    class="btn btn-sm mt-2 mb-2 max-w-xs">Edit</a>

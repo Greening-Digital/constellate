@@ -49,6 +49,7 @@ ipdb = "*"
 airtable-python = "*"
 pyairtable = "*"
 pytest-watch = "*"
+vobject = "*"
 
 [dev-packages]
 mypy = "*"

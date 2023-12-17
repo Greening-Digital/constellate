@@ -12,6 +12,8 @@ from taggit.managers import TaggableManager
 from taggit.models import TagBase, TaggedItemBase
 from django.contrib.sites.models import Site
 from shortuuid.django_fields import ShortUUIDField
+import vobject
+from ..utils import vcard_util
 import logging
 
 
@@ -283,6 +285,23 @@ class Profile(models.Model):
         view_rendered_html_in_browser(rendered_invite_html)
 
         return {"text": rendered_invite_txt, "html": rendered_invite_html}
+
+    def vcard(self) -> vobject.vCard:
+        properties = {
+            "FN": self.name,
+            "N": vcard_util.full_name_to_name(self.name),
+            "EMAIL": self.email,
+            "URL": self.website,
+            "PHONE": self.phone,
+            "ORG": self.organisation,
+        }
+
+        result = vobject.vCard()
+        for property_name, property_value in properties.items():
+            if property_value:
+                result.add(property_name).value = property_value
+
+        return result
 
 
 class Constellation(models.Model):

@@ -10,11 +10,13 @@ from django.contrib.auth.models import Group
 from django.core import paginator
 from django.core.files.images import ImageFile
 from django.db.models import Case, When
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.urls import resolve
 from django.utils.text import slugify
+from django.views import View
 from django.views.generic import DetailView, UpdateView
+from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView
 from markdown_it import MarkdownIt
 from rest_framework import status
@@ -42,6 +44,7 @@ from .serializers import (
     ProfileSerializer,
     TagSerializer,
 )
+from ...utils import vcard_util
 
 User = get_user_model()
 
@@ -262,6 +265,26 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
             )
 
         return self.render_to_response(context)
+
+
+class ProfileVcardView(View, LoginRequiredMixin, SingleObjectMixin):
+    model = Profile
+    slug_field = "short_id"
+
+    def get(self, *args, **kwargs):
+        profile = self.get_object()
+
+        data = profile.vcard().serialize()
+        filename = vcard_util.content_disposition_filename(profile.name)
+
+        return HttpResponse(
+            data,
+            charset="utf-8",
+            content_type="text/vcard",
+            headers={
+                "Content-Disposition": f'attachment; filename="{filename}"',
+            },
+        )
 
 
 class ProfileEditView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):

@@ -11,6 +11,7 @@ from cl8.admin import site as cl8_admin_site
 from cl8.users.api.views import (
     ProfileCreateView,
     ProfileDetailView,
+    ProfileVcardView,
     ProfileEditView,
     TagAutoCompleteView,
     homepage,
@@ -22,6 +23,7 @@ urlpatterns = [
     # main profile functionality
     path("", homepage, name="home"),
     path("profiles/create/", ProfileCreateView.as_view(), name="profile-create"),
+    path("profiles/<slug>.vcf", ProfileVcardView.as_view(), name="profile-vcard"),
     path("profiles/<slug>", ProfileDetailView.as_view(), name="profile-detail"),
     path("profiles/<slug>/edit", ProfileEditView.as_view(), name="profile-edit"),
     #
