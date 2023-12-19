@@ -6,6 +6,10 @@ from .. import vcard_util
 
 class TestVcardUtil:
     def test_full_name_to_name(self):
+        """
+        Check that we can convert free-form full name strings to structured
+        vCard names.
+        """
         all_in_given_name = [
             "",
             "Biscuit",
@@ -33,6 +37,9 @@ class TestVcardUtil:
             assert actual == expected
 
     def test_content_disposition_filename(self):
+        """
+        Check that we can turn profile names into .vcf filenames.
+        """
         use_fallback = [
             "",
             "  ",
