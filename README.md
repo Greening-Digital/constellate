@@ -2,7 +2,7 @@
 
 Constellate is social software designed to help communities of practice and other small-ish groups to discover skills and interests inside the peer group.
 
-By making it easy to identify others with shared interests, or patters in the make up for skills and knowledge in the community, the goal is make it easier for subgroups to form on new projects, or see where there gaps to bring in new ideas abd perspectives.
+By making it easy to identify others with shared interests, or patterns in the make up for skills and knowledge in the community, the goal is make it easier for subgroups to form on new projects, or see where there gaps to bring in new ideas and perspectives.
 
 ## Installation
 
