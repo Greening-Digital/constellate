@@ -1,7 +1,7 @@
 import logging
 
 from django.core.management import BaseCommand
-from cl8.users.importers import ProfileImporter
+from cl8.users.importers import CSVImporter
 
 logger = logging.getLogger(__name__)
 console = logging.StreamHandler()
@@ -17,7 +17,7 @@ class Command(BaseCommand):
         parser.add_argument("csv_path", type=str)
 
     def handle(self, *args, **options):
-        importer = ProfileImporter()
+        importer = CSVImporter()
 
         csv_path = options.get("csv_path")
 
