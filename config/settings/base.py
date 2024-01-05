@@ -344,7 +344,7 @@ REST_FRAMEWORK = {
 # Your stuff...
 # ------------------------------------------------------------------------------
 
-MJML_CHECK_CMD_ON_STARTUP = True
+MJML_CHECK_CMD_ON_STARTUP = env.bool("MJML_CHECK_CMD_ON_STARTUP", default=True)
 MJML_PATH = str(PROJECT_DIR / "theme" / "static_src" / "node_modules/.bin/mjml")
 MJML_EXEC_CMD = [MJML_PATH, "--config.validationLevel", "skip"]
 
