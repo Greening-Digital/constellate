@@ -11,7 +11,7 @@
     
     pipenv install --dev 
     cd theme/static_src/ && npm install && cd ../..
-    pipenv run ./manage.py migrate
+    # pipenv run ./manage.py migrate
     pipenv run ./manage.py collectstatic --no-input
 
 @ci:

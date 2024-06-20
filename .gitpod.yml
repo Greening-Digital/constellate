@@ -5,7 +5,7 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 # make sure we have access to a running version of postgres
-image: gitpod/workspace-postgres
+image: gitpod
 
 tasks:
   - name: main
